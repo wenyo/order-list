@@ -1,0 +1,32 @@
+{
+  "list": [
+    {
+      "id": "001",
+      "name": "coffee",
+      "count": 1,
+      "price": 100,
+      "note": ""
+    },
+    {
+      "id": "002",
+      "name": "latte",
+      "count": 2,
+      "price": 120,
+      "note": ""
+    },
+    {
+      "id": "003",
+      "name": "coffee",
+      "count": 1,
+      "price": 100,
+      "note": ""
+    },
+    {
+      "id": "004",
+      "name": "coffee",
+      "count": 1,
+      "price": 100,
+      "note": ""
+    }
+  ]
+}

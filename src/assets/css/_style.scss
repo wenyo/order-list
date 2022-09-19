@@ -1,0 +1,18 @@
+.grow {
+    flex-grow: 1;
+}
+
+.btn-primary{
+    padding: 5px 10px;
+    background-color: $color-dark-100;
+    border: 1px solid $color-primary-200;
+    color: $color-primary-200;
+    border-radius: 4px;
+    height: fit-content;
+    transition: all .3s;
+
+    &:hover{
+        color: $color-dark-100;
+        background-color: $color-primary-200;
+    }
+}
