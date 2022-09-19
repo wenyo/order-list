@@ -7,7 +7,11 @@ const store = createStore({
       orderList: EXAMPLE.list
     };
   },
-  getters() {},
+  getters: {
+    orderGetById: (state) => (id) => {
+      return state.orderList.filter(order => order.id===id)[0]
+    }
+  },
   mutations: {},
   actions: {}
 });

@@ -19,29 +19,19 @@ ul
         div.w-100 price
         div.w-100 count
         div.grow note
-    li.content(v-for="item in orderList")
-        div.w-50 {{`#${item.id}`}}
-        div.w-200 {{item.name}}
-        div.w-100 {{item.price}}
-        div.w-100 {{item.count}}
-        div.grow {{item.note}}
+    template(v-for="item in orderList")
+        router-link(:to="`/list/${item.id}`" custom v-slot="{ navigate }" )
+            li.content(@click="navigate")
+                div.w-50 {{`#${item.id}`}}
+                div.w-200 {{item.name}}
+                div.w-100 {{item.price}}
+                div.w-100 {{item.count}}
+                div.grow {{item.note}}
 
 </template>
 
 <style lang="scss" scoped>
     ul{
-
-        .w-50{
-            width: 50px;
-        }
-
-        .w-100{
-            width: 100px;
-        }
-
-        .w-200{
-            width: 200px;
-        }
 
         li{
             display: flex;

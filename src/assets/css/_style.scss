@@ -16,3 +16,27 @@
         background-color: $color-primary-200;
     }
 }
+
+textarea{
+    border: 1px solid;
+}
+
+input[type=text], input[type=number]{
+    border-bottom: 1px solid;
+    padding: 4px 10px;
+}
+
+.w-50{
+    display: inline-block;
+    width: 50px;
+}
+
+.w-100{
+    display: inline-block;
+    width: 100px;
+}
+
+.w-200{
+    display: inline-block;
+    width: 200px;
+}
