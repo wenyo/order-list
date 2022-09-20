@@ -7,7 +7,7 @@ export default {
   setup() {
     const route = useRoute();
     const id = computed(() => route.params.id);
-    const store = useStore()
+    const store = useStore();
     const order = computed(() => store.getters.orderGetById(id.value));
     console.log(store.state.orderList[2]);
     return {
@@ -37,16 +37,22 @@ export default {
     label
         span.w-50 note/
         textarea( type="text" :value="order.note" )
+    label
+        button.btn-secondary DELETE
+
 </template>
 
 <style lang="scss" scoped>
-
-.edit{
-    display: flex;
-    flex-direction: column;
+.edit {
+  display: flex;
+  flex-direction: column;
 }
 
-input{
-    margin: 10px 0;
+label {
+  margin: 5px 0;
+}
+
+input {
+  margin: 10px 0;
 }
 </style>

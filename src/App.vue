@@ -1,6 +1,4 @@
-<script setup>
-
-</script>
+<script setup></script>
 
 <template lang="pug">
 main
@@ -19,7 +17,7 @@ main {
   padding: 20px;
 }
 
-header{
+header {
   display: flex;
   justify-content: space-between;
 }
@@ -31,7 +29,7 @@ h1 {
   margin-bottom: 10px;
 }
 
-.add{
+.add {
   flex-grow: 0;
   flex-shrink: 0;
 }

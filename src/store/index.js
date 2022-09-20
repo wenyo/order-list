@@ -9,7 +9,7 @@ const store = createStore({
   },
   getters: {
     orderGetById: (state) => (id) => {
-      return state.orderList.filter(order => order.id===id)[0]
+      return state.orderList.filter((order) => order.id === id)[0];
     }
   },
   mutations: {},

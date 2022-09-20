@@ -1,42 +1,49 @@
 .grow {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
-.btn-primary{
-    padding: 5px 10px;
-    background-color: $color-dark-100;
-    border: 1px solid $color-primary-200;
-    color: $color-primary-200;
-    border-radius: 4px;
-    height: fit-content;
-    transition: all .3s;
+.btn-primary {
+  padding: 5px 10px;
+  background-color: $color-dark-100;
+  border: 1px solid $color-primary-200;
+  color: $color-primary-200;
+  border-radius: 4px;
+  height: fit-content;
+  transition: all 0.3s;
 
-    &:hover{
-        color: $color-dark-100;
-        background-color: $color-primary-200;
-    }
+  &:hover {
+    color: $color-dark-100;
+    background-color: $color-primary-200;
+  }
 }
 
-textarea{
-    border: 1px solid;
+.btn-secondary {
+  padding: 5px 10px;
+  border: 1px solid $color-dark-400;
+  border-radius: 4px;
 }
 
-input[type=text], input[type=number]{
-    border-bottom: 1px solid;
-    padding: 4px 10px;
+textarea {
+  border: 1px solid;
 }
 
-.w-50{
-    display: inline-block;
-    width: 50px;
+input[type="text"],
+input[type="number"] {
+  border-bottom: 1px solid;
+  padding: 4px 10px;
 }
 
-.w-100{
-    display: inline-block;
-    width: 100px;
+.w-50 {
+  display: inline-block;
+  width: 50px;
 }
 
-.w-200{
-    display: inline-block;
-    width: 200px;
+.w-100 {
+  display: inline-block;
+  width: 100px;
+}
+
+.w-200 {
+  display: inline-block;
+  width: 200px;
 }
