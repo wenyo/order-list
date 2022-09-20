@@ -13,3 +13,9 @@ export const ORDER_TEMP = () => {
 
   return JSON.parse(JSON.stringify(TEMP));
 };
+
+export const ERROR_MSG = {
+  IS_REQUIRED: "this field is required",
+  AT_LEAST_ONE: "at least 1",
+  AT_LEAST_ZERO: "at least 0"
+};
