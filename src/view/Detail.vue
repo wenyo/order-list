@@ -2,8 +2,10 @@
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { mapGetters, useStore } from "vuex";
+import Header from "../components/Header.vue";
 
 export default {
+  components: { Header },
   setup() {
     const store = useStore();
     const route = useRoute();
@@ -29,23 +31,22 @@ export default {
 </script>
 
 <template lang="pug">
+Header(:id="id")
 .edit
-  div
-    span {{`#${order.id}`}}
   label
-    span.w-100 order/
+    span.w-80 order/
     input( type="text" :value="order.name" )
   label
-    span.w-100 price/
+    span.w-80 price/
     input( type="number" :value="order.price" )
   label
-    span.w-100 count/
+    span.w-80 count/
     input( type="number" :value="order.count" )
   label
-    span.w-100 note/
-    textarea( type="text" :value="order.note" )
+    span.w-80 note/
+    textarea.note-input( type="text" :value="order.note" )
   label
-    span.w-100 delete/
+    span.w-80 delete/
     button.btn-disable DELETE
   .btn-block
     button.btn-primary SAVE
@@ -62,10 +63,17 @@ export default {
 
 label {
   margin: 8px 0;
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+
+  span {
+    display: inline-block;
+  }
 }
 
-input {
-  margin: 10px 0;
+.note-input {
+  display: block;
 }
 
 .btn-block {

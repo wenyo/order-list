@@ -1,7 +1,9 @@
 <script>
+import Header from "../components/Header.vue";
 import { mapState } from "vuex";
 
 export default {
+  components: { Header },
   computed: {
     ...mapState(["orderList"])
   },
@@ -12,6 +14,7 @@ export default {
 </script>
 
 <template lang="pug">
+Header
 ul
   li.title
     div.w-50 id
@@ -27,7 +30,6 @@ ul
         div.w-100 {{item.price}}
         div.w-100 {{item.count}}
         div.grow {{item.note}}
-
 </template>
 
 <style lang="scss" scoped>
