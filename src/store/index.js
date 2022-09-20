@@ -12,18 +12,28 @@ const store = createStore({
       const idx = state.orderList.findIndex((order) => order.id === id);
       return idx;
     },
-    orderExistCheck: (_state, getters) => (id) => {
+    orderExistCheck: (state, getters) => (id) => {
       const noId = -1;
       const idx = getters.orderIdxGet(id);
-      console.log(idx);
-      return idx !== noId;
+      return idx !== noId && state.orderList[idx].display;
     },
     orderGetById: (state, getters) => (id) => {
       const idx = getters.orderIdxGet(id);
       return state.orderList[idx];
     }
   },
-  mutations: {},
+  mutations: {
+    orderSave(state, { new_order }) {
+      const { orderIdxGet } = store.getters;
+      const idx = orderIdxGet(new_order.id);
+      state.orderList[idx] = new_order;
+    },
+    orderDelete(state, { id }) {
+      const { orderIdxGet } = store.getters;
+      const idx = orderIdxGet(id);
+      state.orderList[idx].display = false;
+    }
+  },
   actions: {}
 });
 

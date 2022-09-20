@@ -23,13 +23,13 @@ ul
     div.w-100 count
     div.grow note
   template(v-for="item in orderList")
-    router-link(:to="`/list/${item.id}`" custom v-slot="{ navigate }" )
+    router-link(:to="`/list/${item.id}`" custom v-slot="{ navigate }" v-if="item.display")
       li.content(@click="navigate")
-        div.w-50 {{`#${item.id}`}}
-        div.w-200 {{item.name}}
-        div.w-100 {{item.price}}
-        div.w-100 {{item.count}}
-        div.grow {{item.note}}
+        div.w-50.shrink-0 {{`#${item.id}`}}
+        div.w-200.word-break.shrink-0 {{item.name}}
+        div.w-100.shrink-0 {{item.price}}
+        div.w-100.shrink-0 {{item.count}}
+        div.grow.word-break {{item.note}}
 </template>
 
 <style lang="scss" scoped>

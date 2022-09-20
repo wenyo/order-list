@@ -1,7 +1,7 @@
 <script>
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { mapGetters, useStore } from "vuex";
+import { mapGetters, useStore, mapMutations } from "vuex";
 import Header from "../components/Header.vue";
 
 export default {
@@ -12,20 +12,42 @@ export default {
     const router = useRouter();
     const id = computed(() => route.params.id);
 
-    const idExist = computed(() => store.getters.orderExistCheck(id.value));
-    if (!idExist) {
+    function backList() {
       router.push("/list");
     }
 
-    const order = computed(() => store.getters.orderGetById(id.value));
+    // check id exist
+    const idExist = computed(() => store.getters.orderExistCheck(id.value));
+    if (!idExist.value) {
+      backList();
+    }
 
     return {
       id,
-      order
+      idExist,
+      backList
     };
   },
   computed: {
-    ...mapGetters(["orderGetById"])
+    ...mapGetters(["orderGetById"]),
+    orderInput() {
+      if (!this.idExist) {
+        return {};
+      }
+      const order = this.orderGetById(this.id);
+      return JSON.parse(JSON.stringify(order));
+    }
+  },
+  methods: {
+    ...mapMutations(["orderSave", "orderDelete"]),
+    saveClick() {
+      this.orderSave({ new_order: this.orderInput });
+      this.backList();
+    },
+    deleteClick() {
+      this.orderDelete({ id: this.id });
+      this.backList();
+    }
   }
 };
 </script>
@@ -35,23 +57,22 @@ Header(:id="id")
 .edit
   label
     span.w-80 order/
-    input( type="text" :value="order.name" )
+    input( type="text" v-model="orderInput.name" )
   label
     span.w-80 price/
-    input( type="number" :value="order.price" )
+    input( type="number" v-model="orderInput.price" )
   label
     span.w-80 count/
-    input( type="number" :value="order.count" )
+    input( type="number" v-model="orderInput.count" )
   label
     span.w-80 note/
-    textarea.note-input( type="text" :value="order.note" )
-  label
+    textarea.note-input( type="text" v-model="orderInput.note" )
+  .delete
     span.w-80 delete/
-    button.btn-disable DELETE
+    button.btn-disable()(@click="deleteClick") DELETE
   .btn-block
-    button.btn-primary SAVE
-    button.btn-secondary CANCEL
-
+    button.btn-primary(@click="saveClick") SAVE
+    button.btn-secondary(@click="backList") CANCEL
 </template>
 
 <style lang="scss" scoped>
@@ -61,8 +82,10 @@ Header(:id="id")
   flex-direction: column;
 }
 
-label {
+label,
+.delete {
   margin: 8px 0;
+  width: fit-content;
   display: flex;
   align-items: center;
   margin: 10px 0;

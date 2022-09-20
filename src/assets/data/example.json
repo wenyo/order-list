@@ -5,28 +5,32 @@
       "name": "coffee",
       "count": 1,
       "price": 100,
-      "note": ""
+      "note": "",
+      "display": true
     },
     {
       "id": "002",
       "name": "latte",
       "count": 2,
       "price": 120,
-      "note": ""
+      "note": "",
+      "display": true
     },
     {
       "id": "003",
       "name": "coffee",
       "count": 1,
       "price": 100,
-      "note": ""
+      "note": "",
+      "display": true
     },
     {
       "id": "004",
       "name": "coffee",
       "count": 1,
       "price": 100,
-      "note": ""
+      "note": "",
+      "display": true
     }
   ]
 }
