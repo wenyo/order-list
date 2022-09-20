@@ -8,8 +8,19 @@ const store = createStore({
     };
   },
   getters: {
-    orderGetById: (state) => (id) => {
-      return state.orderList.filter((order) => order.id === id)[0];
+    orderIdxGet: (state) => (id) => {
+      const idx = state.orderList.findIndex((order) => order.id === id);
+      return idx;
+    },
+    orderExistCheck: (_state, getters) => (id) => {
+      const noId = -1;
+      const idx = getters.orderIdxGet(id);
+      console.log(idx);
+      return idx !== noId;
+    },
+    orderGetById: (state, getters) => (id) => {
+      const idx = getters.orderIdxGet(id);
+      return state.orderList[idx];
     }
   },
   mutations: {},

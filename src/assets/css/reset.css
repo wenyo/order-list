@@ -55,3 +55,6 @@ button, select{
 input, textarea{
     cursor: text;
 }
+*{
+	box-sizing: border-box;
+}
