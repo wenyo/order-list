@@ -29,8 +29,8 @@ export default {
     saveClick() {
       this.$emit("save");
     },
-    cancel() {
-      this.$emit("cancelClick");
+    cancelClick() {
+      this.$emit("cancel");
     },
     isRequired(value) {
       if (!value) {
@@ -70,21 +70,21 @@ VForm(@submit="saveClick").edit
   label
     span.w-80 order/
     VField( name="name" type="text" :rules="isRequired"  v-model="order.name" placeholder="order" )
-    ErrorMessage( name="name" )
+    ErrorMessage.error-msg( name="name" )
   label
     span.w-80 price/
     VField( name="price" type="number" :rules="isPositiveIntegerOrZero" v-model="order.price" )
-    ErrorMessage( name="price" )
+    ErrorMessage.error-msg( name="price" )
   label
     span.w-80 count/
     VField( name="count" type="number" :rules="isPositiveInteger" v-model="order.count" )
-    ErrorMessage( name="count" )
+    ErrorMessage.error-msg( name="count" )
   label
     span.w-80 note/
     textarea.note-input( type="text" v-model="order.note" )
   .delete(v-if="order.id !== NO_ID")
     span.w-80 delete/
-    button.btn-disable()(@click="deleteClick") DELETE
+    button.btn-disable(@click="deleteClick") DELETE
   .btn-block
     button.btn-primary(type="submit") SAVE
     button.btn-secondary(@click="cancelClick") CANCEL
@@ -121,5 +121,12 @@ label,
   & > :not(:last-child) {
     margin-right: 20px;
   }
+}
+
+.error-msg{
+  color:$color-primary-100;
+  font-weight: bold;
+  margin-left: 5px;
+  font-size: 14px;
 }
 </style>
