@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import EXAMPLE from "../assets/data/example.json";
+import { NO_IDX } from "../util/enum";
 
 const store = createStore({
   state() {
@@ -13,9 +14,8 @@ const store = createStore({
       return idx;
     },
     orderExistCheck: (state, getters) => (id) => {
-      const noId = -1;
       const idx = getters.orderIdxGet(id);
-      return idx !== noId && state.orderList[idx].display;
+      return idx !== NO_IDX && state.orderList[idx].display;
     },
     orderGetById: (state, getters) => (id) => {
       const idx = getters.orderIdxGet(id);
@@ -23,7 +23,7 @@ const store = createStore({
     }
   },
   mutations: {
-    orderSave(state, { new_order }) {
+    orderEdit(state, { new_order }) {
       const { orderIdxGet } = store.getters;
       const idx = orderIdxGet(new_order.id);
       state.orderList[idx] = new_order;
@@ -32,6 +32,14 @@ const store = createStore({
       const { orderIdxGet } = store.getters;
       const idx = orderIdxGet(id);
       state.orderList[idx].display = false;
+    },
+    orderAdd(state, { new_order }) {
+      const len = state.orderList.length;
+      const id = (len + 1).toString().padStart(3, 0);
+      state.orderList.push({
+        ...new_order,
+        id
+      });
     }
   },
   actions: {}

@@ -1,20 +1,29 @@
 <script>
 import Header from "../components/Header.vue";
+import { useRouter } from "vue-router";
 import { mapState } from "vuex";
 
 export default {
   components: { Header },
+  setup() {
+    const router = useRouter();
+
+    function toAddPage() {
+      router.push("/add");
+    }
+
+    return {
+      toAddPage
+    };
+  },
   computed: {
     ...mapState(["orderList"])
-  },
-  mounted() {
-    console.log(this.orderList);
   }
 };
 </script>
 
 <template lang="pug">
-Header
+Header(@add="toAddPage")
 ul
   li.title
     div.w-50 id
