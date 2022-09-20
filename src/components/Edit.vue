@@ -22,6 +22,33 @@ export default {
       NO_ID
     };
   },
+  setup() {
+    console.log("  Edit setup");
+  },
+  beforeCreate() {
+    console.log("  Edit beforeCreate");
+  },
+  created() {
+    console.log("  Edit created");
+  },
+  beforeMount() {
+    console.log("  Edit beforeMount");
+  },
+  mounted() {
+    console.log("  Edit mounted");
+  },
+  beforeUpdate() {
+    console.log("  Edit beforeUpdate");
+  },
+  updated() {
+    console.log("  Edit updated");
+  },
+  beforeUnmount() {
+    console.log("  Edit beforeUnmount");
+  },
+  unmounted() {
+    console.log("  Edit unmounted");
+  },
   methods: {
     deleteClick() {
       this.$emit("delete");
@@ -123,8 +150,8 @@ label,
   }
 }
 
-.error-msg{
-  color:$color-primary-100;
+.error-msg {
+  color: $color-primary-100;
   font-weight: bold;
   margin-left: 5px;
   font-size: 14px;

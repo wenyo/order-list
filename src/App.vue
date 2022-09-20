@@ -6,7 +6,7 @@ main
 </template>
 
 <style lang="scss">
-body{
+body {
   background-color: $color-dark-200;
   display: flex;
   justify-content: center;
