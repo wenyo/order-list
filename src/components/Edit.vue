@@ -117,7 +117,7 @@ label,
 .btn-block {
   display: flex;
   justify-content: flex-end;
-  margin-top: 50px;
+  margin-top: 100px;
   & > :not(:last-child) {
     margin-right: 20px;
   }
