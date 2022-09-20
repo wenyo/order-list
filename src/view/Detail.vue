@@ -23,22 +23,22 @@ export default {
 
 <template lang="pug">
 .edit
-    div
-        span {{`#${order.id}`}}
-    label
-        span.w-50 order/
-        input( type="text" :value="order.name" )
-    label
-        span.w-50 price/
-        input( type="number" :value="order.price" )
-    label
-        span.w-50 count/
-        input( type="number" :value="order.count" )
-    label
-        span.w-50 note/
-        textarea( type="text" :value="order.note" )
-    label
-        button.btn-secondary DELETE
+  div
+    span {{`#${order.id}`}}
+  label
+    span.w-50 order/
+    input( type="text" :value="order.name" )
+  label
+    span.w-50 price/
+    input( type="number" :value="order.price" )
+  label
+    span.w-50 count/
+    input( type="number" :value="order.count" )
+  label
+    span.w-50 note/
+    textarea( type="text" :value="order.note" )
+  label
+    button.btn-secondary DELETE
 
 </template>
 
