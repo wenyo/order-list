@@ -147,11 +147,4 @@ label,
   gap: 20px;
   margin-top: 100px;
 }
-
-.error-msg {
-  color: $color-primary-100;
-  font-weight: bold;
-  margin-left: 5px;
-  font-size: 14px;
-}
 </style>
