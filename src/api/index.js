@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
+  signOut,
   signInWithEmailAndPassword,
   browserSessionPersistence,
   setPersistence
@@ -46,6 +47,12 @@ export function authUser() {
     auth: !!currentUser,
     currentUser
   };
+}
+
+export async function logout() {
+  await signOut(auth)
+    .then((result) => console.log(result))
+    .catch((error) => console.error(error));
 }
 
 // item

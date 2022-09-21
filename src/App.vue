@@ -1,7 +1,14 @@
-<script setup></script>
+<script>
+import Menu from "./components/Menu.vue";
+
+export default {
+  components: { Menu }
+};
+</script>
 
 <template lang="pug">
 main
+  Menu
   router-view
 </template>
 
@@ -19,6 +26,6 @@ main {
   width: 80vw;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 40px;
 }
 </style>
