@@ -6,7 +6,7 @@
   flex-shrink: 0;
 }
 
-button{
+button {
   padding: 5px 10px;
   border-radius: 4px;
   height: fit-content;
@@ -26,12 +26,12 @@ button{
   }
 }
 
-.btn-secondary{
+.btn-secondary {
   color: $color-dark-400;
   border: 1px solid $color-dark-400;
   transition: all 0.3s;
 
-  &:hover{
+  &:hover {
     background-color: $color-dark-100;
   }
 }
@@ -42,7 +42,7 @@ button{
   transition: all 0.3s;
   opacity: 0.3;
 
-  &:hover{
+  &:hover {
     opacity: 1;
   }
 }
@@ -51,8 +51,11 @@ textarea {
   border: 1px solid;
 }
 
-input[type="text"],
-input[type="number"] {
+.input-title {
+  font-size: 20px;
+}
+
+.input-primary {
   border-bottom: 1px solid;
   padding: 4px 6px;
 }
@@ -77,6 +80,13 @@ input[type="number"] {
   width: 200px;
 }
 
-.word-break{
+.word-break {
   word-break: break-all;
+}
+
+h1.title {
+  font-weight: bold;
+  color: $color-primary-400;
+  font-size: 35px;
+  margin-bottom: 10px;
 }

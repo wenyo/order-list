@@ -29,13 +29,6 @@ header {
   justify-content: space-between;
 }
 
-.title {
-  font-weight: bold;
-  color: $color-primary-400;
-  font-size: 35px;
-  margin-bottom: 10px;
-}
-
 .add {
   flex-grow: 0;
   flex-shrink: 0;

@@ -96,15 +96,15 @@ Header(:id="order.id")
 VForm(@submit="saveClick").edit
   label
     span.w-80 order/
-    VField( name="name" type="text" :rules="isRequired"  v-model="order.name" placeholder="order" )
+    VField.input-primary( name="name" type="text" :rules="isRequired"  v-model="order.name" placeholder="order" )
     ErrorMessage.error-msg( name="name" )
   label
     span.w-80 price/
-    VField( name="price" type="number" :rules="isPositiveIntegerOrZero" v-model="order.price" )
+    VField.input-primary( name="price" type="number" :rules="isPositiveIntegerOrZero" v-model="order.price" )
     ErrorMessage.error-msg( name="price" )
   label
     span.w-80 count/
-    VField( name="count" type="number" :rules="isPositiveInteger" v-model="order.count" )
+    VField.input-primary( name="count" type="number" :rules="isPositiveInteger" v-model="order.count" )
     ErrorMessage.error-msg( name="count" )
   label
     span.w-80 note/
@@ -144,10 +144,8 @@ label,
 .btn-block {
   display: flex;
   justify-content: flex-end;
+  gap: 20px;
   margin-top: 100px;
-  & > :not(:last-child) {
-    margin-right: 20px;
-  }
 }
 
 .error-msg {
