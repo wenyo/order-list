@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import { rtdbPlugin } from "vuefire";
 import "./assets/css/reset.css";
 import App from "./App.vue";
 import store from "./store";
