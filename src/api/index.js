@@ -16,24 +16,12 @@ import {
   setDoc
 } from "firebase/firestore";
 
-// config
-const firebaseConfig = {
-  apiKey: "AIzaSyDfs32s0XfaWdkHiDtRMaaGu2fk2dsJuz4",
-  authDomain: "order-list-ed304.firebaseapp.com",
-  projectId: "order-list-ed304",
-  storageBucket: "order-list-ed304.appspot.com",
-  messagingSenderId: "674244675925",
-  appId: "1:674244675925:web:19078dcd179dfdda1c87dc"
-};
-
-const PATH = { USER: "/user" };
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+const PATH = { USER: "user" };
 
 // login
 export async function loginFetch({ account, password }) {
+  const auth = getAuth();
+
   return await setPersistence(auth, browserSessionPersistence).then(() =>
     signInWithEmailAndPassword(auth, account, password)
       .then(() => authUser())
@@ -42,6 +30,7 @@ export async function loginFetch({ account, password }) {
 }
 
 export function authUser() {
+  const auth = getAuth();
   const currentUser = auth.currentUser;
   return {
     auth: !!currentUser,
@@ -49,26 +38,14 @@ export function authUser() {
   };
 }
 
-export async function IsLoggedIn() {
-  const auth = getAuth(app);
-
-  let result = {};
-  try {
-    await new Promise((resolve, reject) =>
-      onAuthStateChanged(
-        auth,
-        (user) => (result = authUser(user)),
-        // Prevent console errors
-        (error) => reject(error)
-      )
-    );
-    return result;
-  } catch (error) {
-    return false;
-  }
+export async function IsLoggedIn(func) {
+  const auth = getAuth();
+  let isLogin = false;
+  await onAuthStateChanged(auth, (user) => func(user));
 }
 
 export async function logout() {
+  const auth = getAuth();
   await signOut(auth)
     .then((result) => console.log(result))
     .catch((error) => console.error(error));
@@ -76,6 +53,7 @@ export async function logout() {
 
 // item
 export async function itemListGetFetch() {
+  const db = getFirestore();
   return await getDocs(collection(db, "items")).then((result) => {
     return result.docs.map((item) => item.data());
   });

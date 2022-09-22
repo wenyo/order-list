@@ -1,39 +1,37 @@
 <script>
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { authUser, IsLoggedIn } from "./api";
+import { IsLoggedIn } from "./api";
 import Menu from "./components/Menu.vue";
 
 export default {
   components: { Menu },
-  setup() {
-    const authStatus = computed(() => authUser()); // !!!need fix
-    const route = useRoute();
-    const router = useRouter();
-
-    if (!authStatus.auth) {
-      router.push("/login");
-    } else if (route.path === "/login") {
-      router.push("/");
-    }
-
-    return {
-      authStatus,
-      authUser,
-      IsLoggedIn
-    };
-  },
   data() {
     return {
-      isAuth: false
+      isAuth: false,
+      route: useRoute(),
+      router: useRouter()
     };
+  },
+  created() {
+    IsLoggedIn(this.isAuthRedirect);
+  },
+  methods: {
+    isAuthRedirect(user) {
+      this.isAuth = !!user;
+      if (!this.isAuth) {
+        this.router.push("/login");
+      } else if (this.route.path === "/login") {
+        this.router.push("/");
+      }
+    }
   }
 };
 </script>
 
 <template lang="pug">
 main
-  Menu
+  Menu(v-if="isAuth")
   router-view
 </template>
 
