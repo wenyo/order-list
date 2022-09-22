@@ -13,8 +13,15 @@ export default {
       router: useRouter()
     };
   },
-  created() {
-    isLoggedIn(this.isAuthRedirect);
+  computed: {
+    path() {
+      return this.route.path;
+    }
+  },
+  watch: {
+    path() {
+      isLoggedIn(this.isAuthRedirect);
+    }
   },
   methods: {
     isAuthRedirect(user) {
