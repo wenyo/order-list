@@ -15,15 +15,15 @@ export default {
     let account = "wenda897436@gmail.com";
     let password = "123456";
 
-    function toListPage() {
-      router.push("/list");
+    function toHomePage() {
+      router.push("/");
     }
 
     return {
       account,
       password,
       loginFetch,
-      toListPage,
+      toHomePage,
       authUser,
       ERROR_MSG,
       loginFailed: false
@@ -42,7 +42,7 @@ export default {
       if (!result.auth) {
         this.loginFailed = true;
       } else {
-        this.toListPage();
+        this.toHomePage();
       }
     },
     async login() {

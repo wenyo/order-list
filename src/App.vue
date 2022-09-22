@@ -18,6 +18,9 @@ export default {
       return this.route.path;
     }
   },
+  created() {
+    isLoggedIn(this.isAuthRedirect);
+  },
   watch: {
     path() {
       isLoggedIn(this.isAuthRedirect);
