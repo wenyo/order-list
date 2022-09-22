@@ -106,3 +106,17 @@ h1.title {
   font-size: 14px;
   min-height: 14px;
 }
+
+.img-box {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+  img {
+    position: absolute;
+    min-width: 100%;
+    min-height: 100%;
+    top: 0;
+    left: 0;
+  }
+}

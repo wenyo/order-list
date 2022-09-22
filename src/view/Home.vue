@@ -1,14 +1,23 @@
 <script>
 import { itemListGetFetch } from "../api";
+import Edit from "../components/Edit.vue";
 
 export default {
+  components: { Edit },
   data() {
     return {
-      itemList: []
+      itemList: [],
+      orderAlertShow: true,
+      orderSelectId: "i002"
     };
   },
   created() {
     this.itemListGet();
+  },
+  computed: {
+    orderSelectItem() {
+      return this.itemList.find((item) => item.id === this.orderSelectId);
+    }
   },
   methods: {
     imgToBase64(e) {
@@ -25,6 +34,18 @@ export default {
       itemListGetFetch().then((rs) => {
         this.itemList = rs;
       });
+    },
+    orderAlertToggle(alert_show) {
+      this.orderAlertShow = alert_show;
+    },
+    orderAlertClose() {
+      this.orderAlertToggle(false);
+      this.orderSelectId = "";
+    },
+    buyBtnClick(id) {
+      console.log(1);
+      this.orderAlertToggle(true);
+      this.orderSelectId = id;
     }
   }
 };
@@ -33,7 +54,7 @@ export default {
 <template lang="pug">
 h1.title Product List
 ul 
-  li(v-for="(item,key) in itemList" :key="key")
+  li(v-for="(item, key) in itemList" :key="key")
     div.img-box
       img(:src="item.img")
     div.m-y10-x20
@@ -45,8 +66,9 @@ ul
       span stock/
       span {{item.stock}}
     div.m-20
-      button.btn-primary buy
+      button.btn-primary(@click="buyBtnClick(item.id)") buy
       button.btn-primary update
+  Edit(v-if="orderAlertShow" :order="orderSelectItem" @cancel="orderAlertClose")
 </template>
 
 <style lang="scss" scoped>
@@ -56,22 +78,12 @@ ul {
   grid-template-columns: repeat(4, 1fr);
 
   li {
+    border-radius: 2px;
     box-shadow: 2px 2px 4px $color-shadow-200;
   }
 
   .img-box {
-    position: relative;
-    width: 100%;
     padding-bottom: 60%;
-    overflow: hidden;
-
-    img {
-      position: absolute;
-      min-width: 100%;
-      min-height: 100%;
-      top: 0;
-      left: 0;
-    }
   }
 
   div {
