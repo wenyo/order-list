@@ -4,7 +4,8 @@ import {
   signOut,
   signInWithEmailAndPassword,
   browserSessionPersistence,
-  setPersistence
+  setPersistence,
+  onAuthStateChanged
 } from "firebase/auth";
 import {
   getFirestore,
@@ -33,12 +34,11 @@ const auth = getAuth(app);
 
 // login
 export async function loginFetch({ account, password }) {
-  await setPersistence(auth, browserSessionPersistence)
-    .then(() => {
-      signInWithEmailAndPassword(auth, account, password);
-    })
-    .catch((error) => console.error(error));
-  return authUser();
+  return await setPersistence(auth, browserSessionPersistence).then(() =>
+    signInWithEmailAndPassword(auth, account, password)
+      .then(() => authUser())
+      .catch((error) => console.error(error))
+  );
 }
 
 export function authUser() {
@@ -47,6 +47,25 @@ export function authUser() {
     auth: !!currentUser,
     currentUser
   };
+}
+
+export async function IsLoggedIn() {
+  const auth = getAuth(app);
+
+  let result = {};
+  try {
+    await new Promise((resolve, reject) =>
+      onAuthStateChanged(
+        auth,
+        (user) => (result = authUser(user)),
+        // Prevent console errors
+        (error) => reject(error)
+      )
+    );
+    return result;
+  } catch (error) {
+    return false;
+  }
 }
 
 export async function logout() {

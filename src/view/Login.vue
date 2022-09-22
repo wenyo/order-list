@@ -12,23 +12,21 @@ export default {
   },
   setup() {
     const router = useRouter();
+    let account = "wenda897436@gmail.com";
+    let password = "123456";
 
     function toListPage() {
       router.push("/list");
     }
 
     return {
+      account,
+      password,
       loginFetch,
       toListPage,
       authUser,
       ERROR_MSG,
       loginFailed: false
-    };
-  },
-  data() {
-    return {
-      account: "wenda897436@gmail.com",
-      password: "123456"
     };
   },
   methods: {
@@ -39,17 +37,19 @@ export default {
 
       return true;
     },
-    async login() {
-      const result = await this.loginFetch({
-        account: this.account,
-        password: this.password
-      });
-
+    loginStatus() {
+      const result = authUser();
       if (!result.auth) {
         this.loginFailed = true;
       } else {
         this.toListPage();
       }
+    },
+    async login() {
+      await this.loginFetch({
+        account: this.account,
+        password: this.password
+      }).then((rs) => this.loginStatus());
     }
   }
 };
