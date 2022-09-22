@@ -80,6 +80,14 @@ textarea {
   width: 200px;
 }
 
+.m-20 {
+  margin: 20px;
+}
+
+.m-y10-x20 {
+  margin: 10px 20px;
+}
+
 .word-break {
   word-break: break-all;
 }
@@ -88,7 +96,7 @@ h1.title {
   font-weight: bold;
   color: $color-primary-400;
   font-size: 35px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .error-msg {
