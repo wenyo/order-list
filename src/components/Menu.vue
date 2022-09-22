@@ -1,9 +1,29 @@
+<script>
+export default {
+  data() {
+    return {
+      openMenu: false
+    };
+  },
+  methods: {
+    menuToggle(open) {
+      this.openMenu = open;
+    }
+  }
+};
+</script>
+
 <template lang="pug">
-div.menu-box
-  i.icon-menu
-  ul
-    li home
-    li cart
+div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
+  i.icon-menu(@click="menuToggle(true)")
+  div.menu-list(:class="{'open':openMenu}")
+    i.icon-close(@click="menuToggle(false)")
+    ul
+      li home
+      li order list
+    button.btn-secondary
+      i.icon-logout
+      span logout
 
 </template>
 
@@ -13,21 +33,25 @@ div.menu-box
   top: 0;
   bottom: 0;
   left: 0;
-  right: 0;
+  right: 100%;
   background-color: $color-shadow-100;
 
-  .icon-menu {
-    position: absolute;
-    top: 0;
-    left: 0;
-    font-size: 32px;
-    padding: 10px;
-    color: $color-primary-400;
-    cursor: pointer;
+  &.open {
+    right: 0;
   }
 }
 
-ul {
+.icon-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 32px;
+  padding: 10px;
+  color: $color-primary-400;
+  cursor: pointer;
+}
+
+.menu-list {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -35,10 +59,44 @@ ul {
   width: 300px;
   background-color: $color-dark-200;
   box-shadow: 2px 2px 10px $color-shadow-200;
-  padding: 40px;
+  padding: 40px 0;
+  transform: translateX(-100%);
+  transition: all 0.3s;
+
+  &.open {
+    transform: translateX(0);
+  }
 
   li {
-    padding: 10px 0;
+    padding: 10px 40px;
+    opacity: 0.7;
+    transition: all 0.3s;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+      opacity: 1;
+    }
   }
+}
+
+.icon-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 32px;
+  padding: 10px;
+  color: $color-dark-400;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all 0.3s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.btn-secondary {
+  margin: 40px;
 }
 </style>

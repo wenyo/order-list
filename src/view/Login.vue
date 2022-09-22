@@ -11,9 +11,6 @@ export default {
     ErrorMessage: ErrorMessage
   },
   setup() {
-    let account = "wenda897436@gmail.com";
-    let password = "123456";
-
     const router = useRouter();
 
     function toListPage() {
@@ -24,13 +21,16 @@ export default {
       loginFetch,
       toListPage,
       authUser,
-      account,
-      password,
       ERROR_MSG,
       loginFailed: false
     };
   },
-
+  data() {
+    return {
+      account: "wenda897436@gmail.com",
+      password: "123456"
+    };
+  },
   methods: {
     isRequired(value) {
       if (!value) {

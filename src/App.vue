@@ -1,4 +1,5 @@
 <script>
+import { useRoute } from "vue-router";
 import Menu from "./components/Menu.vue";
 
 export default {
