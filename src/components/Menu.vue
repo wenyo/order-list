@@ -1,5 +1,6 @@
 <script>
 export default {
+  emit: ["logout"],
   data() {
     return {
       openMenu: false
@@ -8,6 +9,10 @@ export default {
   methods: {
     menuToggle(open) {
       this.openMenu = open;
+    },
+    logoutClick() {
+      console.log(11);
+      this.$emit("logout");
     }
   }
 };
@@ -21,7 +26,7 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
     ul
       li home
       li order list
-    button.btn-secondary
+    button.btn-secondary(@click="logoutClick")
       i.icon-logout
       span logout
 

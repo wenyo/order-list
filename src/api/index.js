@@ -38,13 +38,13 @@ export function authUser() {
   };
 }
 
-export async function IsLoggedIn(func) {
+export async function isLoggedIn(func) {
   const auth = getAuth();
   let isLogin = false;
   await onAuthStateChanged(auth, (user) => func(user));
 }
 
-export async function logout() {
+export async function logoutFetch() {
   const auth = getAuth();
   await signOut(auth)
     .then((result) => console.log(result))

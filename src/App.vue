@@ -1,7 +1,7 @@
 <script>
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { IsLoggedIn } from "./api";
+import { isLoggedIn, logoutFetch } from "./api";
 import Menu from "./components/Menu.vue";
 
 export default {
@@ -14,7 +14,7 @@ export default {
     };
   },
   created() {
-    IsLoggedIn(this.isAuthRedirect);
+    isLoggedIn(this.isAuthRedirect);
   },
   methods: {
     isAuthRedirect(user) {
@@ -24,6 +24,11 @@ export default {
       } else if (this.route.path === "/login") {
         this.router.push("/");
       }
+    },
+    logoutClick() {
+      logoutFetch().then(() => {
+        this.isAuth = false;
+      });
     }
   }
 };
@@ -31,7 +36,7 @@ export default {
 
 <template lang="pug">
 main
-  Menu(v-if="isAuth")
+  Menu(v-if="isAuth" @logout="logoutClick")
   router-view
 </template>
 
