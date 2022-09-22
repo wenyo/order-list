@@ -11,8 +11,11 @@ export default {
       this.openMenu = open;
     },
     logoutClick() {
-      console.log(11);
       this.$emit("logout");
+    },
+    linkClick(navigate) {
+      navigate();
+      this.menuToggle(false);
     }
   }
 };
@@ -24,8 +27,10 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
   div.menu-list(:class="{'open':openMenu}")
     i.icon-close(@click="menuToggle(false)")
     ul
-      li home
-      li order list
+      router-link(:to="`/`" custom v-slot="{ navigate, isActive }" )
+        li(@click="linkClick(navigate)" :class="{'active':isActive}") Product List
+      router-link(:to="`/list`" custom v-slot="{ navigate, isActive }" )
+        li(@click="linkClick(navigate)" :class="{'active':isActive}") Order List
     button.btn-secondary(@click="logoutClick")
       i.icon-logout
       span logout
@@ -74,11 +79,12 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
 
   li {
     padding: 10px 40px;
-    opacity: 0.7;
+    opacity: 0.5;
     transition: all 0.3s;
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &.active {
       text-decoration: underline;
       opacity: 1;
     }
