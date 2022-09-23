@@ -92,3 +92,18 @@ export async function orderListGetByUidFetch(uid) {
     return result.docs.map((item) => item.data());
   });
 }
+
+export async function orderSetFetch(order_data) {
+  const db = getFirestore();
+  const data = {
+    id: "005",
+    name: "latte",
+    price: 120,
+    stock: 90,
+    img: "",
+    update_time: new Date().getTime()
+  };
+  return await setDoc(doc(db, PATH.ITEMS, data.id), data).then((result) => {
+    console.log(result);
+  });
+}

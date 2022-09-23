@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     orderSelectItem() {
-      return this.itemList.find((item) => item.id === this.orderSelectId);
+      return this.itemList[this.orderSelectId];
     }
   },
   methods: {
@@ -79,7 +79,7 @@ ul
       span {{itemList[id].stock}}
     div.m-20
       button.btn-primary(@click="buyBtnClick(itemList[id].id)") buy
-      button.btn-primary(@click="updateBtnClick(item.id)") update
+      button.btn-primary(@click="updateBtnClick(itemList[id].id)") update
   Edit(v-if="orderAlertShow" :order="orderSelectItem" @cancel="orderAlertClose")
   UpdateItem(v-if="updateAlertShow" :order="orderSelectItem" @cancel="updateAlertClose")
 </template>
