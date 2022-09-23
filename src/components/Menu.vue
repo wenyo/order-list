@@ -39,6 +39,7 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
 
 <style lang="scss" scoped>
 .menu-box {
+  z-index: 20;
   position: fixed;
   top: 0;
   bottom: 0;
