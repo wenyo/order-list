@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import { initializeApp } from "firebase/app";
 import "./assets/css/reset.css";
 import "./assets/icon/style.css";
+import "./assets/css/style.scss";
 import App from "./App.vue";
 import store from "./store";
 import router from "./router";
