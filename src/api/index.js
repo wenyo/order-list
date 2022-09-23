@@ -12,8 +12,8 @@ import {
   collection,
   getDocs,
   addDoc,
-  doc,
-  setDoc
+  query,
+  orderBy
 } from "firebase/firestore";
 
 const PATH = { USER: "user" };
@@ -54,7 +54,9 @@ export async function logoutFetch() {
 // item
 export async function itemListGetFetch() {
   const db = getFirestore();
-  return await getDocs(collection(db, "items")).then((result) => {
+  const itemsRef = collection(db, "items");
+
+  return await getDocs(query(itemsRef, orderBy("id"))).then((result) => {
     return result.docs.map((item) => item.data());
   });
 }
