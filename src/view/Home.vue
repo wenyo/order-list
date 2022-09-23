@@ -1,13 +1,15 @@
 <script>
 import { itemListGetFetch } from "../api";
 import Edit from "../components/Edit.vue";
+import UpdateItem from "../components/UpdateItem.vue";
 
 export default {
-  components: { Edit },
+  components: { Edit, UpdateItem },
   data() {
     return {
       itemList: [],
-      orderAlertShow: true,
+      orderAlertShow: false,
+      updateAlertShow: false,
       orderSelectId: "i002"
     };
   },
@@ -43,8 +45,18 @@ export default {
       this.orderSelectId = "";
     },
     buyBtnClick(id) {
-      console.log(1);
       this.orderAlertToggle(true);
+      this.orderSelectId = id;
+    },
+    updateAlertToggle(alert_show) {
+      this.updateAlertShow = alert_show;
+    },
+    updateAlertClose() {
+      this.updateAlertToggle(false);
+      this.orderSelectId = "";
+    },
+    updateBtnClick(id) {
+      this.updateAlertToggle(true);
       this.orderSelectId = id;
     }
   }
@@ -52,7 +64,7 @@ export default {
 </script>
 
 <template lang="pug">
-h1.title Product List
+h1.title Product List!
 ul 
   li(v-for="(item, key) in itemList" :key="key")
     div.img-box
@@ -67,8 +79,9 @@ ul
       span {{item.stock}}
     div.m-20
       button.btn-primary(@click="buyBtnClick(item.id)") buy
-      button.btn-primary update
+      button.btn-primary(@click="updateBtnClick(item.id)") update
   Edit(v-if="orderAlertShow" :order="orderSelectItem" @cancel="orderAlertClose")
+  UpdateItem(v-if="updateAlertShow" :order="orderSelectItem" @cancel="updateAlertClose")
 </template>
 
 <style lang="scss" scoped>
