@@ -22,39 +22,12 @@ export default {
       NO_ID
     };
   },
-  setup() {
-    console.log("  Edit setup");
-  },
-  beforeCreate() {
-    console.log("  Edit beforeCreate");
-  },
-  created() {
-    console.log("  Edit created");
-  },
-  beforeMount() {
-    console.log("  Edit beforeMount");
-  },
-  mounted() {
-    console.log("  Edit mounted");
-  },
-  beforeUpdate() {
-    console.log("  Edit beforeUpdate");
-  },
-  updated() {
-    console.log("  Edit updated");
-  },
-  beforeUnmount() {
-    console.log("  Edit beforeUnmount");
-  },
-  unmounted() {
-    console.log("  Edit unmounted");
-  },
   methods: {
     deleteClick() {
       this.$emit("delete");
     },
-    saveClick() {
-      this.$emit("save");
+    saveClick(order_data) {
+      this.$emit("save", order_data);
     },
     cancelClick() {
       this.$emit("cancel");

@@ -8,11 +8,11 @@ const deepCopyAry = (ary) => {
 export const ORDER_TEMP = () => {
   const TEMP = {
     id: NO_ID,
-    name: "",
+    item_id: NO_ID,
     count: 1,
-    price: 0,
     note: "",
-    display: true
+    display: true,
+    user_id: ""
   };
 
   return deepCopyAry(TEMP);

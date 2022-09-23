@@ -1,5 +1,6 @@
 <script>
 import { itemListGetFetch } from "../api";
+import { ORDER_TEMP } from "../util/enum";
 import Edit from "../components/Edit.vue";
 import UpdateItem from "../components/UpdateItem.vue";
 
@@ -10,7 +11,7 @@ export default {
       itemList: [],
       orderAlertShow: false,
       updateAlertShow: false,
-      orderSelectId: "i002"
+      orderSelectId: ""
     };
   },
   created() {
@@ -48,6 +49,27 @@ export default {
       this.orderAlertToggle(true);
       this.orderSelectId = id;
     },
+    orderDataGet(order_data) {
+      let orderData = ORDER_TEMP();
+      let newId = "";
+
+      // id
+      // orderListGetFetch().then((r) => {});
+
+      orderData = {
+        ...order_data,
+        item_id: this.orderSelectId
+        // user_id: this.uid
+      };
+
+      return orderData;
+    },
+    orderAdd(order_data) {
+      const orderData = this.orderDataGet(order_data);
+      console.log(orderData);
+      // 建立訂單
+      // 扣除庫存
+    },
     updateAlertToggle(alert_show) {
       this.updateAlertShow = alert_show;
     },
@@ -80,7 +102,7 @@ ul
     div.m-20
       button.btn-primary(@click="buyBtnClick(itemList[id].id)") buy
       button.btn-primary(@click="updateBtnClick(itemList[id].id)") update
-  Edit(v-if="orderAlertShow" :order="orderSelectItem" @cancel="orderAlertClose")
+  Edit(v-if="orderAlertShow" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderAdd")
   UpdateItem(v-if="updateAlertShow" :order="orderSelectItem" @cancel="updateAlertClose")
 </template>
 

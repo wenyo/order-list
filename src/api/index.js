@@ -1,3 +1,4 @@
+import { async } from "@firebase/util";
 import {
   getAuth,
   signOut,
@@ -15,6 +16,7 @@ import {
   doc,
   query,
   orderBy,
+  limit,
   where
 } from "firebase/firestore";
 
@@ -105,5 +107,14 @@ export async function orderSetFetch(order_data) {
   };
   return await setDoc(doc(db, PATH.ITEMS, data.id), data).then((result) => {
     console.log(result);
+  });
+}
+
+export async function orderListGetFetch() {
+  const db = getFirestore();
+  const ordersRef = collection(db, PATH.ORDER);
+
+  return await getDocs(query(ordersRef)).then((result) => {
+    return result.docs.map((item) => item.data());
   });
 }
