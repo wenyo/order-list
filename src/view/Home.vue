@@ -64,21 +64,21 @@ export default {
 </script>
 
 <template lang="pug">
-h1.title Product List!
+h1.title Product List
 ul 
-  li(v-for="(item, key) in itemList" :key="key")
+  li(v-for="(id) in Object.keys(itemList)" :key="id")
     div.img-box
-      img(:src="item.img")
+      img(:src="itemList[id].img")
     div.m-y10-x20
-      span {{item.name}}
+      span {{itemList[id].name}}
     div.m-y10-x20
       span price/
-      span {{item.price}}
+      span {{itemList[id].price}}
     div.m-y10-x20 
       span stock/
-      span {{item.stock}}
+      span {{itemList[id].stock}}
     div.m-20
-      button.btn-primary(@click="buyBtnClick(item.id)") buy
+      button.btn-primary(@click="buyBtnClick(itemList[id].id)") buy
       button.btn-primary(@click="updateBtnClick(item.id)") update
   Edit(v-if="orderAlertShow" :order="orderSelectItem" @cancel="orderAlertClose")
   UpdateItem(v-if="updateAlertShow" :order="orderSelectItem" @cancel="updateAlertClose")

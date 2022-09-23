@@ -1,5 +1,5 @@
 <script>
-import { computed } from "vue";
+import { mapMutations } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { isLoggedIn, logoutFetch } from "./api";
 import Menu from "./components/Menu.vue";
@@ -27,13 +27,15 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(["userSet"]),
     isAuthRedirect(user) {
       this.isAuth = !!user;
       if (!this.isAuth) {
-        this.router.push("/login");
+        return this.router.push("/login");
       } else if (this.route.path === "/login") {
         this.router.push("/");
       }
+      this.userSet({ user });
     },
     logoutClick() {
       logoutFetch().then(() => {

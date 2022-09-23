@@ -5,6 +5,7 @@ import { NO_IDX } from "../util/enum";
 const store = createStore({
   state() {
     return {
+      user: {},
       orderList: EXAMPLE.list
     };
   },
@@ -23,6 +24,9 @@ const store = createStore({
     }
   },
   mutations: {
+    userSet(state, { user }) {
+      state.user = user;
+    },
     orderEdit(state, { new_order }) {
       const { orderIdxGet } = store.getters;
       const idx = orderIdxGet(new_order.id);

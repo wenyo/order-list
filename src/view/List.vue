@@ -2,12 +2,11 @@
 import Header from "../components/Header.vue";
 import { useRouter } from "vue-router";
 import { mapState, mapMutations } from "vuex";
+import { orderListGetByUidFetch, itemListGetFetch } from "../api";
 
 export default {
   components: { Header },
   setup() {
-    console.log("List setup");
-
     const router = useRouter();
 
     function toAddPage() {
@@ -18,35 +17,38 @@ export default {
       toAddPage
     };
   },
-  beforeCreate() {
-    console.log("List beforeCreate");
+  data() {
+    return {
+      orderList: [],
+      itemList: {}
+    };
   },
   created() {
-    console.log("List created");
-  },
-  beforeMount() {
-    console.log("List beforeMount");
-  },
-  mounted() {
-    console.log("List mounted");
-  },
-  beforeUpdate() {
-    console.log("List beforeUpdate");
-  },
-  updated() {
-    console.log("List updated");
-  },
-  beforeUnmount() {
-    console.log("List beforeUnmount");
-  },
-  unmounted() {
-    console.log("List unmounted");
+    this.itemListGet();
   },
   computed: {
-    ...mapState(["orderList"])
+    ...mapState(["user"]),
+    uid() {
+      return this.user?.uid;
+    }
+  },
+  watch: {
+    uid() {
+      if (!this.uid) return;
+      this.orderListGet();
+    }
   },
   methods: {
-    ...mapMutations(["orderDelete"])
+    ...mapMutations(["orderDelete"]),
+    itemListGet() {
+      itemListGetFetch().then((rs) => {
+        this.itemList = rs;
+      });
+    },
+    orderListGet() {
+      const uid = this.user.uid;
+      orderListGetByUidFetch(uid).then((rs) => (this.orderList = rs));
+    }
   }
 };
 </script>
@@ -64,8 +66,8 @@ ul
     router-link(:to="`/list/${order.id}`" custom v-slot="{ navigate }" v-if="order.display")
       li.content(@click="navigate" :key="key")
         div.w-50.shrink-0 {{`#${order.id}`}}
-        div.w-200.word-break.shrink-0 {{order.name}}
-        div.w-100.shrink-0 {{order.price}}
+        div.w-200.word-break.shrink-0 {{itemList[order.item_id].name}}
+        div.w-100.shrink-0 {{itemList[order.item_id].price}}
         div.w-100.shrink-0 {{order.count}}
         div.grow.word-break {{order.note}}
         div.w-100.shrink-0
