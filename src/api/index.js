@@ -18,6 +18,7 @@ import {
   limit,
   where
 } from "firebase/firestore";
+import { nextIdGet } from "../util/function";
 
 const PATH = { USER: "user", ITEMS: "items", ORDER: "order-list" };
 
@@ -67,25 +68,35 @@ export function itemListGetFetch() {
   });
 }
 
-export function itemSetFetch() {
+export function itemLastIdGetFetch() {
   const db = getFirestore();
-  const data = {
-    id: "005",
-    name: "latte",
-    price: 120,
-    stock: 90,
-    img: "",
-    update_time: new Date().getTime()
-  };
-  return setDoc(doc(db, PATH.ITEMS, data.id), data).catch((error) =>
+  const itemsRef = collection(db, PATH.ITEMS);
+
+  return getDocs(query(itemsRef, orderBy("id", "desc"), limit(1)))
+    .then((result) => {
+      console.log(result.docs, result.docs[0].data().id);
+      return result.docs[0].data().id;
+    })
+    .catch((error) => console.error(error));
+}
+
+export async function itemSetFetch(data) {
+  const db = getFirestore();
+  let lastId = "";
+
+  // get new id
+  await itemLastIdGetFetch().then((rs) => (lastId = rs));
+  const id = nextIdGet(lastId);
+
+  return setDoc(doc(db, PATH.ITEMS, id), { ...data, id }).catch((error) =>
     console.error(error)
   );
 }
 
 export function itemUpdateFetch(id, data) {
   const db = getFirestore();
-  const itemRef = doc(db, "items", id);
-  return updateDoc(itemRef, data);
+  const itemsRef = doc(db, PATH.ITEMS, id);
+  return updateDoc(itemsRef, data).catch((error) => console.error(error));
 }
 
 // order

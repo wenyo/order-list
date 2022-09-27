@@ -1,6 +1,12 @@
 <script>
-import { itemListGetFetch, itemUpdateFetch } from "../api";
-import { ORDER_TEMP } from "../util/enum";
+import {
+  itemListGetFetch,
+  itemUpdateFetch,
+  itemLastIdGetFetch,
+  itemSetFetch
+} from "../api";
+import { ORDER_TEMP, NO_ID } from "../util/enum";
+import { nextIdGet } from "../util/function";
 import Edit from "../components/Edit.vue";
 import UpdateItem from "../components/UpdateItem.vue";
 
@@ -11,7 +17,8 @@ export default {
       itemList: [],
       orderAlertShow: false,
       updateAlertShow: false,
-      orderSelectId: ""
+      orderSelectId: NO_ID,
+      NO_ID
     };
   },
   created() {
@@ -34,7 +41,7 @@ export default {
     },
     orderAlertClose() {
       this.orderAlertToggle(false);
-      this.orderSelectId = "";
+      this.orderSelectId = NO_ID;
     },
     buyBtnClick(id) {
       this.orderAlertToggle(true);
@@ -67,23 +74,29 @@ export default {
     },
     updateAlertClose() {
       this.updateAlertToggle(false);
-      this.orderSelectId = "";
+      this.orderSelectId = NO_ID;
     },
     updateBtnClick(id) {
       this.updateAlertToggle(true);
       this.orderSelectId = id;
     },
     async updateSave(data) {
-      await itemUpdateFetch(this.orderSelectId, data);
-      await this.updateAlertClose();
-      await this.itemListGet();
+      if (this.orderSelectId === NO_ID) {
+        await itemSetFetch(data);
+      } else {
+        await itemUpdateFetch(this.orderSelectId, data);
+      }
+      this.updateAlertClose();
+      this.itemListGet();
     }
   }
 };
 </script>
 
 <template lang="pug">
-h1.title Product List
+header
+  h1.title Product List
+  button.btn-primary.add(@click="updateBtnClick(NO_ID)") ADD
 ul 
   li(v-for="(id) in Object.keys(itemList)" :key="id")
     div.img-box

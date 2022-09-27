@@ -20,9 +20,13 @@ export default {
   data() {
     return {
       imgName: "",
-      NO_ID,
       newOrder: JSON.parse(JSON.stringify(this.order))
     };
+  },
+  computed: {
+    isNewProduct() {
+      return !this.newOrder.id;
+    }
   },
   methods: {
     deleteClick() {
@@ -94,7 +98,7 @@ export default {
       });
     },
     padStartZero(number) {
-      return number.toString().padStart(2, 0);
+      return number.toString().padStart(2, "0");
     },
     dateFormatGet(timestamp) {
       const fullDate = new Date(timestamp);
@@ -112,8 +116,9 @@ export default {
 div.edit-block(@click.self="cancelClick")
   div.edit-alert
     i.icon-close(@click="cancelClick")
-    span.time {{dateFormatGet(newOrder.update_time)}}
-    h1.title {{`Product #${newOrder.id}`}}
+    span.time(v-if="!isNewProduct") {{dateFormatGet(newOrder.update_time)}}
+    h1.title(v-if="!isNewProduct") {{`Product #${newOrder.id}`}}
+    h1.title(v-else) New Product
     VForm(@submit="saveClick").edit
       label
         span.w-80 name/
@@ -132,7 +137,7 @@ div.edit-block(@click.self="cancelClick")
         .btn.btn-primary Choose File
         span.img-name {{imgName}}
         VField#img(name="img" type="file" @change="imgChoose")
-      .delete(v-if="newOrder.id !== NO_ID")
+      .delete(v-if="!isNewProduct")
         span.w-80 delete/
         button.btn-disable(@click="deleteClick") DELETE
       .btn-block
@@ -164,7 +169,7 @@ div.edit-block(@click.self="cancelClick")
 .icon-close {
   color: $color-dark-400;
   border-radius: 999px;
-  padding: 2px;
+  padding: 4px;
   cursor: pointer;
   font-size: 32px;
   position: absolute;
@@ -209,10 +214,6 @@ label,
   }
 }
 
-.note-input {
-  display: block;
-}
-
 .btn-block {
   display: flex;
   justify-content: flex-end;
@@ -220,13 +221,10 @@ label,
   margin-top: 50px;
 }
 
-.img-box {
-  padding-bottom: 40%;
-}
-
 #img {
   display: none;
 }
+
 .img-name {
   font-size: 14px;
   color: $color-primary-400;
