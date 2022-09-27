@@ -13,6 +13,10 @@ export default {
   },
   emits: ["delete", "save", "cancel"],
   props: {
+    item: {
+      type: Object,
+      default: {}
+    },
     order: {
       type: Object,
       default: {}
@@ -21,29 +25,63 @@ export default {
   data() {
     return {
       NO_ID,
-      newOrder: ORDER_TEMP()
+      newOrder: { ...ORDER_TEMP(), ...this.order }
     };
   },
   computed: {
-    ...mapState(["user"])
+    ...mapState(["user"]),
+    isNewOrder() {
+      return Object.keys(this.order).length === 0;
+    }
   },
   methods: {
     deleteClick() {
       this.$emit("delete");
     },
     saveClick() {
-      const data = this.dataFormat();
+      const { data, updated } = this.dataFormat();
+      // no need to update
+      if (!updated) return this.cancelClick();
       this.$emit("save", data);
     },
     cancelClick() {
       this.$emit("cancel");
     },
     dataFormat() {
-      return {
-        ...this.newOrder,
-        item_id: this.order.id,
-        user_uid: this.user.uid
+      let result = {
+        data: {},
+        updated: true
       };
+
+      if (this.isNewOrder) {
+        result.data = {
+          ...this.newOrder,
+          item_id: this.item.id,
+          user_uid: this.user.uid
+        };
+        return result;
+      }
+
+      return this.dataUpdateCheck();
+    },
+    dataUpdateCheck() {
+      const result = {
+        data: {},
+        updated: false
+      };
+      const intValueKey = ["count"];
+
+      for (const key in this.newOrder) {
+        if (this.newOrder[key] !== this.order[key]) {
+          const valueTmp = intValueKey.includes(key)
+            ? parseInt(this.newOrder[key])
+            : this.newOrder[key];
+          result.updated = true;
+          result.data[key] = valueTmp;
+        }
+      }
+
+      return result;
     },
     isRequired(value) {
       if (!value) {
@@ -82,12 +120,15 @@ div.alert-block(@click.self="cancelClick")
   div.alert-content
     i.icon-close(@click="cancelClick")
     div.img-box
-      img(:src="order.img")
-    h1.title {{order.name}}
+      img(:src="item.img")
+    h1.title {{item.name}}
     VForm(@submit="saveClick").alert-form
       label
+        span.w-80 id/
+        span {{order.id}}
+      label
         span.w-80 price/
-        span {{order.price}}
+        span {{item.price}}
       label
         span.w-80 count/
         VField.input-primary( name="count" type="number" :rules="isPositiveInteger" v-model="newOrder.count" )
@@ -95,7 +136,7 @@ div.alert-block(@click.self="cancelClick")
       label
         span.w-80 note/
         textarea.note-input( type="text" v-model="newOrder.note" )
-      .delete(v-if="order.id !== NO_ID")
+      .delete(v-if="item.id !== NO_ID")
         span.w-80 delete/
         button.btn-disable(@click="deleteClick") DELETE
       .btn-block

@@ -107,16 +107,16 @@ export function itemUpdateFetch(id, data) {
   return updateDoc(itemsRef, data).catch((error) => console.error(error));
 }
 
-export async function itemUpdateStock(id, stock_add_count) {
+export async function itemUpdateStock(item_id, stock_add_count) {
   // check last stock
   let oldStock = 0;
-  await itemByIdGetFetch(id).then((order) => (oldStock = order.stock));
+  await itemByIdGetFetch(item_id).then((order) => (oldStock = order.stock));
 
   // get new stock
   const newStock = oldStock - stock_add_count;
 
   // update
-  return itemUpdateFetch(id, { stock: newStock });
+  return itemUpdateFetch(item_id, { stock: newStock });
 }
 
 // order
@@ -127,7 +127,11 @@ export function orderListGetByUidFetch(uid) {
   return getDocs(
     query(ordersRef, where("user_uid", "==", uid), orderBy("id"))
   ).then((result) => {
-    return result.docs.map((item) => item.data());
+    let itemList = {};
+    for (const item of result.docs) {
+      itemList[item.id] = item.data();
+    }
+    return itemList;
   });
 }
 
@@ -136,15 +140,19 @@ export async function orderListGetFetch() {
   const ordersRef = collection(db, PATH.ORDER);
 
   return await getDocs(query(ordersRef)).then((result) => {
-    return result.docs.map((item) => item.data());
+    let itemList = {};
+    for (const item of result.docs) {
+      itemList[item.id] = item.data();
+    }
+    return itemList;
   });
 }
 
 export function orderLastIdGetFetch() {
   const db = getFirestore();
-  const itemsRef = collection(db, PATH.ORDER);
+  const ordersRef = collection(db, PATH.ORDER);
 
-  return getDocs(query(itemsRef, orderBy("id", "desc"), limit(1)))
+  return getDocs(query(ordersRef, orderBy("id", "desc"), limit(1)))
     .then((result) => {
       return result.docs[0].data().id;
     })
@@ -162,4 +170,10 @@ export async function orderSetFetch(order_data) {
   return setDoc(doc(db, PATH.ORDER, id), { ...order_data, id }).catch((error) =>
     console.error(error)
   );
+}
+
+export function orderUpdateFetch(id, data) {
+  const db = getFirestore();
+  const ordersRef = doc(db, PATH.ORDER, id);
+  return updateDoc(ordersRef, data).catch((error) => console.error(error));
 }

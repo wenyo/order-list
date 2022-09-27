@@ -25,7 +25,7 @@ export default {
     this.itemListGet();
   },
   computed: {
-    orderSelectItem() {
+    itemSelectItem() {
       return this.itemList[this.orderSelectId];
     }
   },
@@ -65,6 +65,7 @@ export default {
       this.orderSelectId = NO_ID;
     },
     updateBtnClick(id) {
+      console.log(id);
       this.updateAlertToggle(true);
       this.orderSelectId = id;
     },
@@ -108,8 +109,8 @@ ul
       div.m-20
         button.btn-primary(@click="buyBtnClick(itemList[id].id)") buy
         button.btn-primary(@click="updateBtnClick(itemList[id].id)") update
-  Edit(v-if="orderAlertShow" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderAdd")
-  UpdateItem(v-if="updateAlertShow" :item="orderSelectItem" @cancel="updateAlertClose" @save="updateSave" @delete="itemDeleteClick")
+  Edit(v-if="orderAlertShow" :item="itemSelectItem" @cancel="orderAlertClose" @save="orderAdd")
+  UpdateItem(v-if="updateAlertShow" :item="itemSelectItem" @cancel="updateAlertClose" @save="updateSave" @delete="itemDeleteClick")
 </template>
 
 <style lang="scss" scoped>
