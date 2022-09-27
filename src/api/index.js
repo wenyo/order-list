@@ -74,10 +74,18 @@ export function itemLastIdGetFetch() {
 
   return getDocs(query(itemsRef, orderBy("id", "desc"), limit(1)))
     .then((result) => {
-      console.log(result.docs, result.docs[0].data().id);
       return result.docs[0].data().id;
     })
     .catch((error) => console.error(error));
+}
+
+export function itemByIdGetFetch(id) {
+  const db = getFirestore();
+  const itemsRef = collection(db, PATH.ITEMS);
+
+  return getDocs(query(itemsRef, where("id", "==", id))).then((result) =>
+    result.docs[0].data()
+  );
 }
 
 export async function itemSetFetch(data) {
@@ -99,6 +107,18 @@ export function itemUpdateFetch(id, data) {
   return updateDoc(itemsRef, data).catch((error) => console.error(error));
 }
 
+export async function itemUpdateStock(id, stock_add_count) {
+  // check last stock
+  let oldStock = 0;
+  await itemByIdGetFetch(id).then((order) => (oldStock = order.stock));
+
+  // get new stock
+  const newStock = oldStock - stock_add_count;
+
+  // update
+  return itemUpdateFetch(id, { stock: newStock });
+}
+
 // order
 export function orderListGetByUidFetch(uid) {
   const db = getFirestore();
@@ -118,4 +138,28 @@ export async function orderListGetFetch() {
   return await getDocs(query(ordersRef)).then((result) => {
     return result.docs.map((item) => item.data());
   });
+}
+
+export function orderLastIdGetFetch() {
+  const db = getFirestore();
+  const itemsRef = collection(db, PATH.ORDER);
+
+  return getDocs(query(itemsRef, orderBy("id", "desc"), limit(1)))
+    .then((result) => {
+      return result.docs[0].data().id;
+    })
+    .catch((error) => console.error(error));
+}
+
+export async function orderSetFetch(order_data) {
+  const db = getFirestore();
+  let lastId = "";
+
+  // get new order id
+  await orderLastIdGetFetch().then((rs) => (lastId = rs));
+  const id = nextIdGet(lastId);
+
+  return setDoc(doc(db, PATH.ORDER, id), { ...order_data, id }).catch((error) =>
+    console.error(error)
+  );
 }

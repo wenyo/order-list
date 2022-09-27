@@ -12,7 +12,7 @@ export default {
   },
   emits: ["delete", "save", "cancel"],
   props: {
-    order: {
+    item: {
       type: Object,
       default: {}
     }
@@ -20,12 +20,12 @@ export default {
   data() {
     return {
       imgName: "",
-      newOrder: JSON.parse(JSON.stringify(this.order))
+      newItem: JSON.parse(JSON.stringify(this.item))
     };
   },
   computed: {
     isNewProduct() {
-      return !this.newOrder.id;
+      return !this.newItem.id;
     }
   },
   methods: {
@@ -37,7 +37,7 @@ export default {
       const intValueKey = ["price", "stock"];
 
       for (const key in value) {
-        if (!value[key] || value[key] === this.order[key]) continue;
+        if (!value[key] || value[key] === this.item[key]) continue;
         const valueTmp = intValueKey.includes(key)
           ? parseInt(value[key])
           : value[key];
@@ -124,22 +124,22 @@ div.alert-block(@click.self="cancelClick")
   div.alert-content
     i.icon-close(@click="cancelClick")
     div(v-if="!isNewProduct").img-box
-      img(:src="newOrder.img")
-    span.time(v-if="!isNewProduct") {{dateFormatGet(newOrder.update_time)}}
-    h1.title(v-if="!isNewProduct") {{`Product #${newOrder.id}`}}
+      img(:src="newItem.img")
+    span.time(v-if="!isNewProduct") {{dateFormatGet(newItem.update_time)}}
+    h1.title(v-if="!isNewProduct") {{`Product #${newItem.id}`}}
     h1.title(v-else) New Product
     VForm(@submit="saveClick").alert-form
       label
         span.w-80 name/
-        VField.input-primary( name="name" type="text" :rules="isPositiveInteger" v-model="newOrder.name" )
+        VField.input-primary( name="name" type="text" :rules="isPositiveInteger" v-model="newItem.name" )
         ErrorMessage.error-msg( name="name" )
       label
         span.w-80 price/
-        VField.input-primary( name="price" type="number" :rules="isPositiveInteger" v-model="newOrder.price" )
+        VField.input-primary( name="price" type="number" :rules="isPositiveInteger" v-model="newItem.price" )
         ErrorMessage.error-msg( name="price" )
       label
         span.w-80 stock/
-        VField.input-primary( name="stock" type="number" :rules="isPositiveInteger" v-model="newOrder.stock" )
+        VField.input-primary( name="stock" type="number" :rules="isPositiveInteger" v-model="newItem.stock" )
         ErrorMessage.error-msg( name="stock" )
       label
         span.w-80 img/

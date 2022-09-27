@@ -1,6 +1,7 @@
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { NO_ID, ERROR_MSG } from "../util/enum";
+import { mapState } from "vuex";
+import { NO_ID, ERROR_MSG, ORDER_TEMP } from "../util/enum";
 import Header from "./Header.vue";
 
 export default {
@@ -19,18 +20,30 @@ export default {
   },
   data() {
     return {
-      NO_ID
+      NO_ID,
+      newOrder: ORDER_TEMP()
     };
+  },
+  computed: {
+    ...mapState(["user"])
   },
   methods: {
     deleteClick() {
       this.$emit("delete");
     },
-    saveClick(order_data) {
-      this.$emit("save", order_data);
+    saveClick() {
+      const data = this.dataFormat();
+      this.$emit("save", data);
     },
     cancelClick() {
       this.$emit("cancel");
+    },
+    dataFormat() {
+      return {
+        ...this.newOrder,
+        item_id: this.order.id,
+        user_uid: this.user.uid
+      };
     },
     isRequired(value) {
       if (!value) {
@@ -77,11 +90,11 @@ div.alert-block(@click.self="cancelClick")
         span {{order.price}}
       label
         span.w-80 count/
-        VField.input-primary( name="count" type="number" :rules="isPositiveInteger" v-model="order.count" )
+        VField.input-primary( name="count" type="number" :rules="isPositiveInteger" v-model="newOrder.count" )
         ErrorMessage.error-msg( name="count" )
       label
         span.w-80 note/
-        textarea.note-input( type="text" v-model="order.note" )
+        textarea.note-input( type="text" v-model="newOrder.note" )
       .delete(v-if="order.id !== NO_ID")
         span.w-80 delete/
         button.btn-disable(@click="deleteClick") DELETE

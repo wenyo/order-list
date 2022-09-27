@@ -2,11 +2,11 @@
 import {
   itemListGetFetch,
   itemUpdateFetch,
-  itemLastIdGetFetch,
-  itemSetFetch
+  itemSetFetch,
+  orderSetFetch,
+  itemUpdateStock
 } from "../api";
-import { ORDER_TEMP, NO_ID } from "../util/enum";
-import { nextIdGet } from "../util/function";
+import { NO_ID } from "../util/enum";
 import Edit from "../components/Edit.vue";
 import UpdateItem from "../components/UpdateItem.vue";
 
@@ -47,26 +47,14 @@ export default {
       this.orderAlertToggle(true);
       this.orderSelectId = id;
     },
-    orderDataGet(order_data) {
-      let orderData = ORDER_TEMP();
-      let newId = "";
+    async orderAdd(order_data) {
+      // new order
+      await orderSetFetch(order_data);
+      // calculate stock
+      await itemUpdateStock(this.orderSelectId, order_data.count);
 
-      // id
-      // orderListGetFetch().then((r) => {});
-
-      orderData = {
-        ...order_data,
-        item_id: this.orderSelectId
-        // user_id: this.uid
-      };
-
-      return orderData;
-    },
-    orderAdd(order_data) {
-      const orderData = this.orderDataGet(order_data);
-      console.log(orderData);
-      // 建立訂單
-      // 扣除庫存
+      this.orderAlertClose();
+      this.itemListGet();
     },
     // update items
     updateAlertToggle(alert_show) {
@@ -106,7 +94,7 @@ header
   button.btn-primary.add(@click="updateBtnClick(NO_ID)") ADD
 ul 
   template(v-for="(id) in Object.keys(itemList)")
-    li(v-if="itemList[id].display" :key="id")
+    li.item(v-if="itemList[id].display" :key="id")
       div.img-box
         img(:src="itemList[id].img") 
       div.m-y10-x20
@@ -121,7 +109,7 @@ ul
         button.btn-primary(@click="buyBtnClick(itemList[id].id)") buy
         button.btn-primary(@click="updateBtnClick(itemList[id].id)") update
   Edit(v-if="orderAlertShow" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderAdd")
-  UpdateItem(v-if="updateAlertShow" :order="orderSelectItem" @cancel="updateAlertClose" @save="updateSave" @delete="itemDeleteClick")
+  UpdateItem(v-if="updateAlertShow" :item="orderSelectItem" @cancel="updateAlertClose" @save="updateSave" @delete="itemDeleteClick")
 </template>
 
 <style lang="scss" scoped>
@@ -138,10 +126,10 @@ ul {
   .img-box {
     padding-bottom: 60%;
   }
+}
 
-  div {
-    display: flex;
-    justify-content: space-between;
-  }
+.item > div {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

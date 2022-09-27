@@ -25,6 +25,7 @@ export default {
   },
   created() {
     this.itemListGet();
+    this.orderListGet();
   },
   computed: {
     ...mapState(["user"]),
@@ -34,7 +35,6 @@ export default {
   },
   watch: {
     uid() {
-      if (!this.uid) return;
       this.orderListGet();
     }
   },
@@ -46,8 +46,10 @@ export default {
       });
     },
     orderListGet() {
-      const uid = this.user.uid;
-      orderListGetByUidFetch(uid).then((rs) => (this.orderList = rs));
+      if (!this.uid) return;
+      orderListGetByUidFetch(this.uid).then((rs) => {
+        this.orderList = rs;
+      });
     }
   }
 };
@@ -65,7 +67,7 @@ ul
   template(v-for="(order, key) in orderList")
     router-link(:to="`/list/${order.id}`" custom v-slot="{ navigate }" v-if="order.display")
       li.content(@click="navigate" :key="key")
-        div.w-50.shrink-0 {{`#${order.id}`}}
+        div.w-50.shrink-0 {{`${order.id}`}}
         div.w-200.word-break.shrink-0 {{itemList[order.item_id].name}}
         div.w-100.shrink-0 {{itemList[order.item_id].price}}
         div.w-100.shrink-0 {{order.count}}

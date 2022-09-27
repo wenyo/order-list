@@ -12,7 +12,7 @@ export const ORDER_TEMP = () => {
     count: 1,
     note: "",
     display: true,
-    user_id: ""
+    user_uid: ""
   };
 
   return deepCopyAry(TEMP);
