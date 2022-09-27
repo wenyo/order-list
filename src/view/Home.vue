@@ -80,10 +80,17 @@ export default {
       this.updateAlertToggle(true);
       this.orderSelectId = id;
     },
+    async itemDeleteClick() {
+      await itemUpdateFetch(this.orderSelectId, { display: false });
+      this.updateAlertClose();
+      this.itemListGet();
+    },
     async updateSave(data) {
       if (this.orderSelectId === NO_ID) {
+        // new
         await itemSetFetch(data);
       } else {
+        // update
         await itemUpdateFetch(this.orderSelectId, data);
       }
       this.updateAlertClose();
@@ -98,22 +105,23 @@ header
   h1.title Product List
   button.btn-primary.add(@click="updateBtnClick(NO_ID)") ADD
 ul 
-  li(v-for="(id) in Object.keys(itemList)" :key="id")
-    div.img-box
-      img(:src="itemList[id].img") 
-    div.m-y10-x20
-      span {{itemList[id].name}}
-    div.m-y10-x20
-      span price/
-      span {{itemList[id].price}}
-    div.m-y10-x20 
-      span stock/
-      span {{itemList[id].stock}}
-    div.m-20
-      button.btn-primary(@click="buyBtnClick(itemList[id].id)") buy
-      button.btn-primary(@click="updateBtnClick(itemList[id].id)") update
+  template(v-for="(id) in Object.keys(itemList)")
+    li(v-if="itemList[id].display" :key="id")
+      div.img-box
+        img(:src="itemList[id].img") 
+      div.m-y10-x20
+        span {{itemList[id].name}}
+      div.m-y10-x20
+        span price/
+        span {{itemList[id].price}}
+      div.m-y10-x20 
+        span stock/
+        span {{itemList[id].stock}}
+      div.m-20
+        button.btn-primary(@click="buyBtnClick(itemList[id].id)") buy
+        button.btn-primary(@click="updateBtnClick(itemList[id].id)") update
   Edit(v-if="orderAlertShow" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderAdd")
-  UpdateItem(v-if="updateAlertShow" :order="orderSelectItem" @cancel="updateAlertClose" @save="updateSave")
+  UpdateItem(v-if="updateAlertShow" :order="orderSelectItem" @cancel="updateAlertClose" @save="updateSave" @delete="itemDeleteClick")
 </template>
 
 <style lang="scss" scoped>

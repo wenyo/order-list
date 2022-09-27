@@ -25,7 +25,8 @@ export const ITEM_TEMP = () => {
     price: 0,
     stock: 0,
     img: "",
-    update_time: ""
+    update_time: "",
+    display: true
   };
 
   return deepCopyAry(TEMP);

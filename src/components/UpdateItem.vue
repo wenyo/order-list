@@ -1,6 +1,6 @@
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { NO_ID, ERROR_MSG } from "../util/enum";
+import { ERROR_MSG } from "../util/enum";
 import Header from "./Header.vue";
 
 export default {
@@ -48,8 +48,11 @@ export default {
       return data;
     },
     async saveClick(value) {
-      const data = await this.dataFormat(value);
+      let data = await this.dataFormat(value);
+      // check: need to update
       if (Object.keys(data).length === 0) return;
+      data = { ...data, display: true };
+
       const update_time = new Date().getTime();
       this.$emit("save", { ...data, update_time });
     },

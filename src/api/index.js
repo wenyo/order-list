@@ -84,7 +84,7 @@ export async function itemSetFetch(data) {
   const db = getFirestore();
   let lastId = "";
 
-  // get new id
+  // get new item id
   await itemLastIdGetFetch().then((rs) => (lastId = rs));
   const id = nextIdGet(lastId);
 
