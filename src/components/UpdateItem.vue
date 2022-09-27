@@ -116,13 +116,15 @@ export default {
 };
 </script>
 <template lang="pug">
-div.edit-block(@click.self="cancelClick")
-  div.edit-alert
+div.alert-block(@click.self="cancelClick")
+  div.alert-content
     i.icon-close(@click="cancelClick")
+    div(v-if="!isNewProduct").img-box
+      img(:src="newOrder.img")
     span.time(v-if="!isNewProduct") {{dateFormatGet(newOrder.update_time)}}
     h1.title(v-if="!isNewProduct") {{`Product #${newOrder.id}`}}
     h1.title(v-else) New Product
-    VForm(@submit="saveClick").edit
+    VForm(@submit="saveClick").alert-form
       label
         span.w-80 name/
         VField.input-primary( name="name" type="text" :rules="isPositiveInteger" v-model="newOrder.name" )
@@ -149,43 +151,6 @@ div.edit-block(@click.self="cancelClick")
 </template>
 
 <style lang="scss" scoped>
-.edit-block {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: $color-shadow-100;
-}
-
-.edit-alert {
-  position: relative;
-  width: 40vw;
-  border-radius: 2px;
-  padding: 20px;
-  background-color: $color-dark-200;
-}
-
-.icon-close {
-  color: $color-dark-400;
-  border-radius: 999px;
-  padding: 4px;
-  cursor: pointer;
-  font-size: 32px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  opacity: 0.7;
-  transition: all 0.3s;
-
-  &:hover {
-    opacity: 1;
-  }
-}
-
 .time {
   color: $color-dark-400;
   opacity: 0.7;
@@ -195,12 +160,6 @@ div.edit-block(@click.self="cancelClick")
   left: 0;
   padding: 20px;
   line-height: 28px;
-}
-
-.edit {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
 }
 
 label,
@@ -237,5 +196,9 @@ label,
   width: 200px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.img-box {
+  padding-bottom: 40%;
 }
 </style>

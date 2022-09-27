@@ -65,13 +65,13 @@ export default {
 };
 </script>
 <template lang="pug">
-div.edit-block(@click.self="cancelClick")
-  div.edit-alert
+div.alert-block(@click.self="cancelClick")
+  div.alert-content
     i.icon-close(@click="cancelClick")
     div.img-box
       img(:src="order.img")
     h1.title {{order.name}}
-    VForm(@submit="saveClick").edit
+    VForm(@submit="saveClick").alert-form
       label
         span.w-80 price/
         span {{order.price}}
@@ -91,49 +91,6 @@ div.edit-block(@click.self="cancelClick")
 </template>
 
 <style lang="scss" scoped>
-.edit-block {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: $color-shadow-100;
-}
-
-.edit-alert {
-  position: relative;
-  width: 40vw;
-  border-radius: 2px;
-  padding: 20px;
-  background-color: $color-dark-200;
-}
-
-.icon-close {
-  color: $color-dark-400;
-  border-radius: 999px;
-  padding: 2px;
-  cursor: pointer;
-  font-size: 32px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  opacity: 0.7;
-  transition: all 0.3s;
-
-  &:hover {
-    opacity: 1;
-  }
-}
-
-.edit {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
-
 label,
 .delete {
   margin: 8px 0;
