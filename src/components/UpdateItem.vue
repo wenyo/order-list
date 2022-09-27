@@ -19,16 +19,35 @@ export default {
   },
   data() {
     return {
-      fileName: "",
-      NO_ID
+      imgName: "",
+      NO_ID,
+      newOrder: JSON.parse(JSON.stringify(this.order))
     };
   },
   methods: {
     deleteClick() {
       this.$emit("delete");
     },
-    saveClick(value) {
-      this.$emit("save", value);
+    async dataFormat(value) {
+      let data = {};
+      for (const key in value) {
+        if (!!value[key] && value[key] !== this.order[key]) {
+          data[key] = value[key];
+        }
+      }
+
+      if (data.img) {
+        await this.imgToBase64(value.img).then((img) => {
+          data.img = img;
+        });
+      }
+      return data;
+    },
+    async saveClick(value) {
+      const data = await this.dataFormat(value);
+      if (Object.keys(data).length === 0) return;
+      const update_time = new Date().getTime();
+      this.$emit("save", { ...data, update_time });
     },
     cancelClick() {
       this.$emit("cancel");
@@ -63,8 +82,28 @@ export default {
       return true;
     },
     imgChoose(e) {
-      const file = e.target.files[0];
-      this.fileName = file.name;
+      const img = e.target.files[0];
+      this.imgName = img.name;
+    },
+    imgToBase64(img) {
+      return new Promise((resolve, reject) => {
+        let reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(img);
+      });
+    },
+    padStartZero(number) {
+      return number.toString().padStart(2, 0);
+    },
+    dateFormatGet(timestamp) {
+      const fullDate = new Date(timestamp);
+      const year = fullDate.getFullYear();
+      const month = this.padStartZero(fullDate.getMonth() + 1);
+      const date = this.padStartZero(fullDate.getDate());
+      const hour = this.padStartZero(fullDate.getHours());
+      const minute = this.padStartZero(fullDate.getMinutes());
+      return `${year}/${month}/${date} ${hour}:${minute}`;
     }
   }
 };
@@ -73,26 +112,27 @@ export default {
 div.edit-block(@click.self="cancelClick")
   div.edit-alert
     i.icon-close(@click="cancelClick")
-    h1.title {{`Product #${order.id}`}}
+    span.time {{dateFormatGet(newOrder.update_time)}}
+    h1.title {{`Product #${newOrder.id}`}}
     VForm(@submit="saveClick").edit
       label
         span.w-80 name/
-        VField.input-primary( name="name" type="text" :rules="isPositiveInteger" v-model="order.name" )
+        VField.input-primary( name="name" type="text" :rules="isPositiveInteger" v-model="newOrder.name" )
         ErrorMessage.error-msg( name="name" )
       label
         span.w-80 price/
-        VField.input-primary( name="price" type="number" :rules="isPositiveInteger" v-model="order.price" )
+        VField.input-primary( name="price" type="number" :rules="isPositiveInteger" v-model="newOrder.price" )
         ErrorMessage.error-msg( name="price" )
       label
         span.w-80 stock/
-        VField.input-primary( name="stock" type="number" :rules="isPositiveInteger" v-model="order.stock" )
+        VField.input-primary( name="stock" type="number" :rules="isPositiveInteger" v-model="newOrder.stock" )
         ErrorMessage.error-msg( name="stock" )
       label
         span.w-80 img/
         .btn.btn-primary Choose File
-        span.file-name {{fileName}}
-        VField#file(name="file" type="file" @change="imgChoose")
-      .delete(v-if="order.id !== NO_ID")
+        span.img-name {{imgName}}
+        VField#img(name="img" type="file" @change="imgChoose")
+      .delete(v-if="newOrder.id !== NO_ID")
         span.w-80 delete/
         button.btn-disable(@click="deleteClick") DELETE
       .btn-block
@@ -138,6 +178,17 @@ div.edit-block(@click.self="cancelClick")
   }
 }
 
+.time {
+  color: $color-dark-400;
+  opacity: 0.7;
+  font-size: 14px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 20px;
+  line-height: 28px;
+}
+
 .edit {
   flex-grow: 1;
   display: flex;
@@ -173,16 +224,17 @@ label,
   padding-bottom: 40%;
 }
 
-#file {
+#img {
   display: none;
 }
-.file-name {
+.img-name {
   font-size: 14px;
   color: $color-primary-400;
   margin-top: 6px;
   margin-left: 80px;
   overflow: hidden;
-  width: 180px;
+  width: 200px;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

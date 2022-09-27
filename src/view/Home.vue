@@ -1,5 +1,5 @@
 <script>
-import { itemListGetFetch } from "../api";
+import { itemListGetFetch, itemUpdateFetch } from "../api";
 import { ORDER_TEMP } from "../util/enum";
 import Edit from "../components/Edit.vue";
 import UpdateItem from "../components/UpdateItem.vue";
@@ -23,21 +23,12 @@ export default {
     }
   },
   methods: {
-    imgToBase64(e) {
-      const file = e.target.files[0];
-      console.log(file);
-      new Promise((resolve, reject) => {
-        let reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(file);
-      }).then((r) => console.log(r));
-    },
     itemListGet() {
       itemListGetFetch().then((rs) => {
         this.itemList = rs;
       });
     },
+    // order
     orderAlertToggle(alert_show) {
       this.orderAlertShow = alert_show;
     },
@@ -70,6 +61,7 @@ export default {
       // 建立訂單
       // 扣除庫存
     },
+    // update items
     updateAlertToggle(alert_show) {
       this.updateAlertShow = alert_show;
     },
@@ -80,6 +72,11 @@ export default {
     updateBtnClick(id) {
       this.updateAlertToggle(true);
       this.orderSelectId = id;
+    },
+    async updateSave(data) {
+      await itemUpdateFetch(this.orderSelectId, data);
+      await this.updateAlertClose();
+      await this.itemListGet();
     }
   }
 };
@@ -90,7 +87,7 @@ h1.title Product List
 ul 
   li(v-for="(id) in Object.keys(itemList)" :key="id")
     div.img-box
-      img(:src="itemList[id].img")
+      img(:src="itemList[id].img") 
     div.m-y10-x20
       span {{itemList[id].name}}
     div.m-y10-x20
@@ -103,14 +100,14 @@ ul
       button.btn-primary(@click="buyBtnClick(itemList[id].id)") buy
       button.btn-primary(@click="updateBtnClick(itemList[id].id)") update
   Edit(v-if="orderAlertShow" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderAdd")
-  UpdateItem(v-if="updateAlertShow" :order="orderSelectItem" @cancel="updateAlertClose")
+  UpdateItem(v-if="updateAlertShow" :order="orderSelectItem" @cancel="updateAlertClose" @save="updateSave")
 </template>
 
 <style lang="scss" scoped>
 ul {
   display: grid;
   gap: 20px;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
 
   li {
     border-radius: 2px;
