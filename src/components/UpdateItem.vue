@@ -34,10 +34,14 @@ export default {
     },
     async dataFormat(value) {
       let data = {};
+      const intValueKey = ["price", "stock"];
+
       for (const key in value) {
-        if (!!value[key] && value[key] !== this.order[key]) {
-          data[key] = value[key];
-        }
+        if (!value[key] || value[key] === this.order[key]) continue;
+        const valueTmp = intValueKey.includes(key)
+          ? parseInt(value[key])
+          : value[key];
+        data[key] = valueTmp;
       }
 
       if (data.img) {
