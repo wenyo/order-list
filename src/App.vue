@@ -1,11 +1,12 @@
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { isLoggedIn, logoutFetch } from "./api";
 import Menu from "./components/Menu.vue";
+import Loading from "./components/Loading.vue";
 
 export default {
-  components: { Menu },
+  components: { Menu, Loading },
   data() {
     return {
       isAuth: false,
@@ -14,6 +15,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["loading"]),
     path() {
       return this.route.path;
     }
@@ -27,7 +29,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["userSet"]),
+    ...mapMutations(["userSet", "loadingOpen", "loadingClose"]),
     isAuthRedirect(user) {
       this.isAuth = !!user;
       if (!this.isAuth) {
@@ -37,10 +39,12 @@ export default {
       }
       this.userSet({ user });
     },
-    logoutClick() {
-      logoutFetch().then(() => {
+    async logoutClick() {
+      this.loadingOpen();
+      await logoutFetch().then(() => {
         this.isAuth = false;
       });
+      this.loadingClose();
     }
   }
 };
@@ -50,6 +54,7 @@ export default {
 main
   Menu(v-if="isAuth" @logout="logoutClick")
   router-view
+  Loading(v-if="loading")
 </template>
 
 <style lang="scss">

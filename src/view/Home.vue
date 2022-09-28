@@ -1,4 +1,5 @@
 <script>
+import { mapMutations } from "vuex";
 import {
   itemListGetFetch,
   itemUpdateFetch,
@@ -21,8 +22,10 @@ export default {
       NO_ID
     };
   },
-  created() {
-    this.itemListGet();
+  async created() {
+    this.loadingOpen();
+    await this.itemListGet();
+    this.loadingClose();
   },
   computed: {
     itemSelectItem() {
@@ -30,8 +33,9 @@ export default {
     }
   },
   methods: {
-    itemListGet() {
-      itemListGetFetch().then((rs) => {
+    ...mapMutations(["loadingOpen", "loadingClose"]),
+    async itemListGet() {
+      return itemListGetFetch().then((rs) => {
         this.itemList = rs;
       });
     },
@@ -48,13 +52,15 @@ export default {
       this.orderSelectId = id;
     },
     async orderAdd(order_data) {
+      this.loadingOpen();
       // new order
       await orderSetFetch(order_data);
       // calculate stock
       await itemUpdateStock(this.orderSelectId, order_data.count);
 
       this.orderAlertClose();
-      this.itemListGet();
+      await this.itemListGet();
+      this.loadingClose();
     },
     // update items
     updateAlertToggle(alert_show) {
@@ -69,11 +75,14 @@ export default {
       this.orderSelectId = id;
     },
     async itemDeleteClick() {
+      this.loadingOpen();
       await itemUpdateFetch(this.orderSelectId, { display: false });
       this.updateAlertClose();
-      this.itemListGet();
+      await this.itemListGet();
+      this.loadingClose();
     },
     async updateSave(data) {
+      this.loadingOpen();
       if (this.orderSelectId === NO_ID) {
         // new
         await itemSetFetch(data);
@@ -82,7 +91,8 @@ export default {
         await itemUpdateFetch(this.orderSelectId, data);
       }
       this.updateAlertClose();
-      this.itemListGet();
+      await this.itemListGet();
+      this.loadingClose();
     }
   }
 };

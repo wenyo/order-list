@@ -6,7 +6,8 @@ import {
   orderListGetByUidFetch,
   itemListGetFetch,
   orderUpdateFetch,
-  itemUpdateStock
+  itemUpdateStock,
+  itemByIdGetFetch
 } from "../api";
 import { NO_ID } from "../util/enum";
 import Edit from "../components/Edit.vue";
@@ -33,9 +34,11 @@ export default {
       orderAlertShow: false
     };
   },
-  created() {
-    this.itemListGet();
-    this.orderListGet();
+  async created() {
+    this.loadingOpen();
+    await this.itemListGet();
+    await this.orderListGet();
+    this.loadingClose();
   },
   computed: {
     ...mapState(["user"]),
@@ -43,7 +46,6 @@ export default {
       return this.user?.uid;
     },
     orderSelectItem() {
-      console.log(this.orderSelectId);
       return this.orderList[this.orderSelectId];
     },
     itemSelectItem() {
@@ -56,10 +58,16 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["orderDelete"]),
-    itemListGet() {
-      itemListGetFetch().then((rs) => {
+    ...mapMutations(["loadingOpen", "loadingClose"]),
+    async itemListGet() {
+      return itemListGetFetch().then((rs) => {
         this.itemList = rs;
+      });
+    },
+    async orderListGet() {
+      if (!this.uid) return;
+      return orderListGetByUidFetch(this.uid).then((rs) => {
+        this.orderList = rs;
       });
     },
     // order
@@ -75,13 +83,9 @@ export default {
       this.itemSelectId = item_id;
       this.orderSelectId = order_id;
     },
-    orderListGet() {
-      if (!this.uid) return;
-      orderListGetByUidFetch(this.uid).then((rs) => {
-        this.orderList = rs;
-      });
-    },
     async orderUpdate(new_order) {
+      this.loadingOpen();
+
       // check stock
       if (new_order.count) {
         let oldStock = 0;
@@ -103,20 +107,28 @@ export default {
       }
 
       this.orderAlertClose();
-      this.orderListGet();
+      await this.orderListGet();
+      this.loadingClose();
     },
     async orderDelete(id) {
+      this.loadingOpen();
+
       // delete order
+      const deleteOrderCount = -parseInt(this.orderList[id].count);
+      const itemId = this.orderList[id].item_id;
       await orderUpdateFetch(id, { display: false });
-      this.orderListGet();
+      await this.orderListGet();
 
       // update stock
-      const deleteOrderCount = -parseInt(this.orderList[id].count);
-      await itemUpdateStock(this.orderList[id].item_id, deleteOrderCount);
+      await itemUpdateStock(itemId, deleteOrderCount);
+      this.loadingClose();
     },
     async orderDeleteClick() {
+      this.loadingOpen();
       await this.orderDelete(this.orderSelectId, { display: false });
       this.orderAlertClose();
+      await this.orderListGet();
+      this.loadingClose();
     }
   }
 };

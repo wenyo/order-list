@@ -23,7 +23,7 @@ import { nextIdGet } from "../util/function";
 const PATH = { USER: "user", ITEMS: "items", ORDER: "order-list" };
 
 // login
-export function loginFetch({ account, password }) {
+export async function loginFetch({ account, password }) {
   const auth = getAuth();
 
   return setPersistence(auth, browserSessionPersistence).then(() =>
@@ -44,14 +44,14 @@ export function authUser() {
 
 export async function isLoggedIn(func) {
   const auth = getAuth();
-  await onAuthStateChanged(auth, (user) => func(user));
+  return onAuthStateChanged(auth, (user) => func(user));
 }
 
-export function logoutFetch() {
+export async function logoutFetch() {
   const auth = getAuth();
-  signOut(auth)
-    .then((result) => console.log(result))
-    .catch((error) => console.error(error));
+  return signOut(auth)
+    .then(() => console.log("logout success"))
+    .catch(() => console.error("logout fail"));
 }
 
 // item

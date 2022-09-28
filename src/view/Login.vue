@@ -1,4 +1,5 @@
 <script>
+import { mapMutations } from "vuex";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { useRouter } from "vue-router";
 import { loginFetch, authUser } from "../api";
@@ -30,6 +31,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["loadingOpen", "loadingClose"]),
     isRequired(value) {
       if (!value) {
         return ERROR_MSG.IS_REQUIRED;
@@ -46,10 +48,12 @@ export default {
       }
     },
     async login() {
+      this.loadingOpen();
       await this.loginFetch({
         account: this.account,
         password: this.password
       }).then((rs) => this.loginStatus());
+      this.loadingClose();
     }
   }
 };
