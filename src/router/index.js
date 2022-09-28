@@ -3,35 +3,31 @@ import Home from "../view/Home.vue";
 import Login from "../view/Login.vue";
 import List from "../view/List.vue";
 import Detail from "../view/Detail.vue";
-import AddOrder from "../view/AddOrder.vue";
 
-const routes = [
-  {
+export const ROUTES_CONFIG = {
+  home: {
     path: "/",
     component: Home,
     name: "home"
   },
-  {
+  login: {
     path: "/login",
     component: Login,
     name: "login"
   },
-  {
-    path: "/add",
-    component: AddOrder,
-    name: "add"
-  },
-  {
+  list: {
     path: "/list",
     component: List,
     name: "list"
   },
-  {
+  detail: {
     path: "/list/:id",
     component: Detail,
     name: "detail"
   }
-];
+};
+
+const routes = Object.values(ROUTES_CONFIG);
 
 const router = createRouter({
   history: createWebHashHistory(),

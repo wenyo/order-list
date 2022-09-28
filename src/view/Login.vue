@@ -4,6 +4,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import { useRouter } from "vue-router";
 import { loginFetch, authUser } from "../api";
 import { ERROR_MSG } from "../util/enum";
+import { ROUTES_CONFIG } from "../router";
 
 export default {
   components: {
@@ -17,7 +18,7 @@ export default {
     let password = "123456";
 
     function toHomePage() {
-      router.push("/");
+      router.push(ROUTES_CONFIG.home.path);
     }
 
     return {

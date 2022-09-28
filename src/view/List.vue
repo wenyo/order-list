@@ -10,21 +10,11 @@ import {
   itemByIdGetFetch
 } from "../api";
 import { NO_ID } from "../util/enum";
+import { ROUTES_CONFIG } from "../router";
 import Edit from "../components/Edit.vue";
 
 export default {
   components: { Header, Edit },
-  setup() {
-    const router = useRouter();
-
-    function toAddPage() {
-      router.push("/add");
-    }
-
-    return {
-      toAddPage
-    };
-  },
   data() {
     return {
       orderList: [],

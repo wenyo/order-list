@@ -1,43 +1,33 @@
 <script>
 import { mapMutations, mapState } from "vuex";
-import { useRoute, useRouter } from "vue-router";
 import { isLoggedIn, logoutFetch } from "./api";
 import Menu from "./components/Menu.vue";
 import Loading from "./components/Loading.vue";
+import AuthRequire from "./components/AuthRequire.vue";
 
 export default {
-  components: { Menu, Loading },
+  components: { Menu, Loading, AuthRequire },
   data() {
     return {
-      isAuth: false,
-      route: useRoute(),
-      router: useRouter()
+      isAuth: false
     };
   },
   computed: {
-    ...mapState(["loading"]),
-    path() {
-      return this.route.path;
-    }
+    ...mapState(["loading"])
   },
   created() {
-    isLoggedIn(this.isAuthRedirect);
+    isLoggedIn(this.isAuthCheck);
   },
   watch: {
     path() {
-      isLoggedIn(this.isAuthRedirect);
+      isLoggedIn(this.isAuthCheck);
     }
   },
   methods: {
     ...mapMutations(["userSet", "loadingOpen", "loadingClose"]),
-    isAuthRedirect(user) {
-      this.isAuth = !!user;
-      if (!this.isAuth) {
-        return this.router.push("/login");
-      } else if (this.route.path === "/login") {
-        this.router.push("/");
-      }
+    isAuthCheck(user) {
       this.userSet({ user });
+      this.isAuth = !!user;
     },
     async logoutClick() {
       this.loadingOpen();
@@ -53,7 +43,8 @@ export default {
 <template lang="pug">
 main
   Menu(v-if="isAuth" @logout="logoutClick")
-  router-view
+  AuthRequire(:auth ="isAuth" )
+    router-view
   Loading(v-if="loading")
 </template>
 
