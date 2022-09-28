@@ -104,6 +104,19 @@ export default {
 
       this.orderAlertClose();
       this.orderListGet();
+    },
+    async orderDelete(id) {
+      // delete order
+      await orderUpdateFetch(id, { display: false });
+      this.orderListGet();
+
+      // update stock
+      const deleteOrderCount = -parseInt(this.orderList[id].count);
+      await itemUpdateStock(this.orderList[id].item_id, deleteOrderCount);
+    },
+    async orderDeleteClick() {
+      await this.orderDelete(this.orderSelectId, { display: false });
+      this.orderAlertClose();
     }
   }
 };
@@ -127,8 +140,8 @@ ul
       div.w-100.shrink-0 {{order.count}}
       div.grow.word-break {{order.note}}
       div.w-100.shrink-0
-        button.btn-disable(@click.stop="orderDelete({id:order.id})") DELETE
-Edit(v-if="orderAlertShow" :item="itemSelectItem" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderUpdate")
+        button.btn-disable(@click.stop="orderDelete(order.id)") DELETE
+Edit(v-if="orderAlertShow" :item="itemSelectItem" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderUpdate" @delete="orderDeleteClick")
 </template>
 
 <style lang="scss" scoped>

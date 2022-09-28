@@ -107,25 +107,30 @@ export async function itemUpdateFetch(id, data) {
   return updateDoc(itemsRef, data).catch((error) => console.error(error));
 }
 
-export async function itemUpdateStock(item_id, stock_add_count) {
+export async function itemUpdateStock(item_id, stock_minus_count) {
   // check last stock
   let oldStock = 0;
   await itemByIdGetFetch(item_id).then((order) => (oldStock = order.stock));
 
   // get new stock
-  const newStock = oldStock - stock_add_count;
+  const newStock = oldStock - stock_minus_count;
 
   // update
   return itemUpdateFetch(item_id, { stock: newStock });
 }
 
 // order
-export function orderListGetByUidFetch(uid) {
+export async function orderListGetByUidFetch(uid) {
   const db = getFirestore();
   const ordersRef = collection(db, PATH.ORDER);
 
   return getDocs(
-    query(ordersRef, where("user_uid", "==", uid), orderBy("id"))
+    query(
+      ordersRef,
+      where("user_uid", "==", uid),
+      where("display", "==", true),
+      orderBy("id")
+    )
   ).then((result) => {
     let itemList = {};
     for (const item of result.docs) {
@@ -139,7 +144,7 @@ export async function orderListGetFetch() {
   const db = getFirestore();
   const ordersRef = collection(db, PATH.ORDER);
 
-  return await getDocs(query(ordersRef)).then((result) => {
+  return getDocs(query(ordersRef)).then((result) => {
     let itemList = {};
     for (const item of result.docs) {
       itemList[item.id] = item.data();
@@ -172,7 +177,7 @@ export async function orderSetFetch(order_data) {
   );
 }
 
-export function orderUpdateFetch(id, data) {
+export async function orderUpdateFetch(id, data) {
   const db = getFirestore();
   const ordersRef = doc(db, PATH.ORDER, id);
   return updateDoc(ordersRef, data).catch((error) => console.error(error));

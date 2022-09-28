@@ -68,6 +68,7 @@ export default {
       if (this.isNewOrder) {
         result.data = {
           ...this.newOrder,
+          count: parseInt(this.newOrder.count),
           item_id: this.item.id,
           user_uid: this.user.uid
         };
@@ -142,7 +143,7 @@ div.alert-block(@click.self="cancelClick")
       img(:src="item.img")
     h1.title {{item.name}}
     VForm(@submit="saveClick" v-slot="{meta}").alert-form
-      label
+      label(v-if="!isNewOrder")
         span.w-80 id/
         span {{order.id}}
       label
@@ -157,7 +158,7 @@ div.alert-block(@click.self="cancelClick")
       label
         span.w-80 note/
         textarea.note-input( type="text" v-model="newOrder.note" )
-      .delete(v-if="item.id !== NO_ID")
+      .delete(v-if="!isNewOrder")
         span.w-80 delete/
         button.btn-disable(@click="deleteClick") DELETE
       .btn-block
