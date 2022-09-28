@@ -82,6 +82,17 @@ export default {
       });
     },
     async orderUpdate(new_order) {
+      // check stock
+      if (new_order.count) {
+        let oldStock = 0;
+        await itemByIdGetFetch(item_id).then(
+          (order) => (oldStock = order.stock)
+        );
+
+        const allStock = oldStock + this.orderSelectItem.count;
+        if (allStock - new_order.count < 0) return;
+      }
+
       // order update
       await orderUpdateFetch(this.orderSelectId, new_order);
 

@@ -101,7 +101,7 @@ export async function itemSetFetch(data) {
   );
 }
 
-export function itemUpdateFetch(id, data) {
+export async function itemUpdateFetch(id, data) {
   const db = getFirestore();
   const itemsRef = doc(db, PATH.ITEMS, id);
   return updateDoc(itemsRef, data).catch((error) => console.error(error));
