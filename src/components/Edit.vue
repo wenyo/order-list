@@ -33,7 +33,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["user"]),
+    ...mapState(["user", "loading"]),
     isNewOrder() {
       return Object.keys(this.order).length === 0;
     },
@@ -45,16 +45,13 @@ export default {
       return parseInt(this.item.stock) + parseInt(oldOrderCount);
     }
   },
-  watch: {
-    count() {
-      const oldOrderCount = this.order.count || 0;
-    }
-  },
   methods: {
     deleteClick() {
+      if (this.loading) return;
       this.$emit("delete");
     },
     saveClick() {
+      if (this.loading) return;
       const { data, updated } = this.dataFormat();
       // no need to update
       if (!updated) return this.cancelClick();
@@ -149,7 +146,7 @@ div.alert-block(@click.self="cancelClick")
         template(v-if="isEdit")
           VField.input-primary.shrink-0( name="count" type="number" :max="stock" :rules="isCountValid" v-model="newOrder.count" )
           div.answer.shrink-0
-            span storage: {{stock}}
+            span max: {{stock}}
             ErrorMessage.error-msg( name="count" )
         span(v-else) {{newOrder.count}}
       label
@@ -160,7 +157,7 @@ div.alert-block(@click.self="cancelClick")
         span.w-80 delete/
         button.btn-disable(@click="deleteClick") DELETE
       .btn-block
-        button.btn-primary(type="submit" :disabled="!meta.valid") SAVE
+        button.btn-primary(type="submit" :disabled="!meta.valid || loading") SAVE
         button.btn-secondary(@click="cancelClick") CANCEL
 </template>
 

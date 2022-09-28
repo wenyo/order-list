@@ -89,7 +89,7 @@ export default {
       // check stock
       if (new_order.count) {
         let oldStock = 0;
-        await itemByIdGetFetch(item_id).then(
+        await itemByIdGetFetch(this.itemSelectId).then(
           (order) => (oldStock = order.stock)
         );
 
@@ -108,6 +108,8 @@ export default {
 
       this.orderAlertClose();
       await this.orderListGet();
+      await this.itemListGet();
+
       this.loadingClose();
     },
     async orderDelete(id) {
@@ -118,6 +120,7 @@ export default {
       const itemId = this.orderList[id].item_id;
       await orderUpdateFetch(id, { display: false });
       await this.orderListGet();
+      await this.itemListGet();
 
       // update stock
       await itemUpdateStock(itemId, deleteOrderCount);
@@ -128,6 +131,8 @@ export default {
       await this.orderDelete(this.orderSelectId, { display: false });
       this.orderAlertClose();
       await this.orderListGet();
+      await this.itemListGet();
+
       this.loadingClose();
     }
   }

@@ -1,5 +1,6 @@
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
+import { mapState } from "vuex";
 import { ERROR_MSG } from "../util/enum";
 import Header from "./Header.vue";
 
@@ -24,12 +25,14 @@ export default {
     };
   },
   computed: {
+    ...mapState(["loading"]),
     isNewProduct() {
       return !this.newItem.id;
     }
   },
   methods: {
     deleteClick() {
+      if (this.loading) return;
       this.$emit("delete");
     },
     async dataFormat(value) {
@@ -52,6 +55,8 @@ export default {
       return data;
     },
     async saveClick(value) {
+      if (this.loading) return;
+
       let data = await this.dataFormat(value);
       // check: need to update
       if (Object.keys(data).length === 0) return;
@@ -128,7 +133,7 @@ div.alert-block(@click.self="cancelClick")
     span.time(v-if="!isNewProduct") {{dateFormatGet(newItem.update_time)}}
     h1.title(v-if="!isNewProduct") {{`Product #${newItem.id}`}}
     h1.title(v-else) New Product
-    VForm(@submit="saveClick").alert-form
+    VForm(@submit="saveClick" v-slot="{meta}").alert-form
       label
         span.w-80 name/
         VField.input-primary( name="name" type="text" :rules="isPositiveInteger" v-model="newItem.name" )
@@ -150,7 +155,7 @@ div.alert-block(@click.self="cancelClick")
         span.w-80 delete/
         button.btn-disable(@click="deleteClick") DELETE
       .btn-block
-        button.btn-primary(type="submit") SAVE
+        button.btn-primary(type="submit" :disabled="!meta.valid || loading") SAVE
         button.btn-secondary(@click="cancelClick") CANCEL
 </template>
 

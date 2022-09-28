@@ -14,8 +14,10 @@
 .alert-content {
   position: relative;
   width: 40vw;
+  max-height: 90%;
   border-radius: 2px;
   background-color: $color-dark-200;
+  overflow-y: auto;
 
   .icon-close {
     color: $color-dark-400;
