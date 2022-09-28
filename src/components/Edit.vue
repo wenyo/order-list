@@ -60,38 +60,29 @@ export default {
       this.$emit("cancel");
     },
     dataFormat() {
+      const intValueKey = ["count"];
       let result = {
         data: {},
         updated: true
       };
 
-      if (this.isNewOrder) {
-        result.data = {
-          ...this.newOrder,
-          count: parseInt(this.newOrder.count),
-          item_id: this.item.id,
-          user_uid: this.user.uid
-        };
-        return result;
-      }
-
-      return this.dataUpdateCheck();
-    },
-    dataUpdateCheck() {
-      const result = {
-        data: {},
-        updated: false
-      };
-      const intValueKey = ["count"];
-
       for (const key in this.newOrder) {
-        if (this.newOrder[key] !== this.order[key]) {
+        // new data || update data
+        if (this.isNewOrder || this.newOrder[key] !== this.order[key]) {
           const valueTmp = intValueKey.includes(key)
             ? parseInt(this.newOrder[key])
             : this.newOrder[key];
           result.updated = true;
           result.data[key] = valueTmp;
         }
+      }
+
+      if (this.isNewOrder) {
+        result.data = {
+          ...result.data,
+          item_id: this.item.id,
+          user_uid: this.user.uid
+        };
       }
 
       return result;
