@@ -55,7 +55,7 @@ export function logoutFetch() {
 }
 
 // item
-export function itemListGetFetch() {
+export async function itemListGetFetch() {
   const db = getFirestore();
   const itemsRef = collection(db, PATH.ITEMS);
 
@@ -68,7 +68,7 @@ export function itemListGetFetch() {
   });
 }
 
-export function itemLastIdGetFetch() {
+export async function itemLastIdGetFetch() {
   const db = getFirestore();
   const itemsRef = collection(db, PATH.ITEMS);
 
@@ -153,7 +153,7 @@ export async function orderListGetFetch() {
   });
 }
 
-export function orderLastIdGetFetch() {
+export async function orderLastIdGetFetch() {
   const db = getFirestore();
   const ordersRef = collection(db, PATH.ORDER);
 

@@ -140,8 +140,8 @@ ul
       div.w-100.shrink-0 {{order.count}}
       div.grow.word-break {{order.note}}
       div.w-100.shrink-0
-        button.btn-disable(@click.stop="orderDelete(order.id)") DELETE
-Edit(v-if="orderAlertShow" :item="itemSelectItem" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderUpdate" @delete="orderDeleteClick")
+        button.btn-disable(@click.stop="orderDelete(order.id)" v-if="itemList[order.item_id].display") DELETE
+Edit(v-if="orderAlertShow" :is-edit="itemSelectItem.display" :item="itemSelectItem" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderUpdate" @delete="orderDeleteClick")
 </template>
 
 <style lang="scss" scoped>

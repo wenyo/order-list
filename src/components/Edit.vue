@@ -20,6 +20,10 @@ export default {
     order: {
       type: Object,
       default: {}
+    },
+    isEdit: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -142,14 +146,17 @@ div.alert-block(@click.self="cancelClick")
         span {{item.price}}
       label
         span.w-80.shrink-0 count/
-        VField.input-primary.shrink-0( name="count" type="number" :max="stock" :rules="isCountValid" v-model="newOrder.count" )
-        div.answer.shrink-0
-          span storage: {{stock}}
-          ErrorMessage.error-msg( name="count" )
+        template(v-if="isEdit")
+          VField.input-primary.shrink-0( name="count" type="number" :max="stock" :rules="isCountValid" v-model="newOrder.count" )
+          div.answer.shrink-0
+            span storage: {{stock}}
+            ErrorMessage.error-msg( name="count" )
+        span(v-else) {{newOrder.count}}
       label
         span.w-80 note/
-        textarea.note-input( type="text" v-model="newOrder.note" )
-      .delete(v-if="!isNewOrder")
+        textarea.note-input( type="text" v-if="isEdit" v-model="newOrder.note" )
+        span(v-else) {{newOrder.note}}
+      .delete(v-if="!isNewOrder && isEdit")
         span.w-80 delete/
         button.btn-disable(@click="deleteClick") DELETE
       .btn-block

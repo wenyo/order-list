@@ -65,7 +65,6 @@ export default {
       this.orderSelectId = NO_ID;
     },
     updateBtnClick(id) {
-      console.log(id);
       this.updateAlertToggle(true);
       this.orderSelectId = id;
     },
