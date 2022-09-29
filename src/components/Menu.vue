@@ -2,6 +2,7 @@
 import { mapMutations } from "vuex";
 import { logoutFetch } from "../api";
 import { ROUTES_CONFIG } from "../router";
+import { USER_TYPE } from "../util/enum";
 
 export default {
   setup() {
@@ -13,11 +14,21 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["loadingOpen", "loadingClose"]),
+    ...mapMutations([
+      "loadingOpen",
+      "loadingClose",
+      "userTypeSet",
+      "loginStatusSet"
+    ]),
     async logoutClick() {
       this.loadingOpen();
       await logoutFetch().then(() => {
-        this.isAuth = false;
+        this.userTypeSet({ userType: USER_TYPE.NONE });
+
+        this.loginStatusSet({
+          user: {},
+          auth: false
+        });
       });
       this.loadingClose();
     },

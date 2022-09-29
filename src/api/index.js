@@ -20,7 +20,7 @@ import {
 } from "firebase/firestore";
 import { nextIdGet } from "../util/function";
 
-const PATH = { USER: "user", ITEMS: "items", ORDER: "order-list" };
+const PATH = { USERS: "users", ITEMS: "items", ORDER: "order-list" };
 
 // login
 export async function loginFetch({ account, password }) {
@@ -54,6 +54,14 @@ export async function logoutFetch() {
     .catch(() => console.error("logout fail"));
 }
 
+export async function userTypeGet() {
+  const db = getFirestore();
+  const usersRef = collection(db, PATH.USERS);
+  const currentUser = authUser().currentUser;
+  return getDocs(query(usersRef, where("user_uid", "==", currentUser.uid)))
+    .then((result) => result.docs[0].data().user_type)
+    .catch((e) => console.error(e));
+}
 // item
 export async function itemListGetFetch() {
   const db = getFirestore();

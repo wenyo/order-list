@@ -1,10 +1,8 @@
 <script>
-import { mapMutations, mapState } from "vuex";
+import { mapMutations } from "vuex";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { useRouter } from "vue-router";
 import { loginFetch, authUser } from "../api";
 import { ERROR_MSG } from "../util/enum";
-import { ROUTES_CONFIG } from "../router";
 
 export default {
   components: {
@@ -32,22 +30,25 @@ export default {
     loginStatus() {
       const result = authUser();
 
+      if (!result.auth) {
+        this.loginFailed = true;
+        this.loadingClose();
+        return;
+      }
+
       this.loginStatusSet({
         user: result.currentUser,
         auth: result.auth
       });
-
-      if (!result.auth) {
-        this.loginFailed = true;
-      }
     },
     async login() {
       this.loadingOpen();
       await loginFetch({
         account: this.account,
         password: this.password
-      }).then(() => this.loginStatus());
-      this.loadingClose();
+      }).then(() => {
+        this.loginStatus();
+      });
     }
   }
 };

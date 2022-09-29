@@ -39,3 +39,11 @@ export const ERROR_MSG = {
   AT_LEAST_ZERO: "at least 0",
   UNDERSTOCK: "understock"
 };
+
+export const USER_TYPE = {
+  1: "ADMIN",
+  2: "CUSTOMER",
+  ADMIN: "1",
+  CUSTOMER: "2",
+  NONE: "-1"
+};

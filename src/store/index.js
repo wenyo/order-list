@@ -1,11 +1,13 @@
 import { createStore } from "vuex";
+import { USER_TYPE } from "../util/enum";
 
 const store = createStore({
   state() {
     return {
       auth: false,
       user: {},
-      loading: false
+      loading: false,
+      userType: USER_TYPE.NONE
     };
   },
   getters: {},
@@ -19,6 +21,9 @@ const store = createStore({
     loginStatusSet(state, { user, auth }) {
       state.user = user;
       state.auth = auth;
+    },
+    userTypeSet(state, { userType }) {
+      state.userType = userType;
     }
   },
   actions: {}

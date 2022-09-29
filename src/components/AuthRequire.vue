@@ -2,7 +2,7 @@
 import { useRoute, useRouter } from "vue-router";
 import { ROUTES_CONFIG } from "../router";
 import { mapState, mapMutations } from "vuex";
-import { isLoggedIn } from "../api";
+import { isLoggedIn, userTypeGet } from "../api";
 
 export default {
   data() {
@@ -13,7 +13,7 @@ export default {
     };
   },
   computed: {
-    ...mapState([["auth"]]),
+    ...mapState(["auth", "userType"]),
     isLoginPage() {
       return this.path === this.loginPath;
     },
@@ -35,24 +35,31 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["loginStatusSet"]),
+    ...mapMutations(["loginStatusSet", "userTypeSet", "loadingOpen"]),
     isAuthCheck(user) {
       this.loginStatusSet({
         user,
         auth: !!user
       });
     },
-    isAuthRedirect() {
+    async isAuthRedirect() {
       if (!this.auth) {
-        return this.router.push(this.loginPath);
-      } else if (this.isLoginPage) {
+        this.router.push(this.loginPath);
+      } else if (this.auth && this.isLoginPage) {
+        this.loadingOpen();
         this.router.push(ROUTES_CONFIG.home.path);
+        await this.userTypeUpdate();
       }
+    },
+    async userTypeUpdate() {
+      return await userTypeGet().then((userType) => {
+        this.userTypeSet({ userType });
+      });
     }
   }
 };
 </script>
 
 <template lang="pug">
-slot(v-if="auth || isLoginPage")
+slot(v-if="(auth && userType !== -1) || isLoginPage")
 </template>
