@@ -1,17 +1,21 @@
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 import { logoutFetch } from "../api";
-import { ROUTES_CONFIG } from "../router";
+import { ROUTES_CONFIG, ROUTES_KEYS } from "../router";
 import { USER_TYPE } from "../util/enum";
 
 export default {
   setup() {
-    return { ROUTES_CONFIG };
+    const MENU_KEY = [ROUTES_KEYS.home, ROUTES_KEYS.list];
+    return { ROUTES_CONFIG, MENU_KEY, USER_TYPE };
   },
   data() {
     return {
       openMenu: false
     };
+  },
+  computed: {
+    ...mapState(["userType", "user"])
   },
   methods: {
     ...mapMutations([
@@ -38,6 +42,20 @@ export default {
     linkClick(navigate) {
       navigate();
       this.menuToggle(false);
+    },
+    menuItemShow(menu_key) {
+      const { admin, customer } = ROUTES_CONFIG[menu_key].meta;
+
+      switch (this.userType) {
+        case USER_TYPE.ADMIN:
+          return admin;
+        case USER_TYPE.CUSTOMER:
+          return customer;
+        default:
+          break;
+      }
+
+      return true;
     }
   }
 };
@@ -48,11 +66,13 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
   i.icon-menu(@click="menuToggle(true)")
   div.menu-list(:class="{'open':openMenu}")
     i.icon-close(@click="menuToggle(false)")
+    div.user
+      span Hi {{user.displayName}}!
+      span {{USER_TYPE[userType]?.toLowerCase()}}
     ul
-      router-link(:to="ROUTES_CONFIG.home.path" custom v-slot="{ navigate, isActive }" )
-        li(@click="linkClick(navigate)" :class="{'active':isActive}") Product List
-      router-link(:to="ROUTES_CONFIG.list.path" custom v-slot="{ navigate, isActive }" )
-        li(@click="linkClick(navigate)" :class="{'active':isActive}") Order List
+      template(v-for="(menuKey, key) in MENU_KEY" :key="key")
+        router-link(v-if="menuItemShow(menuKey)" :to="ROUTES_CONFIG[menuKey].path" custom v-slot="{ navigate, isActive }" )
+          li(@click="linkClick(navigate)" :class="{'active':isActive}") {{ROUTES_CONFIG[menuKey].text}}
     button.btn-secondary(@click="logoutClick")
       i.icon-logout
       span logout
@@ -132,5 +152,20 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
 
 .btn-secondary {
   margin: 40px;
+}
+
+.user {
+  margin: 0 40px 20px;
+  padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-bottom: 1px solid $color-dark-400;
+  font-size: 25px;
+
+  :last-child {
+    font-size: 14px;
+    color: $color-dark-400;
+  }
 }
 </style>

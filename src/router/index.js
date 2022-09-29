@@ -11,6 +11,7 @@ export const ROUTES_CONFIG = {
     path: "/",
     component: Home,
     name: "home",
+    text: "Product List",
     meta: {
       auth_require: true,
       admin: true,
@@ -20,12 +21,14 @@ export const ROUTES_CONFIG = {
   login: {
     path: "/login",
     component: Login,
-    name: "login"
+    name: "login",
+    text: "Login"
   },
   list: {
     path: "/list",
     component: List,
     name: "list",
+    text: "Order List",
     meta: {
       auth_require: true,
       admin: false,
@@ -36,6 +39,7 @@ export const ROUTES_CONFIG = {
     path: "/item/:id",
     component: Detail,
     name: "detail",
+    text: "Product Detail",
     meta: {
       auth_require: true,
       admin: true,
@@ -43,6 +47,14 @@ export const ROUTES_CONFIG = {
     }
   }
 };
+
+export const ROUTES_KEYS = (() => {
+  const result = {};
+  for (const key in ROUTES_CONFIG) {
+    result[key] = key;
+  }
+  return result;
+})();
 
 const routes = Object.values(ROUTES_CONFIG);
 

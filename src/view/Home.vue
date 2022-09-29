@@ -1,5 +1,5 @@
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 import {
   itemListGetFetch,
   itemUpdateFetch,
@@ -7,7 +7,7 @@ import {
   orderSetFetch,
   itemUpdateStock
 } from "../api";
-import { NO_ID } from "../util/enum";
+import { NO_ID, USER_TYPE } from "../util/enum";
 import Edit from "../components/Edit.vue";
 import UpdateItem from "../components/UpdateItem.vue";
 
@@ -28,8 +28,12 @@ export default {
     this.loadingClose();
   },
   computed: {
+    ...mapState(["userType"]),
     itemSelectItem() {
       return this.itemList[this.orderSelectId];
+    },
+    isAdmin() {
+      return this.userType === USER_TYPE.ADMIN;
     }
   },
   methods: {
@@ -101,13 +105,13 @@ export default {
 <template lang="pug">
 header
   h1.title Product List
-  button.btn-primary.add(@click="updateBtnClick(NO_ID)") ADD
+  button.btn-primary.add(v-if="isAdmin" @click="updateBtnClick(NO_ID)") ADD
 ul 
   template(v-for="(id) in Object.keys(itemList)")
     li.item(v-if="itemList[id].display" :key="id")
       div.img-box
         img(:src="itemList[id].img") 
-      div.m-y10-x20
+      div.m-y10-x20.bold
         span {{itemList[id].name}}
       div.m-y10-x20
         span price/
@@ -115,11 +119,11 @@ ul
       div.m-y10-x20 
         span stock/
         span {{itemList[id].stock}}
-      div.m-20
-        button.btn-primary(@click="buyBtnClick(itemList[id].id)") buy
-        button.btn-primary(@click="updateBtnClick(itemList[id].id)") update
-  Edit(v-if="orderAlertShow" :item="itemSelectItem" @cancel="orderAlertClose" @save="orderAdd")
-  UpdateItem(v-if="updateAlertShow" :item="itemSelectItem" @cancel="updateAlertClose" @save="updateSave" @delete="itemDeleteClick")
+      div.m-20.btn-block
+        button.btn-primary(v-if="isAdmin" @click="updateBtnClick(itemList[id].id)") update
+        button.btn-primary(v-else @click="buyBtnClick(itemList[id].id)") buy
+  Edit(v-if="!isAdmin && orderAlertShow" :item="itemSelectItem" @cancel="orderAlertClose" @save="orderAdd")
+  UpdateItem(v-if="isAdmin && updateAlertShow" :item="itemSelectItem" @cancel="updateAlertClose" @save="updateSave" @delete="itemDeleteClick")
 </template>
 
 <style lang="scss" scoped>
@@ -138,8 +142,13 @@ ul {
   }
 }
 
-.item > div {
-  display: flex;
-  justify-content: space-between;
+.item {
+  & > div {
+    display: flex;
+    justify-content: space-between;
+  }
+  & > .btn-block {
+    justify-content: flex-end;
+  }
 }
 </style>
