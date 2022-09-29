@@ -1,49 +1,21 @@
 <script>
-import { mapMutations, mapState } from "vuex";
-import { isLoggedIn, logoutFetch } from "./api";
+import { mapState } from "vuex";
 import Menu from "./components/Menu.vue";
 import Loading from "./components/Loading.vue";
 import AuthRequire from "./components/AuthRequire.vue";
 
 export default {
   components: { Menu, Loading, AuthRequire },
-  data() {
-    return {
-      isAuth: false
-    };
-  },
   computed: {
-    ...mapState(["loading"])
-  },
-  created() {
-    isLoggedIn(this.isAuthCheck);
-  },
-  watch: {
-    path() {
-      isLoggedIn(this.isAuthCheck);
-    }
-  },
-  methods: {
-    ...mapMutations(["userSet", "loadingOpen", "loadingClose"]),
-    isAuthCheck(user) {
-      this.userSet({ user });
-      this.isAuth = !!user;
-    },
-    async logoutClick() {
-      this.loadingOpen();
-      await logoutFetch().then(() => {
-        this.isAuth = false;
-      });
-      this.loadingClose();
-    }
+    ...mapState(["loading", "auth"])
   }
 };
 </script>
 
 <template lang="pug">
 main
-  Menu(v-if="isAuth" @logout="logoutClick")
-  AuthRequire(:auth ="isAuth" )
+  Menu(v-if="auth")
+  AuthRequire
     router-view
   Loading(v-if="loading")
 </template>

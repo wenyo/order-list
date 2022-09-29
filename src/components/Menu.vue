@@ -1,17 +1,28 @@
 <script>
+import { mapMutations } from "vuex";
+import { logoutFetch } from "../api";
+import { ROUTES_CONFIG } from "../router";
+
 export default {
-  emit: ["logout"],
+  setup() {
+    return { ROUTES_CONFIG };
+  },
   data() {
     return {
       openMenu: false
     };
   },
   methods: {
+    ...mapMutations(["loadingOpen", "loadingClose"]),
+    async logoutClick() {
+      this.loadingOpen();
+      await logoutFetch().then(() => {
+        this.isAuth = false;
+      });
+      this.loadingClose();
+    },
     menuToggle(open) {
       this.openMenu = open;
-    },
-    logoutClick() {
-      this.$emit("logout");
     },
     linkClick(navigate) {
       navigate();
@@ -27,9 +38,9 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
   div.menu-list(:class="{'open':openMenu}")
     i.icon-close(@click="menuToggle(false)")
     ul
-      router-link(:to="`/`" custom v-slot="{ navigate, isActive }" )
+      router-link(:to="ROUTES_CONFIG.home.path" custom v-slot="{ navigate, isActive }" )
         li(@click="linkClick(navigate)" :class="{'active':isActive}") Product List
-      router-link(:to="`/list`" custom v-slot="{ navigate, isActive }" )
+      router-link(:to="ROUTES_CONFIG.list.path" custom v-slot="{ navigate, isActive }" )
         li(@click="linkClick(navigate)" :class="{'active':isActive}") Order List
     button.btn-secondary(@click="logoutClick")
       i.icon-logout

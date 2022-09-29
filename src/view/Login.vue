@@ -1,5 +1,5 @@
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { useRouter } from "vue-router";
 import { loginFetch, authUser } from "../api";
@@ -12,27 +12,16 @@ export default {
     VField: Field,
     ErrorMessage: ErrorMessage
   },
-  setup() {
-    const router = useRouter();
-    let account = "wenda897436@gmail.com";
-    let password = "123456";
-
-    function toHomePage() {
-      router.push(ROUTES_CONFIG.home.path);
-    }
-
+  data() {
     return {
-      account,
-      password,
-      loginFetch,
-      toHomePage,
-      authUser,
+      account: "wenda897436@gmail.com",
+      password: "123456",
       ERROR_MSG,
       loginFailed: false
     };
   },
   methods: {
-    ...mapMutations(["loadingOpen", "loadingClose"]),
+    ...mapMutations(["loadingOpen", "loadingClose", "loginStatusSet"]),
     isRequired(value) {
       if (!value) {
         return ERROR_MSG.IS_REQUIRED;
@@ -42,18 +31,22 @@ export default {
     },
     loginStatus() {
       const result = authUser();
+
+      this.loginStatusSet({
+        user: result.currentUser,
+        auth: result.auth
+      });
+
       if (!result.auth) {
         this.loginFailed = true;
-      } else {
-        this.toHomePage();
       }
     },
     async login() {
       this.loadingOpen();
-      await this.loginFetch({
+      await loginFetch({
         account: this.account,
         password: this.password
-      }).then((rs) => this.loginStatus());
+      }).then(() => this.loginStatus());
       this.loadingClose();
     }
   }

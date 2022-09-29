@@ -1,9 +1,10 @@
 <script>
 import { useRoute, useRouter } from "vue-router";
 import { ROUTES_CONFIG } from "../router";
+import { mapState, mapMutations } from "vuex";
+import { isLoggedIn } from "../api";
 
 export default {
-  props: ["auth"],
   data() {
     return {
       loginPath: ROUTES_CONFIG.login.path,
@@ -12,6 +13,7 @@ export default {
     };
   },
   computed: {
+    ...mapState([["auth"]]),
     isLoginPage() {
       return this.path === this.loginPath;
     },
@@ -19,18 +21,27 @@ export default {
       return this.route.path;
     }
   },
-  created() {
+  async created() {
+    await isLoggedIn(this.isAuthCheck);
     this.isAuthRedirect();
   },
   watch: {
     auth() {
       this.isAuthRedirect();
     },
-    path() {
+    async path() {
+      await isLoggedIn(this.isAuthCheck);
       this.isAuthRedirect();
     }
   },
   methods: {
+    ...mapMutations(["loginStatusSet"]),
+    isAuthCheck(user) {
+      this.loginStatusSet({
+        user,
+        auth: !!user
+      });
+    },
     isAuthRedirect() {
       if (!this.auth) {
         return this.router.push(this.loginPath);

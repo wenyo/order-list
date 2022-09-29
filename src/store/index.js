@@ -3,6 +3,7 @@ import { createStore } from "vuex";
 const store = createStore({
   state() {
     return {
+      auth: false,
       user: {},
       loading: false
     };
@@ -15,8 +16,9 @@ const store = createStore({
     loadingClose(state) {
       state.loading = false;
     },
-    userSet(state, { user }) {
+    loginStatusSet(state, { user, auth }) {
       state.user = user;
+      state.auth = auth;
     }
   },
   actions: {}
