@@ -130,8 +130,11 @@ ul(:class="{'is-admin': isAdmin}")
 ul {
   display: grid;
   gap: 20px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 
+  @include desktop {
+    grid-template-columns: repeat(3, 1fr);
+  }
   @include pad {
     grid-template-columns: repeat(2, 1fr);
   }

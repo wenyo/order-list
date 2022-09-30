@@ -29,7 +29,7 @@ body {
 
 main {
   min-height: 100vh;
-  max-width: 1028px;
+  max-width: 1280px;
   min-width: 900px;
   width: 80vw;
   display: flex;
