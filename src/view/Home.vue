@@ -78,9 +78,9 @@ export default {
       this.updateAlertToggle(true);
       this.orderSelectId = id;
     },
-    async itemDeleteClick() {
+    async itemDisplayToggleClick(display) {
       this.loadingOpen();
-      await itemUpdateFetch(this.orderSelectId, { display: false });
+      await itemUpdateFetch(this.orderSelectId, { display });
       this.updateAlertClose();
       await this.itemListGet();
       this.loadingClose();
@@ -106,24 +106,24 @@ export default {
 header
   h1.title Product List
   button.btn-primary.add(v-if="isAdmin" @click="updateBtnClick(NO_ID)") ADD
-ul 
-  template(v-for="(id) in Object.keys(itemList)")
-    li.item(v-if="itemList[id].display" :key="id")
-      div.img-box
+ul(:class="{'is-admin': isAdmin}")
+  template(v-for="(id) in Object.keys(itemList)" :key="id")
+    li.item(v-if="isAdmin || itemList[id].display " :class="{'sold-out annotation': itemList[id].stock<=0, 'delete-item':!itemList[id].display }")
+      div.img-box.annotation
         img(:src="itemList[id].img") 
       div.m-y10-x20.bold
         span {{itemList[id].name}}
       div.m-y10-x20
         span price/
         span {{itemList[id].price}}
-      div.m-y10-x20 
+      div.m-y10-x20.stock
         span stock/
         span {{itemList[id].stock}}
       div.m-20.btn-block
         button.btn-primary(v-if="isAdmin" @click="updateBtnClick(itemList[id].id)") update
-        button.btn-primary(v-else @click="buyBtnClick(itemList[id].id)") buy
+        button.btn-primary(v-else-if="itemList[id].stock>0" @click="buyBtnClick(itemList[id].id)") buy
   Edit(v-if="!isAdmin && orderAlertShow" :item="itemSelectItem" @cancel="orderAlertClose" @save="orderAdd")
-  UpdateItem(v-if="isAdmin && updateAlertShow" :item="itemSelectItem" @cancel="updateAlertClose" @save="updateSave" @delete="itemDeleteClick")
+  UpdateItem(v-if="isAdmin && updateAlertShow" :item="itemSelectItem" @cancel="updateAlertClose" @save="updateSave" @delete="itemDisplayToggleClick(false)" @show="itemDisplayToggleClick(true)")
 </template>
 
 <style lang="scss" scoped>
@@ -139,6 +139,25 @@ ul {
 
   .img-box {
     padding-bottom: 60%;
+  }
+}
+
+.is-admin {
+  .sold-out .stock {
+    color: $color-primary-100;
+    font-weight: bold;
+  }
+}
+
+ul:not(.is-admin) .sold-out::after {
+  content: "SOLD OUT";
+}
+
+.delete-item {
+  opacity: 0.5;
+
+  .annotation::after {
+    content: "DELETED";
   }
 }
 

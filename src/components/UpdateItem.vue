@@ -11,7 +11,7 @@ export default {
     VField: Field,
     ErrorMessage: ErrorMessage
   },
-  emits: ["delete", "save", "cancel"],
+  emits: ["delete", "save", "cancel", "show"],
   props: {
     item: {
       type: Object,
@@ -34,6 +34,10 @@ export default {
     deleteClick() {
       if (this.loading) return;
       this.$emit("delete");
+    },
+    showClick() {
+      if (this.loading) return;
+      this.$emit("show");
     },
     async dataFormat(value) {
       let data = {};
@@ -128,7 +132,7 @@ export default {
 div.alert-block(@click.self="cancelClick")
   div.alert-content
     i.icon-close(@click="cancelClick")
-    div(v-if="!isNewProduct").img-box
+    div(v-if="!isNewProduct" :class="{'annotation': !newItem.img}").img-box
       img(:src="newItem.img")
     span.time(v-if="!isNewProduct") {{dateFormatGet(newItem.update_time)}}
     h1.title(v-if="!isNewProduct") {{`Product #${newItem.id}`}}
@@ -152,8 +156,9 @@ div.alert-block(@click.self="cancelClick")
         span.img-name {{imgName}}
         VField#img(name="img" type="file" @change="imgChoose")
       .delete(v-if="!isNewProduct")
-        span.w-80 delete/
-        button.btn-disable(@click="deleteClick") DELETE
+        span.w-80 display/
+        button.btn-disable(v-if="newItem.display" @click="deleteClick") DELETE
+        button.btn-secondary(v-else @click="showClick") SHOW
       .btn-block
         button.btn-primary(type="submit" :disabled="!meta.valid || loading") SAVE
         button.btn-secondary(@click="cancelClick") CANCEL
@@ -209,5 +214,9 @@ label,
 
 .img-box {
   padding-bottom: 40%;
+
+  &.annotation::after {
+    content: "NO IMAGE";
+  }
 }
 </style>

@@ -135,3 +135,23 @@ h1.title {
     transform: translateY(-50%);
   }
 }
+
+.annotation {
+  position: relative;
+
+  &::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    color: $color-dark-100;
+    background-color: $color-shadow-200;
+    font-weight: bold;
+    font-size: 30px;
+    text-shadow: $color-dark-400;
+  }
+}

@@ -62,12 +62,20 @@ export async function userTypeGet() {
     .then((result) => result.docs[0].data().user_type)
     .catch((e) => console.error(e));
 }
+
 // item
 export async function itemListGetFetch() {
   const db = getFirestore();
   const itemsRef = collection(db, PATH.ITEMS);
 
-  return getDocs(query(itemsRef, orderBy("id"))).then((result) => {
+  return getDocs(
+    query(
+      itemsRef,
+      orderBy("display", "desc"),
+      orderBy("stock", "desc"),
+      orderBy("id")
+    )
+  ).then((result) => {
     let itemList = {};
     for (const item of result.docs) {
       itemList[item.id] = item.data();
@@ -87,7 +95,7 @@ export async function itemLastIdGetFetch() {
     .catch((error) => console.error(error));
 }
 
-export function itemByIdGetFetch(id) {
+export async function itemByIdGetFetch(id) {
   const db = getFirestore();
   const itemsRef = collection(db, PATH.ITEMS);
 
