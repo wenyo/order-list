@@ -112,6 +112,14 @@ h1.title {
   color: $color-primary-400;
   font-size: 35px;
   margin-bottom: 20px;
+
+  @include pad {
+    font-size: 30px;
+  }
+
+  @include mobile {
+    font-size: 25px;
+  }
 }
 
 .error-msg {

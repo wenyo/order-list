@@ -176,6 +176,7 @@ label,
 }
 
 .answer {
+  width: 100%;
   position: relative;
   display: flex;
   flex-direction: column;

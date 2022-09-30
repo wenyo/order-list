@@ -20,6 +20,14 @@
   overflow-y: auto;
   box-shadow: 0 0 10px $color-shadow-200;
 
+  @include pad {
+    width: 60vw;
+  }
+
+  @include mobile {
+    width: 90vw;
+  }
+
   .icon-close {
     color: $color-dark-400;
     background-color: $color-dark-000;

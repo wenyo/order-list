@@ -132,6 +132,14 @@ ul {
   gap: 20px;
   grid-template-columns: repeat(3, 1fr);
 
+  @include pad {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include mobile {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
   li {
     border-radius: 2px;
     box-shadow: 2px 2px 4px $color-shadow-200;

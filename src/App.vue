@@ -35,5 +35,9 @@ main {
   display: flex;
   flex-direction: column;
   padding: 40px;
+
+  @include pad {
+    min-width: unset;
+  }
 }
 </style>

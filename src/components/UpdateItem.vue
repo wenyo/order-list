@@ -207,7 +207,7 @@ label,
   margin-top: 6px;
   margin-left: 80px;
   overflow: hidden;
-  width: 200px;
+  width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
