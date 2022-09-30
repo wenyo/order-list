@@ -4,7 +4,8 @@ import {
   signInWithEmailAndPassword,
   browserSessionPersistence,
   setPersistence,
-  onAuthStateChanged
+  onAuthStateChanged,
+  updateProfile
 } from "firebase/auth";
 import {
   getFirestore,
@@ -61,6 +62,16 @@ export async function userTypeGet() {
   return getDocs(query(usersRef, where("user_uid", "==", currentUser.uid)))
     .then((result) => result.docs[0].data().user_type)
     .catch((e) => console.error(e));
+}
+
+export async function userProfileUpdateFetch() {
+  const auth = getAuth();
+
+  updateProfile(auth.currentUser, {
+    displayName: "顧客大大"
+  })
+    .then(() => console.log("update profile success"))
+    .catch(() => console.error("update profile fail"));
 }
 
 // item
