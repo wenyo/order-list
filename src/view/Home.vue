@@ -89,7 +89,7 @@ export default {
       this.loadingOpen();
       if (this.orderSelectId === NO_ID) {
         // new
-        await itemSetFetch(data);
+        await itemSetFetch({ ...data, display: true });
       } else {
         // update
         await itemUpdateFetch(this.orderSelectId, data);

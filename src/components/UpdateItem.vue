@@ -64,7 +64,6 @@ export default {
       let data = await this.dataFormat(value);
       // check: need to update
       if (Object.keys(data).length === 0) return;
-      data = { ...data, display: true };
 
       const update_time = new Date().getTime();
       this.$emit("save", { ...data, update_time });
