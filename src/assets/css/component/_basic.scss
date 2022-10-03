@@ -133,6 +133,7 @@ h1.title {
   position: relative;
   width: 100%;
   overflow: hidden;
+  background-color: $color-shadow-200;
 
   img {
     position: absolute;
@@ -154,10 +155,10 @@ h1.title {
     position: absolute;
     top: 0;
     bottom: 0;
+    background-color: $color-shadow-200;
     right: 0;
     left: 0;
     color: $color-dark-100;
-    background-color: $color-shadow-200;
     font-weight: bold;
     font-size: 30px;
     text-shadow: $color-dark-400;
