@@ -1,8 +1,23 @@
-<script setup></script>
+<script>
+import { mapState } from "vuex";
+import Menu from "./components/Menu.vue";
+import Loading from "./components/Loading.vue";
+import AuthRequire from "./components/AuthRequire.vue";
+
+export default {
+  components: { Menu, Loading, AuthRequire },
+  computed: {
+    ...mapState(["loading", "auth"])
+  }
+};
+</script>
 
 <template lang="pug">
 main
-  router-view
+  Menu(v-if="auth")
+  AuthRequire
+    router-view
+  Loading(v-if="loading")
 </template>
 
 <style lang="scss">
@@ -14,11 +29,15 @@ body {
 
 main {
   min-height: 100vh;
-  max-width: 1028px;
+  max-width: 1280px;
   min-width: 900px;
   width: 80vw;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 40px;
+
+  @include pad {
+    min-width: unset;
+  }
 }
 </style>

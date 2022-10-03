@@ -1,0 +1,165 @@
+header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}
+
+button,
+.btn {
+  padding: 5px 10px;
+  border-radius: 4px;
+  height: fit-content;
+  width: fit-content;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background-color: $color-dark-100;
+  border: 1px solid $color-primary-200;
+  color: $color-primary-200;
+  height: fit-content;
+  transition: all 0.3s;
+
+  &:not(:disabled):hover {
+    color: $color-dark-100;
+    background-color: $color-primary-200;
+  }
+}
+
+.btn-secondary {
+  color: $color-dark-400;
+  border: 1px solid $color-dark-400;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: $color-dark-100;
+  }
+}
+
+.btn-disable {
+  color: $color-dark-400;
+  border: 1px solid $color-dark-400;
+  transition: all 0.3s;
+  opacity: 0.3;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+textarea {
+  border: 1px solid;
+}
+
+.input-title {
+  font-size: 20px;
+}
+
+.input-primary {
+  border-bottom: 1px solid;
+  padding: 4px 6px;
+}
+
+.w-50 {
+  display: inline-block;
+  width: 50px;
+}
+
+.w-80 {
+  display: inline-block;
+  width: 80px;
+}
+
+.w-100 {
+  display: inline-block;
+  width: 100px;
+}
+
+.w-200 {
+  display: inline-block;
+  width: 200px;
+}
+
+.m-20 {
+  margin: 20px;
+}
+
+.m-y10-x20 {
+  margin: 10px 20px;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.word-break {
+  word-break: break-all;
+}
+
+h1.title {
+  font-weight: bold;
+  color: $color-primary-400;
+  font-size: 35px;
+  margin-bottom: 20px;
+
+  @include pad {
+    font-size: 30px;
+  }
+
+  @include mobile {
+    font-size: 25px;
+  }
+}
+
+.error-msg {
+  color: $color-primary-100;
+  font-weight: bold;
+  font-size: 14px;
+  min-height: 14px;
+}
+
+.img-box {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+  img {
+    position: absolute;
+    width: 100%;
+    min-height: 100%;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+  }
+}
+
+.annotation {
+  position: relative;
+
+  &::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    color: $color-dark-100;
+    background-color: $color-shadow-200;
+    font-weight: bold;
+    font-size: 30px;
+    text-shadow: $color-dark-400;
+  }
+}

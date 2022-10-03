@@ -1,0 +1,61 @@
+.alert-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: $color-shadow-200;
+  z-index: 20;
+}
+
+.alert-content {
+  position: relative;
+  width: 40vw;
+  max-height: 90%;
+  border-radius: 2px;
+  background-color: $color-dark-200;
+  overflow-y: auto;
+  box-shadow: 0 0 10px $color-shadow-200;
+
+  @include pad {
+    width: 60vw;
+  }
+
+  @include mobile {
+    width: 90vw;
+  }
+
+  .icon-close {
+    color: $color-dark-400;
+    background-color: $color-dark-000;
+    border: 1px solid $color-dark-400;
+    border-radius: 999px;
+    margin: 6px;
+    cursor: pointer;
+    font-size: 32px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0.6;
+    transition: all 0.3s;
+    z-index: 10;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .title {
+    padding: 20px 20px 0 20px;
+  }
+}
+
+.alert-form {
+  padding: 0 20px 20px 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}

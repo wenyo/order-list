@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { mapGetters, useStore, mapMutations } from "vuex";
+import { ROUTES_CONFIG } from "../router";
 import Edit from "../components/Edit.vue";
 
 export default {
@@ -13,7 +14,7 @@ export default {
     const id = computed(() => route.params.id);
 
     function backList() {
-      router.push("/list");
+      router.push(ROUTES_CONFIG.list.path);
     }
 
     // check id exist

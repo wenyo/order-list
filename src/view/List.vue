@@ -2,57 +2,136 @@
 import Header from "../components/Header.vue";
 import { useRouter } from "vue-router";
 import { mapState, mapMutations } from "vuex";
+import {
+  orderListGetByUidFetch,
+  itemListGetFetch,
+  orderUpdateFetch,
+  itemUpdateStock,
+  itemByIdGetFetch
+} from "../api";
+import { NO_ID } from "../util/enum";
+import { ROUTES_CONFIG } from "../router";
+import Edit from "../components/Edit.vue";
 
 export default {
-  components: { Header },
-  setup() {
-    console.log("List setup");
-
-    const router = useRouter();
-
-    function toAddPage() {
-      router.push("/add");
-    }
-
+  components: { Header, Edit },
+  data() {
     return {
-      toAddPage
+      orderList: [],
+      itemList: {},
+      itemSelectId: NO_ID,
+      orderSelectId: NO_ID,
+      orderAlertShow: false
     };
   },
-  beforeCreate() {
-    console.log("List beforeCreate");
-  },
-  created() {
-    console.log("List created");
-  },
-  beforeMount() {
-    console.log("List beforeMount");
-  },
-  mounted() {
-    console.log("List mounted");
-  },
-  beforeUpdate() {
-    console.log("List beforeUpdate");
-  },
-  updated() {
-    console.log("List updated");
-  },
-  beforeUnmount() {
-    console.log("List beforeUnmount");
-  },
-  unmounted() {
-    console.log("List unmounted");
+  async created() {
+    this.loadingOpen();
+    await this.itemListGet();
+    await this.orderListGet();
+    this.loadingClose();
   },
   computed: {
-    ...mapState(["orderList"])
+    ...mapState(["user"]),
+    uid() {
+      return this.user?.uid;
+    },
+    orderSelectItem() {
+      return this.orderList[this.orderSelectId];
+    },
+    itemSelectItem() {
+      return this.itemList[this.itemSelectId];
+    }
+  },
+  watch: {
+    uid() {
+      this.orderListGet();
+    }
   },
   methods: {
-    ...mapMutations(["orderDelete"])
+    ...mapMutations(["loadingOpen", "loadingClose"]),
+    async itemListGet() {
+      return itemListGetFetch().then((rs) => {
+        this.itemList = rs;
+      });
+    },
+    async orderListGet() {
+      if (!this.uid) return;
+      return orderListGetByUidFetch(this.uid).then((rs) => {
+        this.orderList = rs;
+      });
+    },
+    // order
+    orderAlertToggle(alert_show) {
+      this.orderAlertShow = alert_show;
+    },
+    orderAlertClose() {
+      this.orderAlertToggle(false);
+      this.orderSelectId = NO_ID;
+    },
+    orderClick(item_id, order_id) {
+      this.orderAlertToggle(true);
+      this.itemSelectId = item_id;
+      this.orderSelectId = order_id;
+    },
+    async orderUpdate(new_order) {
+      this.loadingOpen();
+
+      // check stock
+      if (new_order.count) {
+        let oldStock = 0;
+        await itemByIdGetFetch(this.itemSelectId).then(
+          (order) => (oldStock = order.stock)
+        );
+
+        const allStock = oldStock + this.orderSelectItem.count;
+        if (allStock - new_order.count < 0) return;
+      }
+
+      // order update
+      await orderUpdateFetch(this.orderSelectId, new_order);
+
+      // stock update
+      if (new_order.count) {
+        const stockAddCount = new_order.count - this.orderSelectItem.count;
+        await itemUpdateStock(this.itemSelectId, stockAddCount);
+      }
+
+      this.orderAlertClose();
+      await this.orderListGet();
+      await this.itemListGet();
+
+      this.loadingClose();
+    },
+    async orderDelete(id) {
+      this.loadingOpen();
+
+      // delete order
+      const deleteOrderCount = -parseInt(this.orderList[id].count);
+      const itemId = this.orderList[id].item_id;
+      await orderUpdateFetch(id, { display: false });
+      await this.orderListGet();
+      await this.itemListGet();
+
+      // update stock
+      await itemUpdateStock(itemId, deleteOrderCount);
+      this.loadingClose();
+    },
+    async orderDeleteClick() {
+      this.loadingOpen();
+      await this.orderDelete(this.orderSelectId, { display: false });
+      this.orderAlertClose();
+      await this.orderListGet();
+      await this.itemListGet();
+
+      this.loadingClose();
+    }
   }
 };
 </script>
 
 <template lang="pug">
-Header(@add="toAddPage")
+header
+  h1.title ORDER List
 ul
   li.title
     div.w-50 id
@@ -60,16 +139,16 @@ ul
     div.w-100 price
     div.w-100 count
     div.grow note
-  template(v-for="(order, key) in orderList")
-    router-link(:to="`/list/${order.id}`" custom v-slot="{ navigate }" v-if="order.display")
-      li.content(@click="navigate" :key="key")
-        div.w-50.shrink-0 {{`#${order.id}`}}
-        div.w-200.word-break.shrink-0 {{order.name}}
-        div.w-100.shrink-0 {{order.price}}
-        div.w-100.shrink-0 {{order.count}}
-        div.grow.word-break {{order.note}}
-        div.w-100.shrink-0
-          button.btn-disable(@click.stop="orderDelete({id:order.id})") DELETE
+  template(v-for="(order, id) in orderList" :key="id")
+    li.content(@click="orderClick(order.item_id, id)")
+      div.w-50.shrink-0 {{`${order.id}`}}
+      div.w-200.word-break.shrink-0 {{itemList[order.item_id].name}}
+      div.w-100.shrink-0 {{itemList[order.item_id].price}}
+      div.w-100.shrink-0 {{order.count}}
+      div.grow.word-break {{order.note}}
+      div.w-100.shrink-0
+        button.btn-disable(@click.stop="orderDelete(order.id)" v-if="itemList[order.item_id].display") DELETE
+Edit(v-if="orderAlertShow" :is-edit="itemSelectItem.display" :item="itemSelectItem" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderUpdate" @delete="orderDeleteClick")
 </template>
 
 <style lang="scss" scoped>

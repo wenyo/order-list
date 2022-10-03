@@ -9,3 +9,24 @@ $color-dark-200: #d5cdcd;
 $color-dark-300: #c2bbbb;
 $color-dark-400: #575454;
 $color-dark-900: #0c0b0b;
+
+$color-shadow-100: #5754542a;
+$color-shadow-200: #0c0b0b37;
+
+@mixin desktop {
+  @media (max-width: 1200px) {
+    @content;
+  }
+}
+
+@mixin pad {
+  @media (max-width: 900px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media (max-width: 600px) {
+    @content;
+  }
+}

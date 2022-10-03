@@ -1,45 +1,29 @@
 import { createStore } from "vuex";
-import EXAMPLE from "../assets/data/example.json";
-import { NO_IDX } from "../util/enum";
+import { USER_TYPE } from "../util/enum";
 
 const store = createStore({
   state() {
     return {
-      orderList: EXAMPLE.list
+      auth: false,
+      user: {},
+      loading: false,
+      userType: USER_TYPE.NONE
     };
   },
-  getters: {
-    orderIdxGet: (state) => (id) => {
-      const idx = state.orderList.findIndex((order) => order.id === id);
-      return idx;
-    },
-    orderExistCheck: (state, getters) => (id) => {
-      const idx = getters.orderIdxGet(id);
-      return idx !== NO_IDX && state.orderList[idx].display;
-    },
-    orderGetById: (state, getters) => (id) => {
-      const idx = getters.orderIdxGet(id);
-      return state.orderList[idx];
-    }
-  },
+  getters: {},
   mutations: {
-    orderEdit(state, { new_order }) {
-      const { orderIdxGet } = store.getters;
-      const idx = orderIdxGet(new_order.id);
-      state.orderList[idx] = new_order;
+    loadingOpen(state) {
+      state.loading = true;
     },
-    orderDelete(state, { id }) {
-      const { orderIdxGet } = store.getters;
-      const idx = orderIdxGet(id);
-      state.orderList[idx].display = false;
+    loadingClose(state) {
+      state.loading = false;
     },
-    orderAdd(state, { new_order }) {
-      const len = state.orderList.length;
-      const id = (len + 1).toString().padStart(3, 0);
-      state.orderList.push({
-        ...new_order,
-        id
-      });
+    loginStatusSet(state, { user, auth }) {
+      state.user = user;
+      state.auth = auth;
+    },
+    userTypeSet(state, { userType }) {
+      state.userType = userType;
     }
   },
   actions: {}
