@@ -191,7 +191,7 @@ export async function orderLastIdGetFetch() {
     .catch((error) => console.error(error));
 }
 
-export async function orderSetFetch(order_data) {
+export async function orderSetFetch(orderData) {
   const db = getFirestore();
   let lastId = "";
 
@@ -199,7 +199,7 @@ export async function orderSetFetch(order_data) {
   await orderLastIdGetFetch().then((rs) => (lastId = rs));
   const id = nextIdGet(lastId);
 
-  return setDoc(doc(db, PATH.ORDER, id), { ...order_data, id }).catch((error) =>
+  return setDoc(doc(db, PATH.ORDER, id), { ...orderData, id }).catch((error) =>
     console.error(error)
   );
 }

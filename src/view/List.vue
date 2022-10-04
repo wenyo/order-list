@@ -60,38 +60,38 @@ export default {
       });
     },
     // order
-    orderAlertToggle(alert_show) {
-      this.orderAlertShow = alert_show;
+    orderAlertToggle(alertShow) {
+      this.orderAlertShow = alertShow;
     },
     orderAlertClose() {
       this.orderAlertToggle(false);
       this.orderSelectId = NO_ID;
     },
-    orderClick(item_id, order_id) {
+    orderClick(itemId, orderId) {
       this.orderAlertToggle(true);
-      this.itemSelectId = item_id;
-      this.orderSelectId = order_id;
+      this.itemSelectId = itemId;
+      this.orderSelectId = orderId;
     },
-    async orderUpdate(new_order) {
+    async orderUpdate(newOrder) {
       this.loadingOpen();
 
       // check stock
-      if (new_order.count) {
+      if (newOrder.count) {
         let oldStock = 0;
         await itemByIdGetFetch(this.itemSelectId).then(
           (order) => (oldStock = order.stock)
         );
 
         const allStock = oldStock + this.orderSelectItem.count;
-        if (allStock - new_order.count < 0) return;
+        if (allStock - newOrder.count < 0) return;
       }
 
       // order update
-      await orderUpdateFetch(this.orderSelectId, new_order);
+      await orderUpdateFetch(this.orderSelectId, newOrder);
 
       // stock update
-      if (new_order.count) {
-        const stockAddCount = new_order.count - this.orderSelectItem.count;
+      if (newOrder.count) {
+        const stockAddCount = newOrder.count - this.orderSelectItem.count;
         await itemUpdateStock(this.itemSelectId, stockAddCount);
       }
 

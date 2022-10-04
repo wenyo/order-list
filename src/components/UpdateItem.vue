@@ -66,8 +66,8 @@ export default {
       // check: need to update
       if (_.isEmpty(data)) return;
 
-      const update_time = new Date().getTime();
-      this.$emit("save", { ...data, update_time });
+      const updateTime = new Date().getTime();
+      this.$emit("save", { ...data, update_time: updateTime });
     },
     cancelClick() {
       this.$emit("cancel");

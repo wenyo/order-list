@@ -43,8 +43,8 @@ export default {
       navigate();
       this.menuToggle(false);
     },
-    menuItemShow(menu_key) {
-      const { admin, customer } = ROUTES_CONFIG[menu_key].meta;
+    menuItemShow(menuKey) {
+      const { admin, customer } = ROUTES_CONFIG[menuKey].meta;
 
       switch (this.userType) {
         case USER_TYPE.ADMIN:

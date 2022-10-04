@@ -44,8 +44,8 @@ export default {
       });
     },
     // order
-    orderAlertToggle(alert_show) {
-      this.orderAlertShow = alert_show;
+    orderAlertToggle(alertShow) {
+      this.orderAlertShow = alertShow;
     },
     orderAlertClose() {
       this.orderAlertToggle(false);
@@ -55,20 +55,20 @@ export default {
       this.orderAlertToggle(true);
       this.orderSelectId = id;
     },
-    async orderAdd(order_data) {
+    async orderAdd(orderData) {
       this.loadingOpen();
       // new order
-      await orderSetFetch(order_data);
+      await orderSetFetch(orderData);
       // calculate stock
-      await itemUpdateStock(this.orderSelectId, order_data.count);
+      await itemUpdateStock(this.orderSelectId, orderData.count);
 
       this.orderAlertClose();
       await this.itemListGet();
       this.loadingClose();
     },
     // update items
-    updateAlertToggle(alert_show) {
-      this.updateAlertShow = alert_show;
+    updateAlertToggle(alertShow) {
+      this.updateAlertShow = alertShow;
     },
     updateAlertClose() {
       this.updateAlertToggle(false);
