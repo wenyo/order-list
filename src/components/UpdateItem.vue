@@ -29,6 +29,22 @@ export default {
     ...mapState(["loading"]),
     isNewProduct() {
       return !this.newItem.id;
+    },
+    price: {
+      get() {
+        return _.toString(this.newItem["price"]);
+      },
+      set(priceStr) {
+        this.newItem["price"] = _.toInteger(priceStr);
+      }
+    },
+    stock: {
+      get() {
+        return _.toString(this.newItem["stock"]);
+      },
+      set(stockStr) {
+        this.newItem["stock"] = _.toInteger(stockStr);
+      }
     }
   },
   methods: {
@@ -40,36 +56,37 @@ export default {
       if (this.loading) return;
       this.$emit("show");
     },
-    async dataFormat(value) {
-      let data = {};
-      const intValueKey = ["price", "stock"];
+    async dataFormat() {
+      let result = {
+        data: {},
+        updated: false
+      };
 
-      for (const key in value) {
-        if (!value[key] || value[key] === this.item[key]) continue;
-        const valueTmp = intValueKey.includes(key)
-          ? _.toInteger(value[key])
-          : value[key];
-        data[key] = valueTmp;
+      for (const key in this.newItem) {
+        if (this.newItem[key] !== this.item[key]) {
+          result.data[key] = this.newItem[key];
+          result.updated = true;
+        }
       }
 
-      if (data.img) {
-        await this.imgToBase64(value.img).then((img) => {
-          data.img = img;
+      if (result.data.img) {
+        await this.imgToBase64(this.newItem.img).then((img) => {
+          result.data.img = img;
         });
       }
-      return data;
+      return result;
     },
-    async saveClick(value) {
+    async saveClick() {
       if (this.loading) return;
 
-      let data = await this.dataFormat(value);
+      let { data, updated } = await this.dataFormat();
       // check: need to update
-      if (_.isEmpty(data)) return;
+      if (!updated) return this.cancelClick();
 
       const updateTime = new Date().getTime();
       this.$emit("save", { ...data, update_time: updateTime });
     },
-    cancelClick() {
+    async cancelClick() {
       this.$emit("cancel");
     },
     isRequired(value) {
@@ -164,11 +181,11 @@ div.alert-block(@click.self="cancelClick")
         ErrorMessage.error-msg( name="name" )
       label
         span.w-80 price/
-        VField.input-primary( name="price" type="number" :rules="isPositiveInteger" v-model="newItem.price" )
+        VField.input-primary( name="price" type="number" :rules="isPositiveInteger" v-model="price" )
         ErrorMessage.error-msg( name="price" )
       label
         span.w-80 stock/
-        VField.input-primary( name="stock" type="number" :rules="isPositiveIntegerOrZero" v-model="newItem.stock" )
+        VField.input-primary( name="stock" type="number" :rules="isPositiveIntegerOrZero" v-model="stock" )
         ErrorMessage.error-msg( name="stock" )
       label
         span.w-80 img/

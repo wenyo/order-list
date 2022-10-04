@@ -38,8 +38,13 @@ export default {
     isNewOrder() {
       return _.isEmpty(this.order);
     },
-    count() {
-      return _.toInteger(this.newOrder["count"]);
+    count: {
+      get() {
+        return _.toString(this.newOrder["count"]);
+      },
+      set(countStr) {
+        this.newOrder["count"] = _.toInteger(countStr);
+      }
     },
     stock() {
       const oldOrderCount = this.order.count || 0;
@@ -62,20 +67,16 @@ export default {
       this.$emit("cancel");
     },
     dataFormat() {
-      const intValueKey = ["count"];
       let result = {
         data: {},
-        updated: true
+        updated: false
       };
 
       for (const key in this.newOrder) {
         // new data || update data
         if (this.isNewOrder || this.newOrder[key] !== this.order[key]) {
-          const valueTmp = intValueKey.includes(key)
-            ? _.toInteger(this.newOrder[key])
-            : this.newOrder[key];
           result.updated = true;
-          result.data[key] = valueTmp;
+          result.data[key] = this.newOrder[key];
         }
       }
 
@@ -162,11 +163,11 @@ div.alert-block(@click.self="cancelClick")
       label
         span.w-80.shrink-0 count/
         template(v-if="isEdit")
-          VField.input-primary.shrink-0( name="count" type="number" :max="stock" :rules="isCountValid" v-model="newOrder.count" )
+          VField.input-primary.shrink-0( name="count" type="number" :max="stock" :rules="isCountValid" v-model="count" )
           div.answer.shrink-0
             span max: {{stock}}
             ErrorMessage.error-msg( name="count" )
-        span(v-else) {{newOrder.count}}
+        span(v-else) {{count}}
       label
         span.w-80 note/
         textarea.note-input( type="text" v-if="isEdit" v-model="newOrder.note" )
