@@ -154,13 +154,7 @@ export async function orderListGetByUidFetch(uid) {
       where("display", "==", true),
       orderBy("id")
     )
-  ).then((result) => {
-    let itemList = {};
-    for (const item of result.docs) {
-      itemList[item.id] = item.data();
-    }
-    return itemList;
-  });
+  );
 }
 
 export async function orderListGetFetch() {

@@ -2,12 +2,6 @@
 import _ from "lodash";
 import Header from "../components/Header.vue";
 import { mapState, mapMutations, mapActions } from "vuex";
-import {
-  orderListGetByUidFetch,
-  orderUpdateFetch,
-  itemUpdateStockFetch,
-  itemByIdGetFetch
-} from "../api";
 import { NO_ID } from "../util/enum";
 import Edit from "../components/Edit.vue";
 
@@ -47,7 +41,13 @@ export default {
   },
   methods: {
     ...mapMutations(["loadingOpen", "loadingClose"]),
-    ...mapActions(["itemListGet"]),
+    ...mapActions([
+      "itemListGet",
+      "itemUpdateStock",
+      "orderListGetByUid",
+      "orderUpdate",
+      "itemByIdGet"
+    ]),
     async itemLisSet() {
       this.itemListGet().then((rs) => {
         this.itemList = rs;
@@ -55,7 +55,7 @@ export default {
     },
     async orderListGet() {
       if (!this.uid) return;
-      return orderListGetByUidFetch(this.uid).then((rs) => {
+      return this.orderListGetByUid({ uid: this.uid }).then((rs) => {
         this.orderList = rs;
       });
     },
@@ -72,13 +72,13 @@ export default {
       this.itemSelectId = itemId;
       this.orderSelectId = orderId;
     },
-    async orderUpdate(newOrder) {
+    async orderUpdateClick(newOrder) {
       this.loadingOpen();
 
       // check stock
       if (newOrder.count) {
         let oldStock = 0;
-        await itemByIdGetFetch(this.itemSelectId).then(
+        await this.itemByIdGet({ id: this.itemSelectId }).then(
           (order) => (oldStock = order.stock)
         );
 
@@ -87,12 +87,12 @@ export default {
       }
 
       // order update
-      await orderUpdateFetch(this.orderSelectId, newOrder);
+      await this.orderUpdate({ id: this.orderSelectId, newOrder });
 
       // stock update
-      if (newOrder.count) {
-        const stockAddCount = newOrder.count - this.orderSelectItem.count;
-        await itemUpdateStockFetch(this.itemSelectId, stockAddCount);
+      if (!!newOrder.count) {
+        const stockMinusCount = newOrder.count - this.orderSelectItem.count;
+        await this.itemUpdateStock({ id: this.itemSelectId, stockMinusCount });
       }
 
       this.orderAlertClose();
@@ -105,14 +105,14 @@ export default {
       this.loadingOpen();
 
       // delete order
-      const deleteOrderCount = -_.toInteger(this.orderList[id].count);
+      const stockMinusCount = -_.toInteger(this.orderList[id].count);
       const itemId = this.orderList[id].item_id;
-      await orderUpdateFetch(id, { display: false });
+      await this.orderUpdate({ id, newOrder: { display: false } });
       await this.orderListGet();
       await this.itemLisSet();
 
       // update stock
-      await itemUpdateStockFetch(itemId, deleteOrderCount);
+      await this.itemUpdateStock({ id: itemId, stockMinusCount });
       this.loadingClose();
     },
     async orderDeleteClick() {
@@ -147,7 +147,7 @@ ul
       div.grow.word-break {{order.note}}
       div.w-100.shrink-0
         button.btn-disable(@click.stop="orderDelete(order.id)" v-if="itemList[order.item_id].display") DELETE
-Edit(v-if="orderAlertShow" :is-edit="itemSelectItem.display" :item="itemSelectItem" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderUpdate" @delete="orderDeleteClick")
+Edit(v-if="orderAlertShow" :is-edit="itemSelectItem.display" :item="itemSelectItem" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderUpdateClick" @delete="orderDeleteClick")
 </template>
 
 <style lang="scss" scoped>

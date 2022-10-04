@@ -10,7 +10,10 @@ import {
   itemUpdateFetch,
   itemSetFetch,
   itemUpdateStockFetch,
-  orderSetFetch
+  orderSetFetch,
+  orderListGetByUidFetch,
+  orderUpdateFetch,
+  itemByIdGetFetch
 } from "../api";
 
 const store = createStore({
@@ -93,7 +96,7 @@ const store = createStore({
       });
     },
     // item list get
-    async itemListGet({ commit }) {
+    async itemListGet() {
       return itemListGetFetch().then((result) => {
         let itemList = {};
         for (const item of result.docs) {
@@ -103,7 +106,10 @@ const store = createStore({
         return itemList;
       });
     },
-    async itemInfoUpdate({ commit }, { id, itemUpdateData }) {
+    async itemByIdGet({}, { id }) {
+      return itemByIdGetFetch(id).then((result) => result);
+    },
+    async itemInfoUpdate({}, { id, itemUpdateData }) {
       // loading open
 
       // item update or add
@@ -119,11 +125,11 @@ const store = createStore({
       const itemUpdateData = { display };
       await dispatch("itemInfoUpdate", { id, itemUpdateData });
     },
-    async itemUpdateStock({ commit }, { id, stockMinusCount }) {
+    async itemUpdateStock({}, { id, stockMinusCount }) {
       await itemUpdateStockFetch(id, stockMinusCount);
     },
     // order add
-    async orderInfoSet({ dispatch, commit }, { orderNewData }) {
+    async orderInfoSet({ dispatch }, { orderNewData }) {
       // new order
       await orderSetFetch(orderNewData);
 
@@ -132,6 +138,19 @@ const store = createStore({
         id: orderNewData.item_id,
         stockMinusCount: orderNewData.count
       });
+    },
+    // order get
+    async orderListGetByUid({}, { uid }) {
+      return await orderListGetByUidFetch(uid).then((result) => {
+        let itemList = {};
+        for (const item of result.docs) {
+          itemList[item.id] = item.data();
+        }
+        return itemList;
+      });
+    },
+    async orderUpdate({}, { id, newOrder }) {
+      return await orderUpdateFetch(id, newOrder);
     }
   }
 });
