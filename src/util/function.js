@@ -1,9 +1,11 @@
+import _ from "lodash";
+
 export function idToNumConverter(id) {
-  return parseInt(id);
+  return _.toInteger(id);
 }
 
 export function idToStrConverter(id) {
-  return id.toString();
+  return _.toString(id);
 }
 
 export function idPadStartZero(id) {

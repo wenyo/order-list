@@ -1,4 +1,5 @@
 <script>
+import _ from "lodash";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { mapState } from "vuex";
 import { ERROR_MSG } from "../util/enum";
@@ -46,7 +47,7 @@ export default {
       for (const key in value) {
         if (!value[key] || value[key] === this.item[key]) continue;
         const valueTmp = intValueKey.includes(key)
-          ? parseInt(value[key])
+          ? _.toInteger(value[key])
           : value[key];
         data[key] = valueTmp;
       }
@@ -63,7 +64,7 @@ export default {
 
       let data = await this.dataFormat(value);
       // check: need to update
-      if (Object.keys(data).length === 0) return;
+      if (_.isEmpty(data)) return;
 
       const update_time = new Date().getTime();
       this.$emit("save", { ...data, update_time });

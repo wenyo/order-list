@@ -1,6 +1,6 @@
 <script>
+import _ from "lodash";
 import Header from "../components/Header.vue";
-import { useRouter } from "vue-router";
 import { mapState, mapMutations } from "vuex";
 import {
   orderListGetByUidFetch,
@@ -10,7 +10,6 @@ import {
   itemByIdGetFetch
 } from "../api";
 import { NO_ID } from "../util/enum";
-import { ROUTES_CONFIG } from "../router";
 import Edit from "../components/Edit.vue";
 
 export default {
@@ -106,7 +105,7 @@ export default {
       this.loadingOpen();
 
       // delete order
-      const deleteOrderCount = -parseInt(this.orderList[id].count);
+      const deleteOrderCount = -_.toInteger(this.orderList[id].count);
       const itemId = this.orderList[id].item_id;
       await orderUpdateFetch(id, { display: false });
       await this.orderListGet();

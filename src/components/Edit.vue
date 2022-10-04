@@ -1,4 +1,5 @@
 <script>
+import _ from "lodash";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { mapState } from "vuex";
 import { NO_ID, ERROR_MSG, ORDER_TEMP } from "../util/enum";
@@ -35,14 +36,14 @@ export default {
   computed: {
     ...mapState(["user", "loading"]),
     isNewOrder() {
-      return Object.keys(this.order).length === 0;
+      return _.isEmpty(this.order);
     },
     count() {
-      return parseInt(this.newOrder["count"]);
+      return _.toInteger(this.newOrder["count"]);
     },
     stock() {
       const oldOrderCount = this.order.count || 0;
-      return parseInt(this.item.stock) + parseInt(oldOrderCount);
+      return _.toInteger(this.item.stock) + _.toInteger(oldOrderCount);
     }
   },
   methods: {
@@ -71,7 +72,7 @@ export default {
         // new data || update data
         if (this.isNewOrder || this.newOrder[key] !== this.order[key]) {
           const valueTmp = intValueKey.includes(key)
-            ? parseInt(this.newOrder[key])
+            ? _.toInteger(this.newOrder[key])
             : this.newOrder[key];
           result.updated = true;
           result.data[key] = valueTmp;
@@ -96,7 +97,7 @@ export default {
       return true;
     },
     isCountValid(valStr) {
-      const value = parseInt(valStr);
+      const value = _.toInteger(valStr);
       if (value !== 0 && !value) {
         return ERROR_MSG.IS_REQUIRED;
       }
@@ -112,7 +113,7 @@ export default {
       return true;
     },
     isPositiveIntegerOrZero(valStr) {
-      const value = parseInt(valStr);
+      const value = _.toInteger(valStr);
 
       if (!value && value !== 0) {
         return ERROR_MSG.IS_REQUIRED;
