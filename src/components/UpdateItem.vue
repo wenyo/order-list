@@ -90,7 +90,11 @@ export default {
       return true;
     },
     isPositiveIntegerOrZero(value) {
-      if (!value && value !== 0) {
+      if (value === 0) {
+        return true;
+      }
+
+      if (!value) {
         return ERROR_MSG.IS_REQUIRED;
       }
 
@@ -147,7 +151,7 @@ div.alert-block(@click.self="cancelClick")
         ErrorMessage.error-msg( name="price" )
       label
         span.w-80 stock/
-        VField.input-primary( name="stock" type="number" :rules="isPositiveInteger" v-model="newItem.stock" )
+        VField.input-primary( name="stock" type="number" :rules="isPositiveIntegerOrZero" v-model="newItem.stock" )
         ErrorMessage.error-msg( name="stock" )
       label
         span.w-80 img/
