@@ -29,11 +29,9 @@ const store = createStore({
       state.loginFailed = loginAuth;
     },
     loadingOpen(state) {
-      console.log("loadingOpen");
       state.loading = true;
     },
     loadingClose(state) {
-      console.log("loadingClose");
       state.loading = false;
     },
     loginStatusSet(state, { user, auth }) {
@@ -122,9 +120,9 @@ const store = createStore({
       // loading close
       commit("loadingClose");
     },
-    itemDisplayToggle({ dispatch }, { id, display }) {
+    async itemDisplayToggle({ dispatch }, { id, display }) {
       const itemUpdateData = { display };
-      dispatch("itemInfoUpdate", { id, itemUpdateData });
+      await dispatch("itemInfoUpdate", { id, itemUpdateData });
     },
     async itemUpdateStock({ commit }, { id, stockMinusCount }) {
       commit("loadingOpen");

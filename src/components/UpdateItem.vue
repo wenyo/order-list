@@ -1,7 +1,7 @@
 <script>
 import _ from "lodash";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import { ERROR_MSG } from "../util/enum";
 import Header from "./Header.vue";
 
@@ -12,7 +12,7 @@ export default {
     VField: Field,
     ErrorMessage: ErrorMessage
   },
-  emits: ["delete", "save", "cancel", "show"],
+  emits: ["closeAlert"],
   props: {
     item: {
       type: Object,
@@ -48,13 +48,11 @@ export default {
     }
   },
   methods: {
-    deleteClick() {
+    ...mapActions(["itemListGet", "itemDisplayToggle", "itemInfoUpdate"]),
+    async itemDisplayClick(display) {
       if (this.loading) return;
-      this.$emit("delete");
-    },
-    showClick() {
-      if (this.loading) return;
-      this.$emit("show");
+      await this.itemDisplayToggle({ id: this.newItem.id, display });
+      this.cancelClick();
     },
     async dataFormat() {
       let result = {
@@ -69,11 +67,6 @@ export default {
         }
       }
 
-      if (result.data.img) {
-        await this.imgToBase64(this.newItem.img).then((img) => {
-          result.data.img = img;
-        });
-      }
       return result;
     },
     async saveClick() {
@@ -84,10 +77,13 @@ export default {
       if (!updated) return this.cancelClick();
 
       const updateTime = new Date().getTime();
-      this.$emit("save", { ...data, update_time: updateTime });
+      const itemUpdateData = { ...data, update_time: updateTime };
+      await this.itemInfoUpdate({ id: this.newItem.id, itemUpdateData });
+
+      this.cancelClick();
     },
     async cancelClick() {
-      this.$emit("cancel");
+      this.$emit("closeAlert");
     },
     isRequired(value) {
       if (!value) {
@@ -138,9 +134,13 @@ export default {
 
       return true;
     },
-    imgChoose(e) {
-      const img = e.target.files[0];
-      this.imgName = img.name;
+    async imgChoose(e) {
+      const imgFile = e.target.files[0];
+      this.imgName = imgFile.name;
+
+      await this.imgToBase64(imgFile).then((img) => {
+        this.newItem.img = img;
+      });
     },
     imgToBase64(img) {
       return new Promise((resolve, reject) => {
@@ -194,8 +194,8 @@ div.alert-block(@click.self="cancelClick")
         VField#img(name="img" type="file" @change="imgChoose")
       .delete(v-if="!isNewProduct")
         span.w-80 display/
-        button.btn-disable(v-if="newItem.display" @click="deleteClick") DELETE
-        button.btn-secondary(v-else @click="showClick") SHOW
+        button.btn-disable(v-if="newItem.display" @click="itemDisplayClick(false)") DELETE
+        button.btn-secondary(v-else @click="itemDisplayClick(true)") SHOW
       .btn-block
         button.btn-primary(type="submit" :disabled="!meta.valid || loading") SAVE
         button.btn-secondary(@click="cancelClick") CANCEL

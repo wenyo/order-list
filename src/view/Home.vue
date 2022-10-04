@@ -31,12 +31,11 @@ export default {
     ...mapActions([
       "itemListGet",
       "itemDisplayToggle",
-      "itemInfoUpdate",
       "itemUpdateStock",
       "orderInfoSet"
     ]),
-    itemLisSet() {
-      this.itemListGet().then((rs) => {
+    async itemLisSet() {
+      return await this.itemListGet().then((rs) => {
         this.itemList = rs;
       });
     },
@@ -54,31 +53,22 @@ export default {
     },
     async orderAdd(orderNewData) {
       // new order
-      await this.orderInfoSet({ orderNewData });
       this.orderAlertClose();
-      this.itemLisSet();
+      await this.orderInfoSet({ orderNewData });
+      await this.itemLisSet();
     },
     // items
     updateAlertToggle(alertShow) {
       this.updateAlertShow = alertShow;
     },
-    updateAlertClose() {
+    async updateAlertClose() {
       this.updateAlertToggle(false);
       this.orderSelectId = NO_ID;
+      await this.itemLisSet();
     },
     updateBtnClick(id) {
       this.updateAlertToggle(true);
       this.orderSelectId = id;
-    },
-    async itemDisplayToggleClick(display) {
-      await this.itemDisplayToggle({ id: this.orderSelectId, display });
-      this.itemLisSet();
-      this.updateAlertClose();
-    },
-    async itemUpdateSave(itemUpdateData) {
-      await this.itemInfoUpdate({ id: this.orderSelectId, itemUpdateData });
-      this.itemLisSet();
-      this.updateAlertClose();
     }
   }
 };
@@ -105,7 +95,7 @@ ul(:class="{'is-admin': isAdmin}")
         button.btn-primary(v-if="isAdmin" @click="updateBtnClick(itemList[id].id)") update
         button.btn-primary(v-else-if="itemList[id].stock>0" @click="buyBtnClick(itemList[id].id)") buy
   Edit(v-if="!isAdmin && orderAlertShow" :item="itemSelectItem" @cancel="orderAlertClose" @save="orderAdd")
-  UpdateItem(v-if="isAdmin && updateAlertShow" :item="itemSelectItem" @cancel="updateAlertClose" @save="itemUpdateSave" @delete="itemDisplayToggleClick(false)" @show="itemDisplayToggleClick(true)")
+  UpdateItem(v-if="isAdmin && updateAlertShow" :item="itemSelectItem" @close-alert="updateAlertClose" )
 </template>
 
 <style lang="scss" scoped>
