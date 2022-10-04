@@ -79,7 +79,9 @@ export default {
 
       return true;
     },
-    isPositiveInteger(value) {
+    isPositiveInteger(valStr) {
+      const value = Number(valStr);
+
       if (!value) {
         return ERROR_MSG.IS_REQUIRED;
       }
@@ -90,7 +92,9 @@ export default {
 
       return true;
     },
-    isPositiveIntegerOrZero(value) {
+    isPositiveIntegerOrZero(valStr) {
+      const value = Number(valStr);
+
       if (value === 0) {
         return true;
       }

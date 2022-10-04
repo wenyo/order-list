@@ -97,12 +97,17 @@ export default {
       return true;
     },
     isCountValid(valStr) {
-      const value = _.toInteger(valStr);
-      if (value !== 0 && !value) {
+      const value = Number(valStr);
+
+      if (value === 0) {
+        return ERROR_MSG.AT_LEAST_ONE;
+      }
+
+      if (!value) {
         return ERROR_MSG.IS_REQUIRED;
       }
 
-      if (value <= 0) {
+      if (value < 0) {
         return ERROR_MSG.AT_LEAST_ONE;
       }
 
@@ -113,9 +118,13 @@ export default {
       return true;
     },
     isPositiveIntegerOrZero(valStr) {
-      const value = _.toInteger(valStr);
+      const value = Number(valStr);
 
-      if (!value && value !== 0) {
+      if (value === 0) {
+        return true;
+      }
+
+      if (!value) {
         return ERROR_MSG.IS_REQUIRED;
       }
 
