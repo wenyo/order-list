@@ -37,6 +37,7 @@ export const ERROR_MSG = {
   IS_REQUIRED: "this field is required",
   AT_LEAST_ONE: "at least 1",
   AT_LEAST_ZERO: "at least 0",
+  NEED_INTEGER: "should be Integer",
   UNDERSTOCK: "understock"
 };
 

@@ -82,8 +82,16 @@ export default {
     isPositiveInteger(valStr) {
       const value = Number(valStr);
 
-      if (!value) {
+      if (!valStr) {
         return ERROR_MSG.IS_REQUIRED;
+      }
+
+      if (value === 0) {
+        return ERROR_MSG.AT_LEAST_ONE;
+      }
+
+      if (!Number.isInteger(value)) {
+        return ERROR_MSG.NEED_INTEGER;
       }
 
       if (value <= 0) {
@@ -95,12 +103,16 @@ export default {
     isPositiveIntegerOrZero(valStr) {
       const value = Number(valStr);
 
+      if (!valStr) {
+        return ERROR_MSG.IS_REQUIRED;
+      }
+
       if (value === 0) {
         return true;
       }
 
-      if (!value) {
-        return ERROR_MSG.IS_REQUIRED;
+      if (!Number.isInteger(value)) {
+        return ERROR_MSG.NEED_INTEGER;
       }
 
       if (value < 0) {
