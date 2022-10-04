@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import { NO_ID, USER_TYPE } from "../util/enum";
 import Edit from "../components/Edit.vue";
 import UpdateItem from "../components/UpdateItem.vue";
@@ -28,15 +28,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      "itemListGet",
-      "itemDisplayToggle",
-      "itemUpdateStock",
-      "orderInfoSet"
-    ]),
+    ...mapMutations(["loadingOpen", "loadingClose"]),
+    ...mapActions(["itemListGet", "orderInfoSet"]),
     async itemLisSet() {
+      this.loadingOpen();
       return await this.itemListGet().then((rs) => {
         this.itemList = rs;
+        this.loadingClose();
       });
     },
     // order

@@ -94,21 +94,17 @@ const store = createStore({
     },
     // item list get
     async itemListGet({ commit }) {
-      commit("loadingOpen");
-
       return itemListGetFetch().then((result) => {
         let itemList = {};
         for (const item of result.docs) {
           itemList[item.id] = item.data();
         }
-        commit("loadingClose");
 
         return itemList;
       });
     },
     async itemInfoUpdate({ commit }, { id, itemUpdateData }) {
       // loading open
-      commit("loadingOpen");
 
       // item update or add
       if (id === NO_ID) {
@@ -118,21 +114,16 @@ const store = createStore({
       }
 
       // loading close
-      commit("loadingClose");
     },
     async itemDisplayToggle({ dispatch }, { id, display }) {
       const itemUpdateData = { display };
       await dispatch("itemInfoUpdate", { id, itemUpdateData });
     },
     async itemUpdateStock({ commit }, { id, stockMinusCount }) {
-      commit("loadingOpen");
       await itemUpdateStockFetch(id, stockMinusCount);
-      commit("loadingClose");
     },
     // order add
     async orderInfoSet({ dispatch, commit }, { orderNewData }) {
-      commit("loadingOpen");
-
       // new order
       await orderSetFetch(orderNewData);
 
@@ -141,8 +132,6 @@ const store = createStore({
         id: orderNewData.item_id,
         stockMinusCount: orderNewData.count
       });
-
-      commit("loadingClose");
     }
   }
 });

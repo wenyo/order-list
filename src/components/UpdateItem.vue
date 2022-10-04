@@ -1,7 +1,7 @@
 <script>
 import _ from "lodash";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import { ERROR_MSG } from "../util/enum";
 import Header from "./Header.vue";
 
@@ -48,13 +48,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["itemListGet", "itemDisplayToggle", "itemInfoUpdate"]),
+    ...mapMutations(["loadingOpen", "loadingClose"]),
+    ...mapActions(["itemDisplayToggle", "itemInfoUpdate"]),
     async itemDisplayClick(display) {
       if (this.loading) return;
+      this.loadingOpen();
       await this.itemDisplayToggle({ id: this.newItem.id, display });
-      this.cancelClick();
+      await this.cloesAlert();
+      this.loadingClose();
     },
-    async dataFormat() {
+    dataFormat() {
       let result = {
         data: {},
         updated: false
@@ -71,19 +74,20 @@ export default {
     },
     async saveClick() {
       if (this.loading) return;
+      this.loadingOpen();
 
-      let { data, updated } = await this.dataFormat();
+      let { data, updated } = this.dataFormat();
       // check: need to update
-      if (!updated) return this.cancelClick();
+      if (!updated) return this.cloesAlert();
 
       const updateTime = new Date().getTime();
       const itemUpdateData = { ...data, update_time: updateTime };
       await this.itemInfoUpdate({ id: this.newItem.id, itemUpdateData });
-
-      this.cancelClick();
+      await this.cloesAlert();
+      this.loadingClose();
     },
-    async cancelClick() {
-      this.$emit("closeAlert");
+    async cloesAlert() {
+      await this.$emit("closeAlert");
     },
     isRequired(value) {
       if (!value) {
@@ -166,9 +170,9 @@ export default {
 };
 </script>
 <template lang="pug">
-div.alert-block(@click.self="cancelClick")
+div.alert-block(@click.self="cloesAlert")
   div.alert-content
-    i.icon-close(@click="cancelClick")
+    i.icon-close(@click="cloesAlert")
     div(v-if="!isNewProduct" :class="{'annotation': !newItem.img}").img-box
       img(:src="newItem.img")
     span.time(v-if="!isNewProduct") {{dateFormatGet(newItem.update_time)}}
@@ -198,7 +202,7 @@ div.alert-block(@click.self="cancelClick")
         button.btn-secondary(v-else @click="itemDisplayClick(true)") SHOW
       .btn-block
         button.btn-primary(type="submit" :disabled="!meta.valid || loading") SAVE
-        button.btn-secondary(@click="cancelClick") CANCEL
+        button.btn-secondary(@click="cloesAlert") CANCEL
 </template>
 
 <style lang="scss" scoped>
