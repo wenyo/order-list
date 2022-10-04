@@ -1,6 +1,5 @@
 <script>
-import { mapMutations, mapState } from "vuex";
-import { logoutFetch } from "../api";
+import { mapState, mapActions } from "vuex";
 import { ROUTES_CONFIG, ROUTES_KEYS } from "../router";
 import { USER_TYPE } from "../util/enum";
 
@@ -18,24 +17,7 @@ export default {
     ...mapState(["userType", "user"])
   },
   methods: {
-    ...mapMutations([
-      "loadingOpen",
-      "loadingClose",
-      "userTypeSet",
-      "loginStatusSet"
-    ]),
-    async logoutClick() {
-      this.loadingOpen();
-      await logoutFetch().then(() => {
-        this.userTypeSet({ userType: USER_TYPE.NONE });
-
-        this.loginStatusSet({
-          user: {},
-          auth: false
-        });
-      });
-      this.loadingClose();
-    },
+    ...mapActions(["logout"]),
     menuToggle(open) {
       this.openMenu = open;
     },
@@ -73,7 +55,7 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
       template(v-for="(menuKey, key) in MENU_KEY" :key="key")
         router-link(v-if="menuItemShow(menuKey)" :to="ROUTES_CONFIG[menuKey].path" custom v-slot="{ navigate, isActive }" )
           li(@click="linkClick(navigate)" :class="{'active':isActive}") {{ROUTES_CONFIG[menuKey].text}}
-    button.btn-secondary(@click="logoutClick")
+    button.btn-secondary(@click="logout")
       i.icon-logout
       span logout
 

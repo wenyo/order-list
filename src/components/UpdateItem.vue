@@ -160,7 +160,7 @@ div.alert-block(@click.self="cancelClick")
     VForm(@submit="saveClick" v-slot="{meta}").alert-form
       label
         span.w-80 name/
-        VField.input-primary( name="name" type="text" :rules="isPositiveInteger" v-model="newItem.name" )
+        VField.input-primary( name="name" type="text" :rules="isRequired" v-model="newItem.name" )
         ErrorMessage.error-msg( name="name" )
       label
         span.w-80 price/

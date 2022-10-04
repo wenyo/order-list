@@ -86,12 +86,8 @@ export async function itemListGetFetch() {
       orderBy("stock", "desc"),
       orderBy("id")
     )
-  ).then((result) => {
-    let itemList = {};
-    for (const item of result.docs) {
-      itemList[item.id] = item.data();
-    }
-    return itemList;
+  ).catch((error) => {
+    console.log(error);
   });
 }
 
@@ -134,16 +130,16 @@ export async function itemUpdateFetch(id, data) {
   return updateDoc(itemsRef, data).catch((error) => console.error(error));
 }
 
-export async function itemUpdateStock(item_id, stock_minus_count) {
+export async function itemUpdateStockFetch(itemId, stockMinusCount) {
   // check last stock
   let oldStock = 0;
-  await itemByIdGetFetch(item_id).then((order) => (oldStock = order.stock));
+  await itemByIdGetFetch(itemId).then((order) => (oldStock = order.stock));
 
   // get new stock
-  const newStock = oldStock - stock_minus_count;
+  const newStock = oldStock - stockMinusCount;
 
   // update
-  return itemUpdateFetch(item_id, { stock: newStock });
+  return itemUpdateFetch(itemId, { stock: newStock });
 }
 
 // order

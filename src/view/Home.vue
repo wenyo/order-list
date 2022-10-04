@@ -1,12 +1,5 @@
 <script>
-import { mapMutations, mapState } from "vuex";
-import {
-  itemListGetFetch,
-  itemUpdateFetch,
-  itemSetFetch,
-  orderSetFetch,
-  itemUpdateStock
-} from "../api";
+import { mapActions, mapState } from "vuex";
 import { NO_ID, USER_TYPE } from "../util/enum";
 import Edit from "../components/Edit.vue";
 import UpdateItem from "../components/UpdateItem.vue";
@@ -23,9 +16,7 @@ export default {
     };
   },
   async created() {
-    this.loadingOpen();
-    await this.itemListGet();
-    this.loadingClose();
+    await this.itemLisSet();
   },
   computed: {
     ...mapState(["userType"]),
@@ -37,9 +28,15 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["loadingOpen", "loadingClose"]),
-    async itemListGet() {
-      return itemListGetFetch().then((rs) => {
+    ...mapActions([
+      "itemListGet",
+      "itemDisplayToggle",
+      "itemInfoUpdate",
+      "itemUpdateStock",
+      "orderInfoSet"
+    ]),
+    itemLisSet() {
+      this.itemListGet().then((rs) => {
         this.itemList = rs;
       });
     },
@@ -55,18 +52,13 @@ export default {
       this.orderAlertToggle(true);
       this.orderSelectId = id;
     },
-    async orderAdd(orderData) {
-      this.loadingOpen();
+    async orderAdd(orderNewData) {
       // new order
-      await orderSetFetch(orderData);
-      // calculate stock
-      await itemUpdateStock(this.orderSelectId, orderData.count);
-
+      await this.orderInfoSet({ orderNewData });
       this.orderAlertClose();
-      await this.itemListGet();
-      this.loadingClose();
+      this.itemLisSet();
     },
-    // update items
+    // items
     updateAlertToggle(alertShow) {
       this.updateAlertShow = alertShow;
     },
@@ -79,24 +71,14 @@ export default {
       this.orderSelectId = id;
     },
     async itemDisplayToggleClick(display) {
-      this.loadingOpen();
-      await itemUpdateFetch(this.orderSelectId, { display });
+      await this.itemDisplayToggle({ id: this.orderSelectId, display });
+      this.itemLisSet();
       this.updateAlertClose();
-      await this.itemListGet();
-      this.loadingClose();
     },
-    async updateSave(data) {
-      this.loadingOpen();
-      if (this.orderSelectId === NO_ID) {
-        // new
-        await itemSetFetch({ ...data, display: true });
-      } else {
-        // update
-        await itemUpdateFetch(this.orderSelectId, data);
-      }
+    async itemUpdateSave(itemUpdateData) {
+      await this.itemInfoUpdate({ id: this.orderSelectId, itemUpdateData });
+      this.itemLisSet();
       this.updateAlertClose();
-      await this.itemListGet();
-      this.loadingClose();
     }
   }
 };
@@ -123,7 +105,7 @@ ul(:class="{'is-admin': isAdmin}")
         button.btn-primary(v-if="isAdmin" @click="updateBtnClick(itemList[id].id)") update
         button.btn-primary(v-else-if="itemList[id].stock>0" @click="buyBtnClick(itemList[id].id)") buy
   Edit(v-if="!isAdmin && orderAlertShow" :item="itemSelectItem" @cancel="orderAlertClose" @save="orderAdd")
-  UpdateItem(v-if="isAdmin && updateAlertShow" :item="itemSelectItem" @cancel="updateAlertClose" @save="updateSave" @delete="itemDisplayToggleClick(false)" @show="itemDisplayToggleClick(true)")
+  UpdateItem(v-if="isAdmin && updateAlertShow" :item="itemSelectItem" @cancel="updateAlertClose" @save="itemUpdateSave" @delete="itemDisplayToggleClick(false)" @show="itemDisplayToggleClick(true)")
 </template>
 
 <style lang="scss" scoped>

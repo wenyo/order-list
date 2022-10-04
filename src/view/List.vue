@@ -1,12 +1,11 @@
 <script>
 import _ from "lodash";
 import Header from "../components/Header.vue";
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import {
   orderListGetByUidFetch,
-  itemListGetFetch,
   orderUpdateFetch,
-  itemUpdateStock,
+  itemUpdateStockFetch,
   itemByIdGetFetch
 } from "../api";
 import { NO_ID } from "../util/enum";
@@ -25,7 +24,7 @@ export default {
   },
   async created() {
     this.loadingOpen();
-    await this.itemListGet();
+    await this.itemLisSet();
     await this.orderListGet();
     this.loadingClose();
   },
@@ -48,8 +47,9 @@ export default {
   },
   methods: {
     ...mapMutations(["loadingOpen", "loadingClose"]),
-    async itemListGet() {
-      return itemListGetFetch().then((rs) => {
+    ...mapActions(["itemListGet"]),
+    async itemLisSet() {
+      this.itemListGet().then((rs) => {
         this.itemList = rs;
       });
     },
@@ -92,12 +92,12 @@ export default {
       // stock update
       if (newOrder.count) {
         const stockAddCount = newOrder.count - this.orderSelectItem.count;
-        await itemUpdateStock(this.itemSelectId, stockAddCount);
+        await itemUpdateStockFetch(this.itemSelectId, stockAddCount);
       }
 
       this.orderAlertClose();
       await this.orderListGet();
-      await this.itemListGet();
+      await this.itemLisSet();
 
       this.loadingClose();
     },
@@ -109,10 +109,10 @@ export default {
       const itemId = this.orderList[id].item_id;
       await orderUpdateFetch(id, { display: false });
       await this.orderListGet();
-      await this.itemListGet();
+      await this.itemLisSet();
 
       // update stock
-      await itemUpdateStock(itemId, deleteOrderCount);
+      await itemUpdateStockFetch(itemId, deleteOrderCount);
       this.loadingClose();
     },
     async orderDeleteClick() {
@@ -120,7 +120,7 @@ export default {
       await this.orderDelete(this.orderSelectId, { display: false });
       this.orderAlertClose();
       await this.orderListGet();
-      await this.itemListGet();
+      await this.itemLisSet();
 
       this.loadingClose();
     }
