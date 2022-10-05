@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _ from 'lodash';
 
 export function idToNumConverter(id) {
   return _.toInteger(id);
@@ -9,7 +9,7 @@ export function idToStrConverter(id) {
 }
 
 export function idPadStartZero(id) {
-  return id.padStart(3, "0");
+  return id.padStart(3, '0');
 }
 
 export function nextIdGet(id) {

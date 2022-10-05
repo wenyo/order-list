@@ -1,7 +1,7 @@
 <script>
-import { mapState, mapActions } from "vuex";
-import { ROUTES_CONFIG, ROUTES_KEYS } from "../router";
-import { USER_TYPE } from "../util/enum";
+import { mapState, mapActions } from 'vuex';
+import { ROUTES_CONFIG, ROUTES_KEYS } from '../router';
+import { USER_TYPE } from '../util/enum';
 
 export default {
   setup() {
@@ -10,14 +10,14 @@ export default {
   },
   data() {
     return {
-      openMenu: false
+      openMenu: false,
     };
   },
   computed: {
-    ...mapState(["userType", "user"])
+    ...mapState(['userType', 'user']),
   },
   methods: {
-    ...mapActions(["logout"]),
+    ...mapActions(['logout']),
     menuToggle(open) {
       this.openMenu = open;
     },
@@ -38,8 +38,8 @@ export default {
       }
 
       return true;
-    }
-  }
+    },
+  },
 };
 </script>
 

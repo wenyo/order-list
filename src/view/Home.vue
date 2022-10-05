@@ -1,8 +1,8 @@
 <script>
-import { mapActions, mapMutations, mapState } from "vuex";
-import { NO_ID, USER_TYPE } from "../util/enum";
-import Edit from "../components/Edit.vue";
-import UpdateItem from "../components/UpdateItem.vue";
+import { mapActions, mapMutations, mapState } from 'vuex';
+import { NO_ID, USER_TYPE } from '../util/enum';
+import Edit from '../components/Edit.vue';
+import UpdateItem from '../components/UpdateItem.vue';
 
 export default {
   components: { Edit, UpdateItem },
@@ -12,24 +12,24 @@ export default {
       orderAlertShow: false,
       updateAlertShow: false,
       orderSelectId: NO_ID,
-      NO_ID
+      NO_ID,
     };
   },
   async created() {
     await this.itemLisSet();
   },
   computed: {
-    ...mapState(["userType"]),
+    ...mapState(['userType']),
     itemSelectItem() {
       return this.itemList[this.orderSelectId];
     },
     isAdmin() {
       return this.userType === USER_TYPE.ADMIN;
-    }
+    },
   },
   methods: {
-    ...mapMutations(["loadingOpen", "loadingClose"]),
-    ...mapActions(["itemListGet", "orderInfoSet"]),
+    ...mapMutations(['loadingOpen', 'loadingClose']),
+    ...mapActions(['itemListGet', 'orderInfoSet']),
     async itemLisSet() {
       this.loadingOpen();
       return await this.itemListGet().then((rs) => {
@@ -67,8 +67,8 @@ export default {
     updateBtnClick(id) {
       this.updateAlertToggle(true);
       this.orderSelectId = id;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -131,14 +131,14 @@ ul {
 }
 
 ul:not(.is-admin) .sold-out::after {
-  content: "SOLD OUT";
+  content: 'SOLD OUT';
 }
 
 .delete-item {
   opacity: 0.5;
 
   .annotation::after {
-    content: "DELETED";
+    content: 'DELETED';
   }
 }
 

@@ -1,75 +1,75 @@
 <script>
-import _ from "lodash";
-import { Form, Field, ErrorMessage } from "vee-validate";
-import { mapState } from "vuex";
-import { NO_ID, ERROR_MSG, ORDER_TEMP } from "../util/enum";
-import Header from "./Header.vue";
+import _ from 'lodash';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import { mapState } from 'vuex';
+import { NO_ID, ERROR_MSG, ORDER_TEMP } from '../util/enum';
+import Header from './Header.vue';
 
 export default {
   components: {
     Header,
     VForm: Form,
     VField: Field,
-    ErrorMessage: ErrorMessage
+    ErrorMessage: ErrorMessage,
   },
-  emits: ["delete", "save", "cancel"],
+  emits: ['delete', 'save', 'cancel'],
   props: {
     item: {
       type: Object,
-      default: {}
+      default: {},
     },
     order: {
       type: Object,
-      default: {}
+      default: {},
     },
     isEdit: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   data() {
     return {
       NO_ID,
-      newOrder: { ...ORDER_TEMP(), ...this.order }
+      newOrder: { ...ORDER_TEMP(), ...this.order },
     };
   },
   computed: {
-    ...mapState(["user", "loading"]),
+    ...mapState(['user', 'loading']),
     isNewOrder() {
       return _.isEmpty(this.order);
     },
     count: {
       get() {
-        return _.toString(this.newOrder["count"]);
+        return _.toString(this.newOrder['count']);
       },
       set(countStr) {
-        this.newOrder["count"] = _.toInteger(countStr);
-      }
+        this.newOrder['count'] = _.toInteger(countStr);
+      },
     },
     stock() {
       const oldOrderCount = this.order.count || 0;
       return _.toInteger(this.item.stock) + _.toInteger(oldOrderCount);
-    }
+    },
   },
   methods: {
     deleteClick() {
       if (this.loading) return;
-      this.$emit("delete");
+      this.$emit('delete');
     },
     saveClick() {
       if (this.loading) return;
       const { data, updated } = this.dataFormat();
       // no need to update
       if (!updated) return this.cancelClick();
-      this.$emit("save", data);
+      this.$emit('save', data);
     },
     cancelClick() {
-      this.$emit("cancel");
+      this.$emit('cancel');
     },
     dataFormat() {
       let result = {
         data: {},
-        updated: false
+        updated: false,
       };
 
       for (const key in this.newOrder) {
@@ -84,7 +84,7 @@ export default {
         result.data = {
           ...result.data,
           item_id: this.item.id,
-          user_uid: this.user.uid
+          user_uid: this.user.uid,
         };
       }
 
@@ -142,8 +142,8 @@ export default {
       }
 
       return true;
-    }
-  }
+    },
+  },
 };
 </script>
 <template lang="pug">

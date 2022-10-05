@@ -1,34 +1,34 @@
 <script>
-import { mapState, mapActions } from "vuex";
-import { Form, Field, ErrorMessage } from "vee-validate";
-import { ERROR_MSG } from "../util/enum";
+import { mapState, mapActions } from 'vuex';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import { ERROR_MSG } from '../util/enum';
 
 export default {
   components: {
     VForm: Form,
     VField: Field,
-    ErrorMessage: ErrorMessage
+    ErrorMessage: ErrorMessage,
   },
   data() {
     return {
-      account: "wenda897436@gmail.com",
-      password: "123456",
-      ERROR_MSG
+      account: 'wenda897436@gmail.com',
+      password: '123456',
+      ERROR_MSG,
     };
   },
   computed: {
-    ...mapState(["auth", "loginFailed"])
+    ...mapState(['auth', 'loginFailed']),
   },
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(['login']),
     isRequired(value) {
       if (!value) {
         return ERROR_MSG.IS_REQUIRED;
       }
 
       return true;
-    }
-  }
+    },
+  },
 };
 </script>
 

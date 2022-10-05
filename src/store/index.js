@@ -1,5 +1,5 @@
-import { createStore } from "vuex";
-import { NO_ID, USER_TYPE } from "../util/enum";
+import { createStore } from 'vuex';
+import { NO_ID, USER_TYPE } from '../util/enum';
 import {
   loginFetch,
   authUser,
@@ -13,8 +13,8 @@ import {
   orderSetFetch,
   orderListGetByUidFetch,
   orderUpdateFetch,
-  itemByIdGetFetch
-} from "../api";
+  itemByIdGetFetch,
+} from '../api';
 
 const store = createStore({
   state() {
@@ -23,7 +23,7 @@ const store = createStore({
       auth: false,
       user: {},
       loading: false,
-      userType: USER_TYPE.NONE
+      userType: USER_TYPE.NONE,
     };
   },
   getters: {},
@@ -43,55 +43,55 @@ const store = createStore({
     },
     userTypeSet(state, { userType }) {
       state.userType = userType;
-    }
+    },
   },
   actions: {
     // reset user status
     userStatusReset({ commit }) {
-      commit("userTypeSet", { userType: USER_TYPE.NONE });
-      commit("loginStatusSet", {
+      commit('userTypeSet', { userType: USER_TYPE.NONE });
+      commit('loginStatusSet', {
         user: {},
-        auth: false
+        auth: false,
       });
     },
     // user login
     async login({ commit }, { account, password }) {
       // loading open
-      commit("loadingOpen");
+      commit('loadingOpen');
 
       // login
       await loginFetch({ account, password });
       const loginResult = authUser();
-      commit("loginFailedSet", { loginAuth: !loginResult.auth });
+      commit('loginFailedSet', { loginAuth: !loginResult.auth });
       if (!loginResult.auth) {
-        console.log("login");
-        commit("loadingClose");
+        console.log('login');
+        commit('loadingClose');
         return;
       }
 
-      commit("loginStatusSet", {
+      commit('loginStatusSet', {
         user: loginResult.currentUser,
-        auth: loginResult.auth
+        auth: loginResult.auth,
       });
     },
     async logout({ dispatch, commit }) {
-      commit("loadingOpen");
+      commit('loadingOpen');
       await logoutFetch();
-      dispatch("userStatusReset");
-      commit("loadingClose");
+      dispatch('userStatusReset');
+      commit('loadingClose');
     },
     // user type get
     async userTypeUpdate({ commit }) {
       return await userTypeGet().then((userType) => {
-        commit("userTypeSet", { userType });
+        commit('userTypeSet', { userType });
       });
     },
     // user login status check
     async isLoggedInCheck({ commit }) {
       await isLoggedIn((user) => {
-        commit("loginStatusSet", {
+        commit('loginStatusSet', {
           user,
-          auth: !!user
+          auth: !!user,
         });
       });
     },
@@ -123,7 +123,7 @@ const store = createStore({
     },
     async itemDisplayToggle({ dispatch }, { id, display }) {
       const itemUpdateData = { display };
-      await dispatch("itemInfoUpdate", { id, itemUpdateData });
+      await dispatch('itemInfoUpdate', { id, itemUpdateData });
     },
     async itemUpdateStock({}, { id, stockMinusCount }) {
       await itemUpdateStockFetch(id, stockMinusCount);
@@ -134,9 +134,9 @@ const store = createStore({
       await orderSetFetch(orderNewData);
 
       // calculate stock
-      await dispatch("itemUpdateStock", {
+      await dispatch('itemUpdateStock', {
         id: orderNewData.item_id,
-        stockMinusCount: orderNewData.count
+        stockMinusCount: orderNewData.count,
       });
     },
     // order get
@@ -151,8 +151,8 @@ const store = createStore({
     },
     async orderUpdate({}, { id, newOrder }) {
       return await orderUpdateFetch(id, newOrder);
-    }
-  }
+    },
+  },
 });
 
 export default store;

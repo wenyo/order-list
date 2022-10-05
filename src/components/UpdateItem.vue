@@ -1,55 +1,55 @@
 <script>
-import _ from "lodash";
-import { Form, Field, ErrorMessage } from "vee-validate";
-import { mapState, mapActions, mapMutations } from "vuex";
-import { ERROR_MSG } from "../util/enum";
-import Header from "./Header.vue";
+import _ from 'lodash';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import { mapState, mapActions, mapMutations } from 'vuex';
+import { ERROR_MSG } from '../util/enum';
+import Header from './Header.vue';
 
 export default {
   components: {
     Header,
     VForm: Form,
     VField: Field,
-    ErrorMessage: ErrorMessage
+    ErrorMessage: ErrorMessage,
   },
-  emits: ["closeAlert"],
+  emits: ['closeAlert'],
   props: {
     item: {
       type: Object,
-      default: {}
-    }
+      default: {},
+    },
   },
   data() {
     return {
-      imgName: "",
-      newItem: JSON.parse(JSON.stringify(this.item))
+      imgName: '',
+      newItem: JSON.parse(JSON.stringify(this.item)),
     };
   },
   computed: {
-    ...mapState(["loading"]),
+    ...mapState(['loading']),
     isNewProduct() {
       return !this.newItem.id;
     },
     price: {
       get() {
-        return _.toString(this.newItem["price"]);
+        return _.toString(this.newItem['price']);
       },
       set(priceStr) {
-        this.newItem["price"] = _.toInteger(priceStr);
-      }
+        this.newItem['price'] = _.toInteger(priceStr);
+      },
     },
     stock: {
       get() {
-        return _.toString(this.newItem["stock"]);
+        return _.toString(this.newItem['stock']);
       },
       set(stockStr) {
-        this.newItem["stock"] = _.toInteger(stockStr);
-      }
-    }
+        this.newItem['stock'] = _.toInteger(stockStr);
+      },
+    },
   },
   methods: {
-    ...mapMutations(["loadingOpen", "loadingClose"]),
-    ...mapActions(["itemDisplayToggle", "itemInfoUpdate"]),
+    ...mapMutations(['loadingOpen', 'loadingClose']),
+    ...mapActions(['itemDisplayToggle', 'itemInfoUpdate']),
     async itemDisplayClick(display) {
       if (this.loading) return;
       this.loadingOpen();
@@ -60,7 +60,7 @@ export default {
     dataFormat() {
       let result = {
         data: {},
-        updated: false
+        updated: false,
       };
 
       for (const key in this.newItem) {
@@ -87,7 +87,7 @@ export default {
       this.loadingClose();
     },
     async cloesAlert() {
-      await this.$emit("closeAlert");
+      await this.$emit('closeAlert');
     },
     isRequired(value) {
       if (!value) {
@@ -155,7 +155,7 @@ export default {
       });
     },
     padStartZero(number) {
-      return number.toString().padStart(2, "0");
+      return number.toString().padStart(2, '0');
     },
     dateFormatGet(timestamp) {
       const fullDate = new Date(timestamp);
@@ -165,8 +165,8 @@ export default {
       const hour = this.padStartZero(fullDate.getHours());
       const minute = this.padStartZero(fullDate.getMinutes());
       return `${year}/${month}/${date} ${hour}:${minute}`;
-    }
-  }
+    },
+  },
 };
 </script>
 <template lang="pug">
@@ -257,7 +257,7 @@ label,
   padding-bottom: 40%;
 
   &.annotation::after {
-    content: "NO IMAGE";
+    content: 'NO IMAGE';
   }
 }
 </style>

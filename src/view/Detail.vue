@@ -1,9 +1,9 @@
 <script>
-import { computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { mapGetters, useStore, mapMutations } from "vuex";
-import { ROUTES_CONFIG } from "../router";
-import Edit from "../components/Edit.vue";
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { mapGetters, useStore, mapMutations } from 'vuex';
+import { ROUTES_CONFIG } from '../router';
+import Edit from '../components/Edit.vue';
 
 export default {
   components: { Edit },
@@ -26,21 +26,21 @@ export default {
     return {
       id,
       idExist,
-      backList
+      backList,
     };
   },
   computed: {
-    ...mapGetters(["orderGetById"]),
+    ...mapGetters(['orderGetById']),
     orderInput() {
       if (!this.idExist) {
         return {};
       }
       const order = this.orderGetById(this.id);
       return JSON.parse(JSON.stringify(order));
-    }
+    },
   },
   methods: {
-    ...mapMutations(["orderEdit", "orderDelete"]),
+    ...mapMutations(['orderEdit', 'orderDelete']),
     saveClick() {
       this.orderEdit({ new_order: this.orderInput });
       this.backList();
@@ -48,8 +48,8 @@ export default {
     deleteClick() {
       this.orderDelete({ id: this.id });
       this.backList();
-    }
-  }
+    },
+  },
 };
 </script>
 

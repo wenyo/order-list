@@ -1,9 +1,9 @@
 <script>
-import _ from "lodash";
-import Header from "../components/Header.vue";
-import { mapState, mapMutations, mapActions } from "vuex";
-import { NO_ID } from "../util/enum";
-import Edit from "../components/Edit.vue";
+import _ from 'lodash';
+import Header from '../components/Header.vue';
+import { mapState, mapMutations, mapActions } from 'vuex';
+import { NO_ID } from '../util/enum';
+import Edit from '../components/Edit.vue';
 
 export default {
   components: { Header, Edit },
@@ -13,7 +13,7 @@ export default {
       itemList: {},
       itemSelectId: NO_ID,
       orderSelectId: NO_ID,
-      orderAlertShow: false
+      orderAlertShow: false,
     };
   },
   async created() {
@@ -23,7 +23,7 @@ export default {
     this.loadingClose();
   },
   computed: {
-    ...mapState(["user"]),
+    ...mapState(['user']),
     uid() {
       return this.user?.uid;
     },
@@ -32,21 +32,21 @@ export default {
     },
     itemSelectItem() {
       return this.itemList[this.itemSelectId];
-    }
+    },
   },
   watch: {
     uid() {
       this.orderListGet();
-    }
+    },
   },
   methods: {
-    ...mapMutations(["loadingOpen", "loadingClose"]),
+    ...mapMutations(['loadingOpen', 'loadingClose']),
     ...mapActions([
-      "itemListGet",
-      "itemUpdateStock",
-      "orderListGetByUid",
-      "orderUpdate",
-      "itemByIdGet"
+      'itemListGet',
+      'itemUpdateStock',
+      'orderListGetByUid',
+      'orderUpdate',
+      'itemByIdGet',
     ]),
     async itemLisSet() {
       this.itemListGet().then((rs) => {
@@ -78,9 +78,7 @@ export default {
       // check stock
       if (newOrder.count) {
         let oldStock = 0;
-        await this.itemByIdGet({ id: this.itemSelectId }).then(
-          (order) => (oldStock = order.stock)
-        );
+        await this.itemByIdGet({ id: this.itemSelectId }).then((order) => (oldStock = order.stock));
 
         const allStock = oldStock + this.orderSelectItem.count;
         if (allStock - newOrder.count < 0) return;
@@ -123,8 +121,8 @@ export default {
       await this.itemLisSet();
 
       this.loadingClose();
-    }
-  }
+    },
+  },
 };
 </script>
 

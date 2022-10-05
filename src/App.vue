@@ -1,14 +1,14 @@
 <script>
-import { mapState } from "vuex";
-import Menu from "./components/Menu.vue";
-import Loading from "./components/Loading.vue";
-import AuthRequire from "./components/AuthRequire.vue";
+import { mapState } from 'vuex';
+import Menu from './components/Menu.vue';
+import Loading from './components/Loading.vue';
+import AuthRequire from './components/AuthRequire.vue';
 
 export default {
   components: { Menu, Loading, AuthRequire },
   computed: {
-    ...mapState(["loading", "auth"])
-  }
+    ...mapState(['loading', 'auth']),
+  },
 };
 </script>
 
