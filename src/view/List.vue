@@ -1,17 +1,9 @@
 <script>
-import Header from "../components/Header.vue";
-import { useRouter } from "vue-router";
-import { mapState, mapMutations } from "vuex";
-import {
-  orderListGetByUidFetch,
-  itemListGetFetch,
-  orderUpdateFetch,
-  itemUpdateStock,
-  itemByIdGetFetch
-} from "../api";
-import { NO_ID } from "../util/enum";
-import { ROUTES_CONFIG } from "../router";
-import Edit from "../components/Edit.vue";
+import _ from 'lodash';
+import Header from '../components/Header.vue';
+import { mapState, mapMutations, mapActions } from 'vuex';
+import { NO_ID } from '../util/enum';
+import Edit from '../components/Edit.vue';
 
 export default {
   components: { Header, Edit },
@@ -21,17 +13,17 @@ export default {
       itemList: {},
       itemSelectId: NO_ID,
       orderSelectId: NO_ID,
-      orderAlertShow: false
+      orderAlertShow: false,
     };
   },
   async created() {
     this.loadingOpen();
-    await this.itemListGet();
+    await this.itemLisSet();
     await this.orderListGet();
     this.loadingClose();
   },
   computed: {
-    ...mapState(["user"]),
+    ...mapState(['user']),
     uid() {
       return this.user?.uid;
     },
@@ -40,65 +32,70 @@ export default {
     },
     itemSelectItem() {
       return this.itemList[this.itemSelectId];
-    }
+    },
   },
   watch: {
     uid() {
       this.orderListGet();
-    }
+    },
   },
   methods: {
-    ...mapMutations(["loadingOpen", "loadingClose"]),
-    async itemListGet() {
-      return itemListGetFetch().then((rs) => {
+    ...mapMutations(['loadingOpen', 'loadingClose']),
+    ...mapActions([
+      'itemListGet',
+      'itemUpdateStock',
+      'orderListGetByUid',
+      'orderUpdate',
+      'itemByIdGet',
+    ]),
+    async itemLisSet() {
+      this.itemListGet().then((rs) => {
         this.itemList = rs;
       });
     },
     async orderListGet() {
       if (!this.uid) return;
-      return orderListGetByUidFetch(this.uid).then((rs) => {
+      return this.orderListGetByUid({ uid: this.uid }).then((rs) => {
         this.orderList = rs;
       });
     },
     // order
-    orderAlertToggle(alert_show) {
-      this.orderAlertShow = alert_show;
+    orderAlertToggle(alertShow) {
+      this.orderAlertShow = alertShow;
     },
     orderAlertClose() {
       this.orderAlertToggle(false);
       this.orderSelectId = NO_ID;
     },
-    orderClick(item_id, order_id) {
+    orderClick(itemId, orderId) {
       this.orderAlertToggle(true);
-      this.itemSelectId = item_id;
-      this.orderSelectId = order_id;
+      this.itemSelectId = itemId;
+      this.orderSelectId = orderId;
     },
-    async orderUpdate(new_order) {
+    async orderUpdateClick(newOrder) {
       this.loadingOpen();
 
       // check stock
-      if (new_order.count) {
+      if (newOrder.count) {
         let oldStock = 0;
-        await itemByIdGetFetch(this.itemSelectId).then(
-          (order) => (oldStock = order.stock)
-        );
+        await this.itemByIdGet({ id: this.itemSelectId }).then((order) => (oldStock = order.stock));
 
         const allStock = oldStock + this.orderSelectItem.count;
-        if (allStock - new_order.count < 0) return;
+        if (allStock - newOrder.count < 0) return;
       }
 
       // order update
-      await orderUpdateFetch(this.orderSelectId, new_order);
+      await this.orderUpdate({ id: this.orderSelectId, newOrder });
 
       // stock update
-      if (new_order.count) {
-        const stockAddCount = new_order.count - this.orderSelectItem.count;
-        await itemUpdateStock(this.itemSelectId, stockAddCount);
+      if (!!newOrder.count) {
+        const stockMinusCount = newOrder.count - this.orderSelectItem.count;
+        await this.itemUpdateStock({ id: this.itemSelectId, stockMinusCount });
       }
 
       this.orderAlertClose();
       await this.orderListGet();
-      await this.itemListGet();
+      await this.itemLisSet();
 
       this.loadingClose();
     },
@@ -106,14 +103,14 @@ export default {
       this.loadingOpen();
 
       // delete order
-      const deleteOrderCount = -parseInt(this.orderList[id].count);
+      const stockMinusCount = -_.toInteger(this.orderList[id].count);
       const itemId = this.orderList[id].item_id;
-      await orderUpdateFetch(id, { display: false });
+      await this.orderUpdate({ id, newOrder: { display: false } });
       await this.orderListGet();
-      await this.itemListGet();
+      await this.itemLisSet();
 
       // update stock
-      await itemUpdateStock(itemId, deleteOrderCount);
+      await this.itemUpdateStock({ id: itemId, stockMinusCount });
       this.loadingClose();
     },
     async orderDeleteClick() {
@@ -121,11 +118,11 @@ export default {
       await this.orderDelete(this.orderSelectId, { display: false });
       this.orderAlertClose();
       await this.orderListGet();
-      await this.itemListGet();
+      await this.itemLisSet();
 
       this.loadingClose();
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -148,7 +145,7 @@ ul
       div.grow.word-break {{order.note}}
       div.w-100.shrink-0
         button.btn-disable(@click.stop="orderDelete(order.id)" v-if="itemList[order.item_id].display") DELETE
-Edit(v-if="orderAlertShow" :is-edit="itemSelectItem.display" :item="itemSelectItem" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderUpdate" @delete="orderDeleteClick")
+Edit(v-if="orderAlertShow" :is-edit="itemSelectItem.display" :item="itemSelectItem" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderUpdateClick" @delete="orderDeleteClick")
 </template>
 
 <style lang="scss" scoped>

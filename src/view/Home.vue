@@ -1,15 +1,8 @@
 <script>
-import { mapMutations, mapState } from "vuex";
-import {
-  itemListGetFetch,
-  itemUpdateFetch,
-  itemSetFetch,
-  orderSetFetch,
-  itemUpdateStock
-} from "../api";
-import { NO_ID, USER_TYPE } from "../util/enum";
-import Edit from "../components/Edit.vue";
-import UpdateItem from "../components/UpdateItem.vue";
+import { mapActions, mapMutations, mapState } from 'vuex';
+import { NO_ID, USER_TYPE } from '../util/enum';
+import Edit from '../components/Edit.vue';
+import UpdateItem from '../components/UpdateItem.vue';
 
 export default {
   components: { Edit, UpdateItem },
@@ -19,33 +12,34 @@ export default {
       orderAlertShow: false,
       updateAlertShow: false,
       orderSelectId: NO_ID,
-      NO_ID
+      NO_ID,
     };
   },
   async created() {
-    this.loadingOpen();
-    await this.itemListGet();
-    this.loadingClose();
+    await this.itemLisSet();
   },
   computed: {
-    ...mapState(["userType"]),
+    ...mapState(['userType']),
     itemSelectItem() {
       return this.itemList[this.orderSelectId];
     },
     isAdmin() {
       return this.userType === USER_TYPE.ADMIN;
-    }
+    },
   },
   methods: {
-    ...mapMutations(["loadingOpen", "loadingClose"]),
-    async itemListGet() {
-      return itemListGetFetch().then((rs) => {
+    ...mapMutations(['loadingOpen', 'loadingClose']),
+    ...mapActions(['itemListGet', 'orderInfoSet']),
+    async itemLisSet() {
+      this.loadingOpen();
+      return await this.itemListGet().then((rs) => {
         this.itemList = rs;
+        this.loadingClose();
       });
     },
     // order
-    orderAlertToggle(alert_show) {
-      this.orderAlertShow = alert_show;
+    orderAlertToggle(alertShow) {
+      this.orderAlertShow = alertShow;
     },
     orderAlertClose() {
       this.orderAlertToggle(false);
@@ -55,50 +49,26 @@ export default {
       this.orderAlertToggle(true);
       this.orderSelectId = id;
     },
-    async orderAdd(order_data) {
-      this.loadingOpen();
+    async orderAdd(orderNewData) {
       // new order
-      await orderSetFetch(order_data);
-      // calculate stock
-      await itemUpdateStock(this.orderSelectId, order_data.count);
-
       this.orderAlertClose();
-      await this.itemListGet();
-      this.loadingClose();
+      await this.orderInfoSet({ orderNewData });
+      await this.itemLisSet();
     },
-    // update items
-    updateAlertToggle(alert_show) {
-      this.updateAlertShow = alert_show;
+    // items
+    updateAlertToggle(alertShow) {
+      this.updateAlertShow = alertShow;
     },
-    updateAlertClose() {
+    async updateAlertClose() {
       this.updateAlertToggle(false);
       this.orderSelectId = NO_ID;
+      await this.itemLisSet();
     },
     updateBtnClick(id) {
       this.updateAlertToggle(true);
       this.orderSelectId = id;
     },
-    async itemDisplayToggleClick(display) {
-      this.loadingOpen();
-      await itemUpdateFetch(this.orderSelectId, { display });
-      this.updateAlertClose();
-      await this.itemListGet();
-      this.loadingClose();
-    },
-    async updateSave(data) {
-      this.loadingOpen();
-      if (this.orderSelectId === NO_ID) {
-        // new
-        await itemSetFetch({ ...data, display: true });
-      } else {
-        // update
-        await itemUpdateFetch(this.orderSelectId, data);
-      }
-      this.updateAlertClose();
-      await this.itemListGet();
-      this.loadingClose();
-    }
-  }
+  },
 };
 </script>
 
@@ -123,7 +93,7 @@ ul(:class="{'is-admin': isAdmin}")
         button.btn-primary(v-if="isAdmin" @click="updateBtnClick(itemList[id].id)") update
         button.btn-primary(v-else-if="itemList[id].stock>0" @click="buyBtnClick(itemList[id].id)") buy
   Edit(v-if="!isAdmin && orderAlertShow" :item="itemSelectItem" @cancel="orderAlertClose" @save="orderAdd")
-  UpdateItem(v-if="isAdmin && updateAlertShow" :item="itemSelectItem" @cancel="updateAlertClose" @save="updateSave" @delete="itemDisplayToggleClick(false)" @show="itemDisplayToggleClick(true)")
+  UpdateItem(v-if="isAdmin && updateAlertShow" :item="itemSelectItem" @close-alert="updateAlertClose" )
 </template>
 
 <style lang="scss" scoped>
@@ -161,14 +131,14 @@ ul {
 }
 
 ul:not(.is-admin) .sold-out::after {
-  content: "SOLD OUT";
+  content: 'SOLD OUT';
 }
 
 .delete-item {
   opacity: 0.5;
 
   .annotation::after {
-    content: "DELETED";
+    content: 'DELETED';
   }
 }
 

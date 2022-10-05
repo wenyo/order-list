@@ -1,8 +1,8 @@
 <script>
-import Edit from "../components/Edit.vue";
-import { useRouter } from "vue-router";
-import { ORDER_TEMP } from "../util/enum";
-import { mapMutations } from "vuex";
+import Edit from '../components/Edit.vue';
+import { useRouter } from 'vue-router';
+import { ORDER_TEMP } from '../util/enum';
+import { mapMutations } from 'vuex';
 
 export default {
   components: { Edit },
@@ -10,25 +10,25 @@ export default {
     const router = useRouter();
 
     function backList() {
-      router.push("/list");
+      router.push('/list');
     }
 
     return {
-      backList
+      backList,
     };
   },
   data() {
     return {
-      order: ORDER_TEMP()
+      order: ORDER_TEMP(),
     };
   },
   methods: {
-    ...mapMutations(["orderAdd"]),
+    ...mapMutations(['orderAdd']),
     newOrderSave() {
       this.orderAdd({ new_order: this.order });
       this.backList();
-    }
-  }
+    },
+  },
 };
 </script>
 

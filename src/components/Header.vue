@@ -1,18 +1,18 @@
 <script>
-import { NO_ID } from "../util/enum";
+import { NO_ID } from '../util/enum';
 export default {
-  props: ["id"],
-  emit: ["add"],
+  props: ['id'],
+  emit: ['add'],
   data() {
     return {
-      NO_ID
+      NO_ID,
     };
   },
   methods: {
     addClick() {
-      this.$emit("add");
-    }
-  }
+      this.$emit('add');
+    },
+  },
 };
 </script>
 

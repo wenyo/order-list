@@ -1,25 +1,26 @@
 <script>
-import { mapMutations } from "vuex";
-import { Form, Field, ErrorMessage } from "vee-validate";
-import { loginFetch, authUser } from "../api";
-import { ERROR_MSG } from "../util/enum";
+import { mapState, mapActions } from 'vuex';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import { ERROR_MSG } from '../util/enum';
 
 export default {
   components: {
     VForm: Form,
     VField: Field,
-    ErrorMessage: ErrorMessage
+    ErrorMessage: ErrorMessage,
   },
   data() {
     return {
-      account: "wenda897436@gmail.com",
-      password: "123456",
+      account: 'wenda897436@gmail.com',
+      password: '123456',
       ERROR_MSG,
-      loginFailed: false
     };
   },
+  computed: {
+    ...mapState(['auth', 'loginFailed']),
+  },
   methods: {
-    ...mapMutations(["loadingOpen", "loadingClose", "loginStatusSet"]),
+    ...mapActions(['login']),
     isRequired(value) {
       if (!value) {
         return ERROR_MSG.IS_REQUIRED;
@@ -27,30 +28,7 @@ export default {
 
       return true;
     },
-    loginStatus() {
-      const result = authUser();
-
-      if (!result.auth) {
-        this.loginFailed = true;
-        this.loadingClose();
-        return;
-      }
-
-      this.loginStatusSet({
-        user: result.currentUser,
-        auth: result.auth
-      });
-    },
-    async login() {
-      this.loadingOpen();
-      await loginFetch({
-        account: this.account,
-        password: this.password
-      }).then(() => {
-        this.loginStatus();
-      });
-    }
-  }
+  },
 };
 </script>
 
