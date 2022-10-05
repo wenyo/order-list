@@ -1,47 +1,39 @@
 <script>
-import { useRoute, useRouter } from "vue-router";
-import { ROUTES_CONFIG } from "../router";
-import { mapState, mapMutations } from "vuex";
-import { isLoggedIn, userTypeGet } from "../api";
+import { mapState, mapMutations, mapActions } from 'vuex';
+import { useRoute, useRouter } from 'vue-router';
+import { ROUTES_CONFIG } from '../router';
 
 export default {
   data() {
     return {
       loginPath: ROUTES_CONFIG.login.path,
       route: useRoute(),
-      router: useRouter()
+      router: useRouter(),
     };
   },
   computed: {
-    ...mapState(["auth", "userType"]),
+    ...mapState(['auth', 'userType']),
     isLoginPage() {
       return this.path === this.loginPath;
     },
     path() {
       return this.route.path;
-    }
+    },
   },
   async created() {
-    await isLoggedIn(this.isAuthCheck);
-    this.isAuthRedirect();
+    this.isLoggedInCheck();
   },
   watch: {
     auth() {
       this.isAuthRedirect();
     },
     async path() {
-      await isLoggedIn(this.isAuthCheck);
-      this.isAuthRedirect();
-    }
+      this.isLoggedInCheck();
+    },
   },
   methods: {
-    ...mapMutations(["loginStatusSet", "userTypeSet", "loadingOpen"]),
-    isAuthCheck(user) {
-      this.loginStatusSet({
-        user,
-        auth: !!user
-      });
-    },
+    ...mapMutations(['loadingOpen']),
+    ...mapActions(['userTypeUpdate', 'isLoggedInCheck']),
     async isAuthRedirect() {
       if (!this.auth) {
         this.router.push(this.loginPath);
@@ -51,12 +43,7 @@ export default {
         await this.userTypeUpdate();
       }
     },
-    async userTypeUpdate() {
-      return await userTypeGet().then((userType) => {
-        this.userTypeSet({ userType });
-      });
-    }
-  }
+  },
 };
 </script>
 

@@ -1,80 +1,82 @@
 <script>
-import { Form, Field, ErrorMessage } from "vee-validate";
-import { mapState } from "vuex";
-import { NO_ID, ERROR_MSG, ORDER_TEMP } from "../util/enum";
-import Header from "./Header.vue";
+import _ from 'lodash';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import { mapState } from 'vuex';
+import { NO_ID, ERROR_MSG, ORDER_TEMP } from '../util/enum';
+import Header from './Header.vue';
 
 export default {
   components: {
     Header,
     VForm: Form,
     VField: Field,
-    ErrorMessage: ErrorMessage
+    ErrorMessage: ErrorMessage,
   },
-  emits: ["delete", "save", "cancel"],
+  emits: ['delete', 'save', 'cancel'],
   props: {
     item: {
       type: Object,
-      default: {}
+      default: {},
     },
     order: {
       type: Object,
-      default: {}
+      default: {},
     },
     isEdit: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   data() {
     return {
       NO_ID,
-      newOrder: { ...ORDER_TEMP(), ...this.order }
+      newOrder: { ...ORDER_TEMP(), ...this.order },
     };
   },
   computed: {
-    ...mapState(["user", "loading"]),
+    ...mapState(['user', 'loading']),
     isNewOrder() {
-      return Object.keys(this.order).length === 0;
+      return _.isEmpty(this.order);
     },
-    count() {
-      return parseInt(this.newOrder["count"]);
+    count: {
+      get() {
+        return _.toString(this.newOrder['count']);
+      },
+      set(countStr) {
+        this.newOrder['count'] = _.toInteger(countStr);
+      },
     },
     stock() {
       const oldOrderCount = this.order.count || 0;
-      return parseInt(this.item.stock) + parseInt(oldOrderCount);
-    }
+      return _.toInteger(this.item.stock) + _.toInteger(oldOrderCount);
+    },
   },
   methods: {
     deleteClick() {
       if (this.loading) return;
-      this.$emit("delete");
+      this.$emit('delete');
     },
     saveClick() {
       if (this.loading) return;
       const { data, updated } = this.dataFormat();
       // no need to update
       if (!updated) return this.cancelClick();
-      this.$emit("save", data);
+      this.$emit('save', data);
     },
     cancelClick() {
-      this.$emit("cancel");
+      this.$emit('cancel');
     },
     dataFormat() {
-      const intValueKey = ["count"];
       let result = {
         data: {},
-        updated: true
+        updated: false,
       };
 
       for (const key in this.newOrder) {
         // new data || update data
         if (this.isNewOrder || this.newOrder[key] !== this.order[key]) {
-          const valueTmp = intValueKey.includes(key)
-            ? parseInt(this.newOrder[key])
-            : this.newOrder[key];
           result.updated = true;
-          result.data[key] = valueTmp;
+          result.data[key] = this.newOrder[key];
         }
       }
 
@@ -82,7 +84,7 @@ export default {
         result.data = {
           ...result.data,
           item_id: this.item.id,
-          user_uid: this.user.uid
+          user_uid: this.user.uid,
         };
       }
 
@@ -96,12 +98,21 @@ export default {
       return true;
     },
     isCountValid(valStr) {
-      const value = parseInt(valStr);
-      if (value !== 0 && !value) {
+      const value = Number(valStr);
+
+      if (!valStr) {
         return ERROR_MSG.IS_REQUIRED;
       }
 
-      if (value <= 0) {
+      if (value === 0) {
+        return ERROR_MSG.AT_LEAST_ONE;
+      }
+
+      if (!Number.isInteger(value)) {
+        return ERROR_MSG.NEED_INTEGER;
+      }
+
+      if (value < 0) {
         return ERROR_MSG.AT_LEAST_ONE;
       }
 
@@ -112,10 +123,18 @@ export default {
       return true;
     },
     isPositiveIntegerOrZero(valStr) {
-      const value = parseInt(valStr);
+      const value = Number(valStr);
 
-      if (!value && value !== 0) {
+      if (!valStr) {
         return ERROR_MSG.IS_REQUIRED;
+      }
+
+      if (value === 0) {
+        return true;
+      }
+
+      if (!Number.isInteger(value)) {
+        return ERROR_MSG.NEED_INTEGER;
       }
 
       if (value < 0) {
@@ -123,8 +142,8 @@ export default {
       }
 
       return true;
-    }
-  }
+    },
+  },
 };
 </script>
 <template lang="pug">
@@ -144,11 +163,11 @@ div.alert-block(@click.self="cancelClick")
       label
         span.w-80.shrink-0 count/
         template(v-if="isEdit")
-          VField.input-primary.shrink-0( name="count" type="number" :max="stock" :rules="isCountValid" v-model="newOrder.count" )
+          VField.input-primary.shrink-0( name="count" type="number" :max="stock" :rules="isCountValid" v-model="count" )
           div.answer.shrink-0
             span max: {{stock}}
             ErrorMessage.error-msg( name="count" )
-        span(v-else) {{newOrder.count}}
+        span(v-else) {{count}}
       label
         span.w-80 note/
         textarea.note-input( type="text" v-if="isEdit" v-model="newOrder.note" )
