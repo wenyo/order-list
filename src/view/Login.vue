@@ -12,8 +12,8 @@ export default {
   },
   data() {
     return {
-      account: "wenda897436@gmail.com",
-      password: "123456",
+      account: "",
+      password: "",
       ERROR_MSG,
       loginFailed: false
     };

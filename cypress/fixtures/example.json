@@ -1,0 +1,12 @@
+{
+  "user": {
+    "admin": {
+      "account": "wenda897436@gmail.com",
+      "password": "123456"
+    },
+    "customer": {
+      "account": "wen.you0303666@gmail.com",
+      "password": "123456"
+    }
+  }
+}
