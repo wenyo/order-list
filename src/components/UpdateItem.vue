@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import { mapState, mapActions, mapMutations } from 'vuex';
-import { ERROR_MSG } from '../util/enum';
+import { ERROR_MSG, NO_ID } from '../util/enum';
 import Header from './Header.vue';
 
 export default {
@@ -25,10 +25,15 @@ export default {
       newItem: JSON.parse(JSON.stringify(this.item)),
     };
   },
+  mounted() {
+    if (!this.newItem.id) {
+      this.newItem.id = NO_ID;
+    }
+  },
   computed: {
     ...mapState(['loading']),
     isNewProduct() {
-      return !this.newItem.id;
+      return this.newItem.id === NO_ID;
     },
     price: {
       get() {
