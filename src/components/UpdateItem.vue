@@ -224,7 +224,6 @@ div.alert-block(@click.self="cloesAlert")
 
 label,
 .delete {
-  margin: 8px 0;
   width: fit-content;
   display: flex;
   align-items: center;
