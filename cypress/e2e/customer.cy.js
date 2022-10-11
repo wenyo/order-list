@@ -99,7 +99,7 @@ describe('Customer', () => {
     cy.logout();
   });
 
-  // Sold Out - update order
+  // sold Out - update order
   it('Sold Out update order template', () => {
     cy.intercept('/').as('homepage');
     cy.intercept('/list').as('orderlist');
