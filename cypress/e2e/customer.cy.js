@@ -124,4 +124,41 @@ describe('Customer', () => {
     // logout
     cy.logout();
   });
+
+  // login
+  it('Customer delete order', () => {
+    cy.intercept('/').as('homepage');
+    cy.intercept('/list').as('orderlist');
+    let stock = '';
+
+    // login
+    cy.visit('/');
+    cy.login(EXAMPLE.user.customer);
+
+    cy.wait('@homepage')
+      // go list
+      .then(() => cy.goPageByMenu('orderList'))
+      // open edit alert
+      .then(() => {
+        cy.wait(5000);
+        cy.get(`.content[data-id='${orderId}']`).click();
+        return cy.get('.alert-form .stock').invoke('data', 'stock');
+      })
+      // get max
+      .then((stockStr) => (stock = stockStr.toString()))
+      // delete
+      .then(() => {
+        cy.get('.alert-form .delete button').click();
+      })
+      // go home
+      .then(() => cy.goPageByMenu('home'))
+      // check stock & no .sould-out
+      .then(() => {
+        cy.get(`.item[data-id='${targetItemId}'] .stock-data`).invoke('text').should('eq', stock);
+        cy.get(`.item[data-id='${targetItemId}']`).should('not.have.class', 'sold-out');
+      });
+
+    // logout
+    cy.logout();
+  });
 });

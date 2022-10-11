@@ -62,14 +62,13 @@ Cypress.Commands.add('updateOrder', ({ countNum, note, targetItemId, orderId }) 
   cy.get('.alert-form .stock')
     .invoke('data', 'stock')
     // update order
-    .then((stockStr) => {
-      count = countNum === NO_COUNT ? Number(stockStr) : countNum;
-      console.log(count);
+    .then((stockNum) => {
+      count = countNum === NO_COUNT ? stockNum : countNum;
       cy.get('.alert-form .count input').type(`{selectAll}${count}`);
       cy.get('.alert-form .note textarea').type(`{selectAll}${note}`);
       cy.get('.alert-form .btn-primary[type="submit"]').click();
-      max = stockStr;
-      stock = (Number(stockStr) - count).toString();
+      max = stockNum;
+      stock = (stockNum - count).toString();
     })
     // check order info
     .then(() => {
