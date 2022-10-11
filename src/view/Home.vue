@@ -78,7 +78,7 @@ header
   button.btn-primary.add(v-if="isAdmin" @click="updateBtnClick(NO_ID)") ADD
 ul(:class="{'is-admin': isAdmin}")
   template(v-for="(id) in Object.keys(itemList)" :key="id")
-    li.item(v-if="isAdmin || itemList[id].display " :class="{'sold-out annotation': itemList[id].stock<=0, 'delete-item':!itemList[id].display }")
+    li.item(v-if="isAdmin || itemList[id].display " :data-id="id" :class="{'sold-out annotation': itemList[id].stock<=0, 'delete-item':!itemList[id].display }")
       div.img-box.annotation
         img(:src="itemList[id].img") 
       div.m-y10-x20.bold
