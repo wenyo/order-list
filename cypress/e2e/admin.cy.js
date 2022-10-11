@@ -31,9 +31,9 @@ describe('Admin', () => {
     cy.wait('@homepage').then(() => {
       cy.wait(3000);
       cy.get('.btn-primary.add').click();
-      cy.get('.alert-form label:nth-child(1) input').type(testItem1Name);
-      cy.get('.alert-form label:nth-child(2) input').type(sampleItem1.price);
-      cy.get('.alert-form label:nth-child(3) input').type(sampleItem1.stock);
+      cy.get('.alert-form label:nth-child(1) input').type(`{selectAll}${testItem1Name}`);
+      cy.get('.alert-form label:nth-child(2) input').type(`{selectAll}${sampleItem1.price}`);
+      cy.get('.alert-form label:nth-child(3) input').type(`{selectAll}${sampleItem1.stock}`);
       cy.get('.alert-form label:nth-child(4) input').selectFile(sampleItem1.img, { force: true });
       cy.get('.alert-form .btn-primary[type="submit"]').click();
     });
@@ -67,9 +67,9 @@ describe('Admin', () => {
       const testItem2Name = `${sampleItem2.name}_${nowTime}`;
       cy.get(`li.item[data-id='${targetItemId}'] .btn-primary`).click();
 
-      cy.get('.alert-form label:nth-child(1) input').clear().type(testItem2Name);
-      cy.get('.alert-form label:nth-child(2) input').clear().type(sampleItem2.price);
-      cy.get('.alert-form label:nth-child(3) input').clear().type(sampleItem2.stock);
+      cy.get('.alert-form label:nth-child(1) input').type(`{selectAll}${testItem2Name}`);
+      cy.get('.alert-form label:nth-child(2) input').type(`{selectAll}${sampleItem2.price}`);
+      cy.get('.alert-form label:nth-child(3) input').type(`{selectAll}${sampleItem2.stock}`);
       cy.get('.alert-form label:nth-child(4) input').selectFile(sampleItem2.img, { force: true });
       cy.get('.alert-form .btn-primary[type="submit"]').click();
     });
