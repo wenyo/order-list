@@ -48,7 +48,6 @@ describe('Customer', () => {
         cy.get('.alert-form .note textarea').type(note1);
         cy.get('.alert-form .btn-primary[type="submit"]').click();
         stock = (Number(stockStr) - EXAMPLE.order.sample1.count).toString();
-        console.log(stock);
       })
       // check stock
       .then(() => {
@@ -63,7 +62,6 @@ describe('Customer', () => {
       })
       .then((orderIdResult) => {
         orderId = orderIdResult;
-        console.log(orderId);
         cy.get(`.content[data-id='${orderId}'] .count`)
           .invoke('text')
           .should('eq', EXAMPLE.order.sample1.count.toString());
