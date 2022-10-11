@@ -88,7 +88,7 @@ ul(:class="{'is-admin': isAdmin}")
         span {{itemList[id].price}}
       div.m-y10-x20.stock
         span stock/
-        span {{itemList[id].stock}}
+        span.stock-data {{itemList[id].stock}}
       div.m-20.btn-block
         button.btn-primary(v-if="isAdmin" @click="updateBtnClick(itemList[id].id)") update
         button.btn-primary(v-else-if="itemList[id].stock>0" @click="buyBtnClick(itemList[id].id)") buy

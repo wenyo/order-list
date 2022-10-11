@@ -137,12 +137,12 @@ ul
     div.w-100 count
     div.grow note
   template(v-for="(order, id) in orderList" :key="id")
-    li.content(@click="orderClick(order.item_id, id)")
+    li.content(:data-id="order.id" @click="orderClick(order.item_id, id)")
       div.w-50.shrink-0 {{`${order.id}`}}
       div.w-200.word-break.shrink-0 {{itemList[order.item_id].name}}
       div.w-100.shrink-0 {{itemList[order.item_id].price}}
-      div.w-100.shrink-0 {{order.count}}
-      div.grow.word-break {{order.note}}
+      div.count.w-100.shrink-0 {{order.count}}
+      div.note.grow.word-break {{order.note}}
       div.w-100.shrink-0
         button.btn-disable(@click.stop="orderDelete(order.id)" v-if="itemList[order.item_id].display") DELETE
 Edit(v-if="orderAlertShow" :is-edit="itemSelectItem.display" :item="itemSelectItem" :order="orderSelectItem" @cancel="orderAlertClose" @save="orderUpdateClick" @delete="orderDeleteClick")

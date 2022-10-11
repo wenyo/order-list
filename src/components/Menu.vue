@@ -51,7 +51,7 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
     div.user
       span Hi {{user.displayName}}!
       span {{USER_TYPE[userType]?.toLowerCase()}}
-    ul
+    ul.router
       template(v-for="(menuKey, key) in MENU_KEY" :key="key")
         router-link(v-if="menuItemShow(menuKey)" :to="ROUTES_CONFIG[menuKey].path" custom v-slot="{ navigate, isActive }" )
           li(@click="linkClick(navigate)" :class="{'active':isActive}") {{ROUTES_CONFIG[menuKey].text}}

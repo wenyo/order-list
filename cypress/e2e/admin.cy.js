@@ -19,7 +19,7 @@ describe('Admin', () => {
 
   it('Admin add item', () => {
     // login
-    cy.intercept('/').as('hompage');
+    cy.intercept('/').as('homepage');
     cy.visit('/');
     cy.login(EXAMPLE.user.admin);
 
@@ -28,7 +28,7 @@ describe('Admin', () => {
     const testItem1Name = `${sampleItem1.name}_${nowTime}`;
 
     // add new item
-    cy.wait('@hompage').then(() => {
+    cy.wait('@homepage').then(() => {
       cy.wait(3000);
       cy.get('.btn-primary.add').click();
       cy.get('.alert-form label:nth-child(1) input').type(testItem1Name);

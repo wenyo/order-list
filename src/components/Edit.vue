@@ -160,15 +160,15 @@ div.alert-block(@click.self="cancelClick")
       label
         span.w-80 price/
         span {{item.price}}
-      label
+      label.count
         span.w-80.shrink-0 count/
         template(v-if="isEdit")
           VField.input-primary.shrink-0( name="count" type="number" :max="stock" :rules="isCountValid" v-model="count" )
           div.answer.shrink-0
-            span max: {{stock}}
+            span.stock(:data-stock="stock") max: {{stock}}
             ErrorMessage.error-msg( name="count" )
         span(v-else) {{count}}
-      label
+      label.note
         span.w-80 note/
         textarea.note-input( type="text" v-if="isEdit" v-model="newOrder.note" )
         span(v-else) {{newOrder.note}}

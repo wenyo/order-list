@@ -7,6 +7,10 @@
     "customer": {
       "account": "wen.you0303666@gmail.com",
       "password": "123456"
+    },
+    "not_user": {
+      "account": "notuser@gmail.com",
+      "password": "123456"
     }
   },
   "items": {
@@ -21,6 +25,16 @@
       "price": 200,
       "stock": 200,
       "img": "cypress/fixtures/test_img2.jpeg"
+    }
+  },
+  "order": {
+    "sample1": {
+      "count": 1,
+      "note": "sample1"
+    },
+    "sample2": {
+      "count": 2,
+      "note": "sample2"
     }
   }
 }
