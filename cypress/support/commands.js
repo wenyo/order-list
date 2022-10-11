@@ -38,3 +38,12 @@ Cypress.Commands.add('logout', () => {
   cy.get('.icon-menu').click();
   cy.get('.btn-secondary').click();
 });
+
+Cypress.Commands.add('goPageByMenu', (page) => {
+  const menuLiIdx = {
+    home: 1,
+    orderList: 2,
+  };
+  cy.get('.icon-menu').click();
+  cy.get(`.router li:nth-child(${menuLiIdx[page]})`).click();
+});

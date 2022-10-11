@@ -152,7 +152,7 @@ div.alert-block(@click.self="cancelClick")
     i.icon-close(@click="cancelClick")
     div.img-box
       img(:src="item.img")
-    h1.title {{item.name}}
+    h1.title(:data-item_id="item.id") {{item.name}}
     VForm(@submit="saveClick" v-slot="{meta}").alert-form
       label(v-if="!isNewOrder")
         span.w-80 id/
@@ -177,7 +177,7 @@ div.alert-block(@click.self="cancelClick")
         button.btn-disable(@click="deleteClick") DELETE
       .btn-block
         button.btn-primary(type="submit" :disabled="!meta.valid || loading") SAVE
-        button.btn-secondary(@click="cancelClick") CANCEL
+        button.cancel.btn-secondary(@click="cancelClick") CANCEL
 </template>
 
 <style lang="scss" scoped>
