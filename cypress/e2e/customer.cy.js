@@ -1,4 +1,5 @@
 import EXAMPLE from '../fixtures/example.json';
+import { NO_COUNT } from '../utils/enum';
 
 const nowTime = new Date().getTime();
 const note1 = `${EXAMPLE.order.sample1.note}_${nowTime}`;
@@ -72,12 +73,10 @@ describe('Customer', () => {
     cy.logout();
   });
 
-  // update order
-  it('Customer update order', () => {
+  // normal - update order
+  it('Normal update order template', () => {
     cy.intercept('/').as('homepage');
     cy.intercept('/list').as('orderlist');
-    let stock = '';
-    let max = '';
 
     // login
     cy.visit('/');
@@ -86,39 +85,40 @@ describe('Customer', () => {
     cy.wait('@homepage')
       // go orderlist
       .then(() => cy.goPageByMenu('orderList'))
-      // get order & click update item
-      .then(() => {
-        cy.get(`.content[data-id='${orderId}']`).click();
-        return cy.get('.alert-form .stock').invoke('data', 'stock');
-      })
-      // update order
-      .then((stockStr) => {
-        cy.get('.alert-form .count input').type(`{selectAll}${EXAMPLE.order.sample2.count}`);
-        cy.get('.alert-form .note textarea').type(`{selectAll}${note2}`);
-        cy.get('.alert-form .btn-primary[type="submit"]').click();
-        max = stockStr;
-        stock = (Number(stockStr) - EXAMPLE.order.sample2.count).toString();
-      })
-      // check order info
-      .then(() => {
-        cy.wait(7000);
-        cy.get(`.content[data-id='${orderId}'] .count`)
-          .invoke('text')
-          .should('eq', EXAMPLE.order.sample2.count.toString());
-        cy.get(`.content[data-id='${orderId}'] .note`).invoke('text').should('eq', note2);
-      })
-      // check max
-      .then(() => {
-        cy.get(`.content[data-id='${orderId}']`).click();
-        cy.get('.alert-form .stock').invoke('data', 'stock').should('eq', max);
-        cy.get('.alert-form .cancel').click();
-      })
-      // go homepage
-      .then(() => cy.goPageByMenu('home'))
-      // check item stock
       .then(() => {
         cy.wait(5000);
-        cy.get(`.item[data-id='${targetItemId}'] .stock-data`).invoke('text').should('eq', stock);
+        cy.updateOrder({
+          countNum: EXAMPLE.order.sample2.count,
+          note: note1,
+          targetItemId,
+          orderId,
+        });
+      });
+
+    // logout
+    cy.logout();
+  });
+
+  // Sold Out - update order
+  it('Sold Out update order template', () => {
+    cy.intercept('/').as('homepage');
+    cy.intercept('/list').as('orderlist');
+
+    // login
+    cy.visit('/');
+    cy.login(EXAMPLE.user.customer);
+
+    cy.wait('@homepage')
+      // go orderlist
+      .then(() => cy.goPageByMenu('orderList'))
+      .then(() => {
+        cy.wait(5000);
+        cy.updateOrder({
+          countNum: NO_COUNT,
+          note: note2,
+          targetItemId,
+          orderId,
+        });
       });
 
     // logout
