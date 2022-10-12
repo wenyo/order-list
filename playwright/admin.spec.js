@@ -97,8 +97,9 @@ test('admin update items error msg', async ({ page, baseURL }) => {
   await nameInput.press('Tab');
   await expect(submitButton).toBeEnabled();
 
-  await expect(page.locator('.alert-block i.icon-close')).toBeVisible();
+  // close alert
   await page.locator('.alert-block i.icon-close').click();
 
+  // logout
   await userLogout(page);
 });

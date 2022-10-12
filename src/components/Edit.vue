@@ -154,10 +154,10 @@ div.alert-block(@click.self="cancelClick")
       img(:src="item.img")
     h1.title(:data-item_id="item.id") {{item.name}}
     VForm(@submit="saveClick" v-slot="{meta}").alert-form
-      label(v-if="!isNewOrder")
+      label.id(v-if="!isNewOrder")
         span.w-80 id/
         span {{order.id}}
-      label
+      label.price
         span.w-80 price/
         span {{item.price}}
       label.count
