@@ -43,6 +43,12 @@ async function userLogin(user, page, baseURL) {
   await expect(page).toHaveURL(baseURL);
 }
 
+async function userLogout(page) {
+  await page.locator('.menu-box .icon-menu').click();
+  await page.locator('.logout').click();
+  await expect(page).toHaveURL(/.*login/);
+}
+
 test('admin update items error msg', async ({ page, baseURL }) => {
   // go web
   await page.goto('/');
@@ -90,4 +96,9 @@ test('admin update items error msg', async ({ page, baseURL }) => {
   await stockInput.fill(sampleItem.normal.stock);
   await nameInput.press('Tab');
   await expect(submitButton).toBeEnabled();
+
+  await expect(page.locator('.alert-block i.icon-close')).toBeVisible();
+  await page.locator('.alert-block i.icon-close').click();
+
+  await userLogout(page);
 });
