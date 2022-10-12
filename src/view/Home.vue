@@ -90,8 +90,8 @@ ul(:class="{'is-admin': isAdmin}")
         span stock/
         span.stock-data {{itemList[id].stock}}
       div.m-20.btn-block
-        button.btn-primary(v-if="isAdmin" @click="updateBtnClick(itemList[id].id)") update
-        button.btn-primary(v-else-if="itemList[id].stock>0" @click="buyBtnClick(itemList[id].id)") buy
+        button.update.btn-primary(v-if="isAdmin" @click="updateBtnClick(itemList[id].id)") update
+        button.buy.btn-primary(v-else-if="itemList[id].stock>0" @click="buyBtnClick(itemList[id].id)") buy
   Edit(v-if="!isAdmin && orderAlertShow" :item="itemSelectItem" @cancel="orderAlertClose" @save="orderAdd")
   UpdateItem(v-if="isAdmin && updateAlertShow" :item="itemSelectItem" @close-alert="updateAlertClose" )
 </template>

@@ -184,19 +184,19 @@ div.alert-block(@click.self="cloesAlert")
     h1.title(v-if="!isNewProduct") {{`Product #${newItem.id}`}}
     h1.title(v-else) New Product
     VForm(@submit="saveClick" v-slot="{meta}").alert-form
-      label
+      label.name
         span.w-80 name/
         VField.input-primary( name="name" type="text" :rules="isRequired" v-model="newItem.name" )
         ErrorMessage.error-msg( name="name" )
-      label
+      label.price
         span.w-80 price/
         VField.input-primary( name="price" type="number" :rules="isPositiveInteger" v-model="price" )
         ErrorMessage.error-msg( name="price" )
-      label
+      label.stock
         span.w-80 stock/
         VField.input-primary( name="stock" type="number" :rules="isPositiveIntegerOrZero" v-model="stock" )
         ErrorMessage.error-msg( name="stock" )
-      label
+      label.img
         span.w-80 img/
         .btn.btn-primary Choose File
         span.img-name {{imgName}}
