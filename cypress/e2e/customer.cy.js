@@ -1,5 +1,6 @@
 import EXAMPLE from '../fixtures/example.json';
 import { NO_COUNT } from '../utils/enum';
+import 'cypress-xpath';
 
 const nowTime = new Date().getTime();
 const note1 = `${EXAMPLE.order.sample1.note}_${nowTime}`;
@@ -57,8 +58,7 @@ describe('Customer', () => {
       // check order list
       .then(() => {
         cy.goPageByMenu('orderList');
-
-        return cy.get('.content:last-child').invoke('data', 'id');
+        return cy.xpath(`//li[contains(.,'${note1}')]`).invoke('data', 'id');
       })
       .then((orderIdResult) => {
         orderId = orderIdResult;
@@ -123,7 +123,7 @@ describe('Customer', () => {
     cy.logout();
   });
 
-  // login
+  // delete order
   it('Customer delete order', () => {
     cy.intercept('/').as('homepage');
     cy.intercept('/list').as('orderlist');

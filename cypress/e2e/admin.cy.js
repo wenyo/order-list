@@ -1,5 +1,5 @@
 import EXAMPLE from '../fixtures/example.json';
-require('cypress-xpath');
+import 'cypress-xpath';
 
 const sampleItem1 = EXAMPLE.items.sample1;
 const sampleItem2 = EXAMPLE.items.sample2;
