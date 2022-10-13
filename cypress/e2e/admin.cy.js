@@ -1,4 +1,5 @@
 import EXAMPLE from '../fixtures/example.json';
+require('cypress-xpath');
 
 const sampleItem1 = EXAMPLE.items.sample1;
 const sampleItem2 = EXAMPLE.items.sample2;
@@ -23,27 +24,22 @@ describe('Admin', () => {
     cy.visit('/');
     cy.login(EXAMPLE.user.admin);
 
-    // add new item
-
     const testItem1Name = `${sampleItem1.name}_${nowTime}`;
 
     // add new item
     cy.wait('@homepage').then(() => {
-      cy.wait(3000);
-      cy.get('.btn-primary.add').click();
-      cy.get('.alert-form label:nth-child(1) input').type(`{selectAll}${testItem1Name}`);
-      cy.get('.alert-form label:nth-child(2) input').type(`{selectAll}${sampleItem1.price}`);
-      cy.get('.alert-form label:nth-child(3) input').type(`{selectAll}${sampleItem1.stock}`);
-      cy.get('.alert-form label:nth-child(4) input').selectFile(sampleItem1.img, { force: true });
-      cy.get('.alert-form .btn-primary[type="submit"]').click();
+      cy.wait(7000);
+      cy.get('.add').click();
+      cy.get('.alert-form .name input').type(`{selectAll}${testItem1Name}`);
+      cy.get('.alert-form .price input').type(`{selectAll}${sampleItem1.price}`);
+      cy.get('.alert-form .stock input').type(`{selectAll}${sampleItem1.stock}`);
+      cy.get('.alert-form .img input').selectFile(sampleItem1.img, { force: true });
+      cy.get('.alert-form button[type="submit"]').click();
     });
 
-    // chek add result, get targetItemId
+    // check add result, get targetItemId
     cy.wait(7000);
-    const targetItem = cy
-      .get('.item:not(.delete) :nth-child(2) span')
-      .contains(testItem1Name)
-      .parentsUntil('ul', '.item');
+    const targetItem = cy.xpath(`//li[contains(.,'${testItem1Name}')]`);
 
     targetItem.invoke('data', 'id').then((id) => {
       targetItemId = id;
@@ -67,11 +63,11 @@ describe('Admin', () => {
       const testItem2Name = `${sampleItem2.name}_${nowTime}`;
       cy.get(`li.item[data-id='${targetItemId}'] .btn-primary`).click();
 
-      cy.get('.alert-form label:nth-child(1) input').type(`{selectAll}${testItem2Name}`);
-      cy.get('.alert-form label:nth-child(2) input').type(`{selectAll}${sampleItem2.price}`);
-      cy.get('.alert-form label:nth-child(3) input').type(`{selectAll}${sampleItem2.stock}`);
-      cy.get('.alert-form label:nth-child(4) input').selectFile(sampleItem2.img, { force: true });
-      cy.get('.alert-form .btn-primary[type="submit"]').click();
+      cy.get('.alert-form .name input').type(`{selectAll}${testItem2Name}`);
+      cy.get('.alert-form .price input').type(`{selectAll}${sampleItem2.price}`);
+      cy.get('.alert-form .stock input').type(`{selectAll}${sampleItem2.stock}`);
+      cy.get('.alert-form .img input').selectFile(sampleItem2.img, { force: true });
+      cy.get('.alert-form button[type="submit"]').click();
     });
 
     // logout
