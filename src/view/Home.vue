@@ -31,10 +31,8 @@ export default {
     ...mapMutations(['loadingOpen', 'loadingClose']),
     ...mapActions(['itemListGet', 'orderInfoSet']),
     async itemListSet() {
-      this.loadingOpen();
       return await this.itemListGet().then((rs) => {
         this.itemList = rs;
-        this.loadingClose();
       });
     },
     // order
@@ -52,8 +50,10 @@ export default {
     async orderAdd(orderNewData) {
       // new order
       this.orderAlertClose();
+      this.loadingOpen();
       await this.orderInfoSet({ orderNewData });
       await this.itemListSet();
+      this.loadingClose();
     },
     // items
     updateAlertToggle(alertShow) {
@@ -62,7 +62,9 @@ export default {
     async updateAlertClose() {
       this.updateAlertToggle(false);
       this.orderSelectId = NO_ID;
+      this.loadingOpen();
       await this.itemListSet();
+      this.loadingClose();
     },
     updateBtnClick(id) {
       this.updateAlertToggle(true);
