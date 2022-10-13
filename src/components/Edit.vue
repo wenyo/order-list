@@ -175,7 +175,7 @@ div.alert-block(@click.self="cancelClick")
       .delete(v-if="!isNewOrder && isEdit")
         span.w-80 delete/
         button.btn-disable(@click="deleteClick") DELETE
-      .btn-block
+      .btn-block(v-if="isEdit")
         button.btn-primary(type="submit" :disabled="!meta.valid || loading") SAVE
         button.cancel.btn-secondary(@click="cancelClick") CANCEL
 </template>
