@@ -95,7 +95,7 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
   background-color: $color-dark-200;
   box-shadow: 2px 2px 10px $color-shadow-200;
   padding: 40px 0;
-  transform: translateX(-100%);
+  transform: translateX(-105%);
   transition: all 0.3s;
 
   &.open {

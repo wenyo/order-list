@@ -139,7 +139,12 @@ export async function orderListGetByUidFetch(uid) {
   const ordersRef = collection(db, PATH.ORDER);
 
   return getDocs(
-    query(ordersRef, where('user_uid', '==', uid), where('display', '==', true), orderBy('id')),
+    query(
+      ordersRef,
+      where('user_uid', '==', uid),
+      where('display', '==', true),
+      orderBy('id', 'desc'),
+    ),
   );
 }
 
