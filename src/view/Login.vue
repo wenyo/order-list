@@ -11,13 +11,13 @@ export default {
   },
   data() {
     return {
-      account: 'wenda897436@gmail.com',
-      password: '123456',
+      account: '',
+      password: '',
       ERROR_MSG,
     };
   },
   computed: {
-    ...mapState(['auth', 'loginFailed']),
+    ...mapState(['auth', 'loginFailed', 'loading']),
   },
   methods: {
     ...mapActions(['login']),
@@ -34,17 +34,17 @@ export default {
 
 <template lang="pug">
 h1.title Login
-VForm(@submit="login")
-  label
+VForm(@submit="login" v-slot="{meta}")
+  label.account
     span.w-100 account
     VField.input-primary( name="account" type="text" :rules="isRequired" v-model="account")
     ErrorMessage.error-msg( name="account" )
-  label
+  label.password
     span.w-100 password
     VField.input-primary( name="password" type="password" :rules="isRequired" v-model="password")
     ErrorMessage.error-msg( name="password" )
   div.btn-block
-    button.btn-primary(type="submit") send
+    button.btn-primary(type="submit" :disabled="!meta.valid || loading") send
     div.error-msg(v-show="loginFailed") {{ERROR_MSG.LOGIN_FAILED}}
 </template>
 

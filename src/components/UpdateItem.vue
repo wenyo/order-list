@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import { mapState, mapActions, mapMutations } from 'vuex';
-import { ERROR_MSG } from '../util/enum';
+import { ERROR_MSG, NO_ID } from '../util/enum';
 import Header from './Header.vue';
 
 export default {
@@ -25,10 +25,15 @@ export default {
       newItem: JSON.parse(JSON.stringify(this.item)),
     };
   },
+  mounted() {
+    if (!this.newItem.id) {
+      this.newItem.id = NO_ID;
+    }
+  },
   computed: {
     ...mapState(['loading']),
     isNewProduct() {
-      return !this.newItem.id;
+      return this.newItem.id === NO_ID;
     },
     price: {
       get() {
@@ -179,19 +184,19 @@ div.alert-block(@click.self="cloesAlert")
     h1.title(v-if="!isNewProduct") {{`Product #${newItem.id}`}}
     h1.title(v-else) New Product
     VForm(@submit="saveClick" v-slot="{meta}").alert-form
-      label
+      label.name
         span.w-80 name/
         VField.input-primary( name="name" type="text" :rules="isRequired" v-model="newItem.name" )
         ErrorMessage.error-msg( name="name" )
-      label
+      label.price
         span.w-80 price/
         VField.input-primary( name="price" type="number" :rules="isPositiveInteger" v-model="price" )
         ErrorMessage.error-msg( name="price" )
-      label
+      label.stock
         span.w-80 stock/
         VField.input-primary( name="stock" type="number" :rules="isPositiveIntegerOrZero" v-model="stock" )
         ErrorMessage.error-msg( name="stock" )
-      label
+      label.img
         span.w-80 img/
         .btn.btn-primary Choose File
         span.img-name {{imgName}}
@@ -219,7 +224,6 @@ div.alert-block(@click.self="cloesAlert")
 
 label,
 .delete {
-  margin: 8px 0;
   width: fit-content;
   display: flex;
   align-items: center;

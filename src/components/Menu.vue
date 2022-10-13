@@ -51,11 +51,11 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
     div.user
       span Hi {{user.displayName}}!
       span {{USER_TYPE[userType]?.toLowerCase()}}
-    ul
+    ul.router
       template(v-for="(menuKey, key) in MENU_KEY" :key="key")
         router-link(v-if="menuItemShow(menuKey)" :to="ROUTES_CONFIG[menuKey].path" custom v-slot="{ navigate, isActive }" )
           li(@click="linkClick(navigate)" :class="{'active':isActive}") {{ROUTES_CONFIG[menuKey].text}}
-    button.btn-secondary(@click="logout")
+    button.logout.btn-secondary(@click="logout")
       i.icon-logout
       span logout
 
@@ -95,7 +95,7 @@ div.menu-box(:class="{'open':openMenu}" @click.self="menuToggle(false)")
   background-color: $color-dark-200;
   box-shadow: 2px 2px 10px $color-shadow-200;
   padding: 40px 0;
-  transform: translateX(-100%);
+  transform: translateX(-105%);
   transition: all 0.3s;
 
   &.open {

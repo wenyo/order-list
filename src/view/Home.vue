@@ -16,7 +16,7 @@ export default {
     };
   },
   async created() {
-    await this.itemLisSet();
+    await this.itemListSet();
   },
   computed: {
     ...mapState(['userType']),
@@ -30,11 +30,9 @@ export default {
   methods: {
     ...mapMutations(['loadingOpen', 'loadingClose']),
     ...mapActions(['itemListGet', 'orderInfoSet']),
-    async itemLisSet() {
-      this.loadingOpen();
+    async itemListSet() {
       return await this.itemListGet().then((rs) => {
         this.itemList = rs;
-        this.loadingClose();
       });
     },
     // order
@@ -52,8 +50,10 @@ export default {
     async orderAdd(orderNewData) {
       // new order
       this.orderAlertClose();
+      this.loadingOpen();
       await this.orderInfoSet({ orderNewData });
-      await this.itemLisSet();
+      await this.itemListSet();
+      this.loadingClose();
     },
     // items
     updateAlertToggle(alertShow) {
@@ -62,7 +62,9 @@ export default {
     async updateAlertClose() {
       this.updateAlertToggle(false);
       this.orderSelectId = NO_ID;
-      await this.itemLisSet();
+      this.loadingOpen();
+      await this.itemListSet();
+      this.loadingClose();
     },
     updateBtnClick(id) {
       this.updateAlertToggle(true);
@@ -78,7 +80,7 @@ header
   button.btn-primary.add(v-if="isAdmin" @click="updateBtnClick(NO_ID)") ADD
 ul(:class="{'is-admin': isAdmin}")
   template(v-for="(id) in Object.keys(itemList)" :key="id")
-    li.item(v-if="isAdmin || itemList[id].display " :class="{'sold-out annotation': itemList[id].stock<=0, 'delete-item':!itemList[id].display }")
+    li.item(v-if="isAdmin || itemList[id].display " :data-id="id" :class="{'sold-out annotation': itemList[id].stock<=0, 'delete-item':!itemList[id].display }")
       div.img-box.annotation
         img(:src="itemList[id].img") 
       div.m-y10-x20.bold
@@ -88,10 +90,10 @@ ul(:class="{'is-admin': isAdmin}")
         span {{itemList[id].price}}
       div.m-y10-x20.stock
         span stock/
-        span {{itemList[id].stock}}
+        span.stock-data {{itemList[id].stock}}
       div.m-20.btn-block
-        button.btn-primary(v-if="isAdmin" @click="updateBtnClick(itemList[id].id)") update
-        button.btn-primary(v-else-if="itemList[id].stock>0" @click="buyBtnClick(itemList[id].id)") buy
+        button.update.btn-primary(v-if="isAdmin" @click="updateBtnClick(itemList[id].id)") update
+        button.buy.btn-primary(v-else-if="itemList[id].stock>0" @click="buyBtnClick(itemList[id].id)") buy
   Edit(v-if="!isAdmin && orderAlertShow" :item="itemSelectItem" @cancel="orderAlertClose" @save="orderAdd")
   UpdateItem(v-if="isAdmin && updateAlertShow" :item="itemSelectItem" @close-alert="updateAlertClose" )
 </template>
