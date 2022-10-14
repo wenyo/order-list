@@ -17,6 +17,7 @@ export default {
   },
   async created() {
     await this.itemListSet();
+    this.loadingClose();
   },
   computed: {
     ...mapState(['userType']),
